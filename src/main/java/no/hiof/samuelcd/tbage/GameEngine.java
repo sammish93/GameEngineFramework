@@ -4,12 +4,13 @@ import no.hiof.samuelcd.tbage.enums.GamePlatform;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
 import no.hiof.samuelcd.tbage.models.encounters.EncounterPool;
+import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 
 public class GameEngine {
 
     private GamePlatform platform = GamePlatform.TERMINAL;
     private GameSettings gameSettings;
-    private EncounterPool encounterPool;
+    private Encounters encounters;
 
     public GameEngine(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
@@ -21,9 +22,9 @@ public class GameEngine {
 
     public void run() {
         if (platform.equals(GamePlatform.TERMINAL)) {
-            new Terminal(gameSettings, encounterPool);
+            new Terminal(gameSettings, encounters);
         } else if (platform.equals(GamePlatform.SWING)) {
-            new Swing(gameSettings, encounterPool);
+            new Swing(gameSettings, encounters);
         }
     }
 

@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.gui;
 import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.models.encounters.EncounterPool;
+import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,11 +10,11 @@ import java.awt.event.KeyEvent;
 public class Swing {
 
     private static GameSettings gameSettings;
-    private static EncounterPool encounterPool;
+    private static Encounters encounters;
     JFrame exampleFrame;
-    public Swing(GameSettings gameSettings, EncounterPool encounterPool) {
+    public Swing(GameSettings gameSettings, Encounters encounters) {
         Swing.gameSettings = gameSettings;
-        Swing.encounterPool = encounterPool;
+        Swing.encounters = encounters;
 
         exampleFrame =new JFrame();
 
@@ -42,7 +43,7 @@ public class Swing {
     }
 
     public static void main(String[] args) {
-        new Swing(gameSettings, encounterPool);
+        new Swing(gameSettings, encounters);
     }
 }
 

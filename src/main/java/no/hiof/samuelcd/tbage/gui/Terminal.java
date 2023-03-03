@@ -2,18 +2,19 @@ package no.hiof.samuelcd.tbage.gui;
 
 import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.models.encounters.EncounterPool;
+import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 
 import java.util.Scanner;
 
 public class Terminal {
 
     private static GameSettings gameSettings;
-    private static EncounterPool encounterPool;
+    private static Encounters encounters;
     boolean exitBool = false;
 
-    public Terminal(GameSettings gameSettings, EncounterPool encounterPool) {
+    public Terminal(GameSettings gameSettings, Encounters encounters) {
         Terminal.gameSettings = gameSettings;
-        Terminal.encounterPool = encounterPool;
+        Terminal.encounters = encounters;
         System.out.println(Terminal.gameSettings.getMessage());
 
         // Closes current Terminal process on user entering 'exit'.
@@ -28,6 +29,6 @@ public class Terminal {
     }
 
     public static void main(String[] args) {
-        new Terminal(gameSettings, encounterPool);
+        new Terminal(gameSettings, encounters);
     }
 }
