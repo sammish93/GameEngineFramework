@@ -1,19 +1,28 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.EncounterPattern;
+import no.hiof.samuelcd.tbage.enums.GameDifficulty;
+import no.hiof.samuelcd.tbage.enums.GameTheme;
 
 public class GameSettings {
 
-    private EncounterPattern encounterPattern= EncounterPattern.RANDOM;
+    private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
+    private GameTheme gameTheme = GameTheme.DEFAULT;
+    private GameDifficulty gameDifficulty = GameDifficulty.MEDIUM;
+    private int encounterLength = 10;
     private String message = "I will run in a terminal window until user types 'exit'.";
     private String buttonMessage = "I will run in a Swing window until user presses ESC.";
 
-    public GameSettings() {
+
+    private GameSettings() {
 
     }
 
-    // Getters and setters.
+    public static GameSettings create() {
+        return new GameSettings();
+    }
 
+    // Getters and setters.
     public EncounterPattern getEncounterPattern() {
         return encounterPattern;
     }
@@ -39,5 +48,45 @@ public class GameSettings {
 
     public void setButtonMessage(String buttonMessage) {
         this.buttonMessage = buttonMessage;
+    }
+
+    public GameTheme getGameTheme() {
+        return gameTheme;
+    }
+
+    public void setGameThemeToDefault() {
+        this.gameTheme = GameTheme.DEFAULT;
+    }
+
+    public void setGameThemeToFantasy() {
+        this.gameTheme = GameTheme.FANTASY;
+    }
+
+    public void setGameThemeToSciFi() {
+        this.gameTheme = GameTheme.SCIFI;
+    }
+
+    public int getEncounterLength() {
+        return encounterLength;
+    }
+
+    public void setEncounterLength(int encounterLength) {
+        this.encounterLength = encounterLength;
+    }
+
+    public GameDifficulty getGameDifficulty() {
+        return gameDifficulty;
+    }
+
+    public void setGameDifficultyToEasy() {
+        this.gameDifficulty = GameDifficulty.EASY;
+    }
+
+    public void setGameDifficultyToMedium() {
+        this.gameDifficulty = GameDifficulty.MEDIUM;
+    }
+
+    public void setGameDifficultyToHard() {
+        this.gameDifficulty = GameDifficulty.HARD;
     }
 }

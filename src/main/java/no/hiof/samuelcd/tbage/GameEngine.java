@@ -3,7 +3,6 @@ package no.hiof.samuelcd.tbage;
 import no.hiof.samuelcd.tbage.enums.GamePlatform;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
-import no.hiof.samuelcd.tbage.models.encounters.EncounterPool;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
@@ -16,16 +15,15 @@ public class GameEngine {
     private GameSettings gameSettings;
     private Encounters encounters;
 
-    public GameEngine(GameSettings gameSettings, Encounters encounters) {
-        this.gameSettings = Objects.requireNonNullElseGet(gameSettings, GameSettings::new);
+    private GameEngine(GameSettings gameSettings, Encounters encounters) {
+        this.gameSettings = Objects.requireNonNullElseGet(gameSettings, GameSettings::create);
+
         if (encounters instanceof FixedEncounters || encounters instanceof RandomEncounters) {
             this.encounters = encounters;
         } else {
             // Temporary - will have a default pool of encounters.
             this.encounters = null;
         }
-
-
     }
 
     public static GameEngine create() {

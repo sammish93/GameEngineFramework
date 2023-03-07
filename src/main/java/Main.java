@@ -3,7 +3,6 @@ import no.hiof.samuelcd.tbage.*;
 public class Main {
     public static void main(String[] args) {
 
-
         // Running the game in a terminal.
         var game = GameEngine.create();
         game.run();
@@ -13,7 +12,7 @@ public class Main {
         game2.setPlatformToSwing();
         game2.run();
 
-        var settings = new GameSettings();
+        var settings = GameSettings.create();
         settings.setButtonMessage("this swing window is overridden");
         settings.setMessage("this terminal window is overridden");
 

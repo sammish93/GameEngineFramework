@@ -1,17 +1,22 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class EncounterPool {
 
     TreeMap<String, Encounter> encounterMap;
-    public EncounterPool() {
-        // Default encounter list.
-        encounterMap = new TreeMap<>();
+
+    private EncounterPool(TreeMap<String, Encounter> encounterMap) {
+        this.encounterMap = Objects.requireNonNullElseGet(encounterMap, TreeMap::new);
     }
 
-    public EncounterPool(TreeMap<String, Encounter> encounterMap) {
-        this.encounterMap = encounterMap;
+    public static EncounterPool create() {
+        return new EncounterPool(null);
+    }
+
+    public static EncounterPool create(TreeMap<String, Encounter> encounterMap) {
+        return new EncounterPool(encounterMap);
     }
 
     public void addEncounter(Encounter encounter) {
