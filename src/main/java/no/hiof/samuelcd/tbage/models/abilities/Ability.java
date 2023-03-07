@@ -1,6 +1,8 @@
-package no.hiof.samuelcd.tbage.models.npcs.abilities;
+package no.hiof.samuelcd.tbage.models.abilities;
 
-public class Ability {
+import no.hiof.samuelcd.tbage.interfaces.Useable;
+
+public class Ability implements Useable {
 
     private String name;
     private boolean onEncounterStart;
@@ -25,6 +27,10 @@ public class Ability {
 
     public static Ability create(String name, boolean onEncounterStart, boolean onEncounterFinish, double abilityProbabilityPerTurn) {
         return new Ability(name, onEncounterStart, onEncounterFinish, abilityProbabilityPerTurn);
+    }
+
+    public void onUse() {
+        // Ability behaviour.
     }
 
     public String getName() {

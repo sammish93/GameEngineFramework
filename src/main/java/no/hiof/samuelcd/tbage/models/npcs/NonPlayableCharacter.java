@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
-import no.hiof.samuelcd.tbage.models.npcs.abilities.Ability;
+import no.hiof.samuelcd.tbage.models.abilities.Ability;
+import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.util.Objects;
 import java.util.TreeMap;
@@ -8,7 +9,9 @@ import java.util.TreeMap;
 public abstract class NonPlayableCharacter {
     private String name;
 
-    private TreeMap<String, Ability> abilityPool;
+    private TreeMap<String, Ability> NpcAbilityPool;
+
+    private TreeMap<String, Item> NpcItemTable;
 
 
     public NonPlayableCharacter(String name, TreeMap<String, Ability> abilities) {
@@ -16,33 +19,35 @@ public abstract class NonPlayableCharacter {
             this.setName(name);
         }
 
-        abilityPool = Objects.requireNonNullElseGet(abilities, TreeMap::new);
+        NpcAbilityPool = Objects.requireNonNullElseGet(abilities, TreeMap::new);
     }
 
     public abstract void processAbilities();
 
-    public TreeMap<String, Ability> getAbilityPool() {
-        return abilityPool;
+    public abstract void processItems();
+
+    public TreeMap<String, Ability> getNpcAbilityPool() {
+        return NpcAbilityPool;
     }
 
-    public void setAbilityPool(TreeMap<String, Ability> abilityPool) {
-        this.abilityPool = abilityPool;
+    public void setNpcAbilityPool(TreeMap<String, Ability> npcAbilityPool) {
+        this.NpcAbilityPool = npcAbilityPool;
     }
 
-    public Ability getAbilityFromPool(String abilityName) {
-        return abilityPool.get(abilityName);
+    public Ability getAbilityFromEncounterPool(String abilityName) {
+        return NpcAbilityPool.get(abilityName);
     }
 
-    public void addAbilityToPool(Ability ability) {
-        abilityPool.put(ability.getName(), ability);
+    public void addAbilityToEncounterPool(Ability ability) {
+        NpcAbilityPool.put(ability.getName(), ability);
     }
 
-    public void removeAbilityFromPool(Ability ability) {
-        abilityPool.remove(ability.getName());
+    public void removeAbilityFromEncounterPool(Ability ability) {
+        NpcAbilityPool.remove(ability.getName());
     }
 
-    public void removeAbilityFromPool(String abilityName) {
-        abilityPool.remove(abilityName);
+    public void removeAbilityFromEncounterPool(String abilityName) {
+        NpcAbilityPool.remove(abilityName);
     }
 
     public String getName() {

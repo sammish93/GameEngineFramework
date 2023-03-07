@@ -1,17 +1,17 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 public abstract class Encounter implements Comparable<Encounter>{
-    private String encounterName;
+    private String name;
 
-    public String getEncounterName() {
-        return encounterName;
+    public String getName() {
+        return name;
     }
 
-    public void setEncounterName(String encounterName) {
-        this.encounterName = encounterName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int compareTo(Encounter encounter) {
-        return encounterName.compareTo(encounter.getEncounterName());
+        return name.compareTo(encounter.getName());
     }
 }

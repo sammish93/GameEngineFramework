@@ -1,7 +1,7 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
 
-import no.hiof.samuelcd.tbage.models.npcs.abilities.Ability;
+import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import java.util.TreeMap;
 
 public class Enemy extends NonPlayableCharacter {
@@ -29,6 +29,11 @@ public class Enemy extends NonPlayableCharacter {
     @Override
     public void processAbilities() {
         // Iterates through abilityPool to find which events (onEncounterStart and onEncounterFinish) are TRUE.
+    }
+
+    @Override
+    public void processItems() {
+        // Determines which items have dropped from a defeated enemy.
     }
 
     public int getHealth() {

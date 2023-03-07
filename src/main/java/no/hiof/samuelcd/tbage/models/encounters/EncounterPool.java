@@ -7,6 +7,7 @@ public class EncounterPool {
 
     TreeMap<String, Encounter> encounterMap;
 
+
     private EncounterPool(TreeMap<String, Encounter> encounterMap) {
         this.encounterMap = Objects.requireNonNullElseGet(encounterMap, TreeMap::new);
     }
@@ -21,11 +22,14 @@ public class EncounterPool {
 
     public void addEncounter(Encounter encounter) {
         // Should implement behaviour if encounter already exists.
-        encounterMap.put(encounter.getEncounterName(), encounter);
+        encounterMap.put(encounter.getName(), encounter);
     }
 
     public void removeEncounter(String encounterName) {
         encounterMap.remove(encounterName);
+    }
+    public void removeEncounter(Encounter encounter) {
+        encounterMap.remove(encounter.getName());
     }
 
     public Encounter getEncounter(String encounterName) {
