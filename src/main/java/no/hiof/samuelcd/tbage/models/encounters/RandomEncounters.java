@@ -2,7 +2,7 @@ package no.hiof.samuelcd.tbage.models.encounters;
 
 import java.util.LinkedHashMap;
 
-public class RandomEncounters {
+public class RandomEncounters extends Encounters{
 
     LinkedHashMap<String, Encounter> encounters;
     public RandomEncounters(int nrOfEncounters, EncounterPool encounterPool) {

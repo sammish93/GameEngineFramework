@@ -3,13 +3,13 @@ import no.hiof.samuelcd.tbage.*;
 public class Main {
     public static void main(String[] args) {
 
-        /*
+
         // Running the game in a terminal.
-        var game = new GameEngine();
+        var game = GameEngine.create();
         game.run();
 
         // Running the game in Swing.
-        var game2 = new GameEngine();
+        var game2 = GameEngine.create();
         game2.setPlatformToSwing();
         game2.run();
 
@@ -18,14 +18,14 @@ public class Main {
         settings.setMessage("this terminal window is overridden");
 
         // Running the game in a terminal.
-        var game3 = new GameEngine(settings);
+        var game3 = GameEngine.create(settings);
         game3.run();
 
         // Running the game in Swing.
-        var game4 = new GameEngine(settings);
+        var game4 = GameEngine.create(settings);
         game4.setPlatformToSwing();
         game4.run();
-         */
+
 
     }
 }
