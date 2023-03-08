@@ -18,6 +18,14 @@ public class Player implements JsonExternalisable {
     private static TreeMap<String, Feat> feats;
 
 
+    private Player() {
+
+    }
+
+    public static Player create() {
+        return new Player();
+    }
+
     public boolean isSpaceInInventory() {
         int inventorySize = inventory.size();
 
