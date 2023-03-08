@@ -7,9 +7,9 @@ public class AbilityPool {
 
     private TreeMap<String, Ability> abilityMap;
 
-    private AbilityPool(TreeMap<String, Ability> encounterMap) {
+    private AbilityPool(TreeMap<String, Ability> abilityMap) {
         // On null it should use a static ability table that is hard coded.
-        this.abilityMap = Objects.requireNonNullElseGet(encounterMap, TreeMap::new);
+        this.abilityMap = Objects.requireNonNullElseGet(abilityMap, TreeMap::new);
     }
 
     public static AbilityPool create() {

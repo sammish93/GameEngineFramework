@@ -10,6 +10,7 @@ public class CombatEncounter extends Encounter {
 
     private int enemyCount;
     private TreeMap<String, Enemy> enemies;
+    private int turnCount = 1;
 
 
     private CombatEncounter(String name, double weightedProbability, String imagePath) {
@@ -26,6 +27,10 @@ public class CombatEncounter extends Encounter {
 
     public CombatEncounter create(String name, double weightedProbability) {
         return new CombatEncounter(name, weightedProbability, null);
+    }
+
+    public void onTurn() {
+        // Behaviour for each turn in the encounter.
     }
 
     public TreeMap<String, Enemy> getEnemies() {

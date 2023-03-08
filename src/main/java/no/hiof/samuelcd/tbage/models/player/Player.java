@@ -2,6 +2,7 @@ package no.hiof.samuelcd.tbage.models.player;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.io.File;
@@ -14,6 +15,7 @@ public class Player implements JsonExternalisable {
     private TreeMap<String, Item> inventory;
     private int maxHealth;
     private int currentHealth;
+    private static TreeMap<String, Feat> feats;
 
 
     public boolean isSpaceInInventory() {
@@ -56,6 +58,30 @@ public class Player implements JsonExternalisable {
     public void removeItemFromInventory(String itemName) {
         inventory.remove(itemName);
         inventorySlots--;
+    }
+
+    public TreeMap<String, Feat> getFeats() {
+        return feats;
+    }
+
+    public void setFeats(TreeMap<String, Feat> feats) {
+        this.feats = feats;
+    }
+
+    public Feat getFeatFromFeats(String featName) {
+        return feats.get(featName);
+    }
+
+    public void addFeatToFeats(Feat feat) {
+        feats.put(feat.getName(), feat);
+    }
+
+    public void removeFeatFromFeats(Feat feat) {
+        feats.remove(feat.getName());
+    }
+
+    public void removeFeatFromFeats(String featName) {
+        feats.remove(featName);
     }
 
     public int getMaxHealth() {

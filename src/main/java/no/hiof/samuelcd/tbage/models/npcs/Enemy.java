@@ -12,23 +12,25 @@ public class Enemy extends NonPlayableCharacter {
     private int maxHealth;
     private int currentHealth;
     private int[] damage = new int[2];
+    private String enemyType;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities) {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, String enemyType) {
         super(name, abilities);
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.damage[0] = minDamage;
         this.damage[1] = maxDamage;
+        this.enemyType = enemyType;
     }
 
     public static Enemy create() {
-        return new Enemy(null, 0, 0, 0, null);
+        return new Enemy(null, 0, 0, 0, null, null);
     }
 
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities) {
-        return new Enemy(name, health, minDamage, maxDamage, abilities);
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, String enemyType) {
+        return new Enemy(name, health, minDamage, maxDamage, abilities, enemyType);
     }
 
     @Override
@@ -71,6 +73,14 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public String getEnemyType() {
+        return enemyType;
+    }
+
+    public void setEnemyType(String enemyType) {
+        this.enemyType = enemyType;
     }
 
     @Override
