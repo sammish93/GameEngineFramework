@@ -2,7 +2,6 @@ package no.hiof.samuelcd.tbage.models.npcs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.TreeMap;
