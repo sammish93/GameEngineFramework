@@ -24,5 +24,4 @@ public class FixedEncounters extends Encounters {
     public void addEncounter(String encounterFrom, String encounterTo, String event) {
         // Encounter x progresses to encounter y if event is triggered.
     }
-
 }

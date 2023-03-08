@@ -1,6 +1,8 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
-public abstract class Encounter implements Comparable<Encounter>{
+import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
+
+public abstract class Encounter implements Comparable<Encounter>, JsonExternalisable {
     private String name;
 
     public String getName() {

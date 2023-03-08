@@ -1,12 +1,13 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
+import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.util.Objects;
 import java.util.TreeMap;
 
-public abstract class NonPlayableCharacter {
+public abstract class NonPlayableCharacter implements JsonExternalisable {
     private String name;
 
     private TreeMap<String, Ability> NpcAbilityPool;
