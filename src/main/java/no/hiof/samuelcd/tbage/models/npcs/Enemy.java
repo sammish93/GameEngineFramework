@@ -3,21 +3,22 @@ package no.hiof.samuelcd.tbage.models.npcs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.TreeMap;
 
 public class Enemy extends NonPlayableCharacter {
 
-    private int health;
+    private int maxHealth;
+    private int currentHealth;
     private int[] damage = new int[2];
 
 
-    private Enemy(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities) {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities) {
         super(name, abilities);
 
-        this.health = health;
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
         this.damage[0] = minDamage;
         this.damage[1] = maxDamage;
     }
@@ -40,12 +41,12 @@ public class Enemy extends NonPlayableCharacter {
         // Determines which items have dropped from a defeated enemy.
     }
 
-    public int getHealth() {
-        return health;
+    public int getMaxHealth() {
+        return maxHealth;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
     }
 
     public int getMinDamage() {
@@ -62,6 +63,14 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setMaxDamage(int maxDamage) {
         this.damage[1] = maxDamage;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
     }
 
     @Override

@@ -13,6 +13,7 @@ public class Item implements Useable, JsonExternalisable {
     private String name;
     private int value;
     private double dropChance;
+    private String imagePath;
 
     @JsonCreator
     private Item(@JsonProperty("name") String name,
@@ -69,6 +70,14 @@ public class Item implements Useable, JsonExternalisable {
 
     public void setDropChance(double dropChance) {
         this.dropChance = dropChance;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     @Override
