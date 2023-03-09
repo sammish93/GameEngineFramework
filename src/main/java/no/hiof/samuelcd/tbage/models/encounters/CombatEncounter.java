@@ -1,9 +1,8 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.TreeMap;
 
 public class CombatEncounter extends Encounter {
@@ -13,20 +12,22 @@ public class CombatEncounter extends Encounter {
     private int turnCount = 1;
 
 
-    private CombatEncounter(String name, double weightedProbability, String imagePath) {
-        super(name, weightedProbability, imagePath);
+    private CombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards) {
+        super(name, weightedProbability, imagePath, featChecks, featRewards);
+
+        enemies = new TreeMap<>();
     }
 
-    public CombatEncounter create() {
-        return new CombatEncounter(null, 0.5, null);
+    public static CombatEncounter create() {
+        return new CombatEncounter(null, 0.5, null, null, null);
     }
 
-    public CombatEncounter create(String name) {
-        return new CombatEncounter(name, 0.5, null);
+    public static CombatEncounter create(String name) {
+        return new CombatEncounter(name, 0.5, null, null, null);
     }
 
-    public CombatEncounter create(String name, double weightedProbability) {
-        return new CombatEncounter(name, weightedProbability, null);
+    public static CombatEncounter create(String name, double weightedProbability) {
+        return new CombatEncounter(name, weightedProbability, null, null, null);
     }
 
     public void onTurn() {
@@ -58,31 +59,8 @@ public class CombatEncounter extends Encounter {
     }
 
     @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        CombatEncounter combatEncounter = om.readValue(file, CombatEncounter.class);
-
-        // Specific deserialisation here.
-    }
-
-    @Override
     public String toString() {
         return super.toString();
     }
+
 }

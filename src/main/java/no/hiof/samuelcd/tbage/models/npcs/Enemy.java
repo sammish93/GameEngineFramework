@@ -1,10 +1,8 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
-import java.io.File;
-import java.io.IOException;
+
 import java.util.TreeMap;
 
 public class Enemy extends NonPlayableCharacter {
@@ -81,30 +79,6 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setEnemyType(String enemyType) {
         this.enemyType = enemyType;
-    }
-
-    @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        Enemy enemy = om.readValue(file, Enemy.class);
-
-        // Specific deserialisation here.
     }
 
     @Override

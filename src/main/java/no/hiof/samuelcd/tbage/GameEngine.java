@@ -9,9 +9,10 @@ import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 import no.hiof.samuelcd.tbage.models.player.Player;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class GameEngine {
+public class GameEngine implements Serializable {
 
     private GamePlatform platform = GamePlatform.TERMINAL;
     private GameSettings gameSettings;

@@ -1,9 +1,9 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
-import java.io.File;
-import java.io.IOException;
+
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class NonCombatEncounter extends Encounter {
@@ -11,20 +11,22 @@ public class NonCombatEncounter extends Encounter {
     private int allyCount;
     private TreeMap<String, Ally> allies;
 
-    private NonCombatEncounter(String name, double weightedProbability, String imagePath) {
-        super(name, weightedProbability, imagePath);
+    private NonCombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies) {
+        super(name, weightedProbability, imagePath, featChecks, featRewards);
+
+        this.allies = Objects.requireNonNullElseGet(allies, TreeMap::new);
     }
 
-    public NonCombatEncounter create() {
-        return new NonCombatEncounter(null, 0.5, null);
+    public static NonCombatEncounter create() {
+        return new NonCombatEncounter(null, 0.5, null, null, null, null);
     }
 
-    public NonCombatEncounter create(String name) {
-        return new NonCombatEncounter(name, 0.5, null);
+    public static NonCombatEncounter create(String name) {
+        return new NonCombatEncounter(name, 0.5, null, null, null, null);
     }
 
-    public NonCombatEncounter create(String name, double weightedProbability) {
-        return new NonCombatEncounter(name, weightedProbability, null);
+    public static NonCombatEncounter create(String name, double weightedProbability) {
+        return new NonCombatEncounter(name, weightedProbability, null, null, null, null);
     }
 
     public TreeMap<String, Ally> getAllies() {
@@ -49,30 +51,6 @@ public class NonCombatEncounter extends Encounter {
 
     public void removeAllyFromAllies(String allyName) {
         allies.remove(allyName);
-    }
-
-    @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        NonCombatEncounter nonCombatEncounter = om.readValue(file, NonCombatEncounter.class);
-
-        // Specific deserialisation here.
     }
 
     @Override

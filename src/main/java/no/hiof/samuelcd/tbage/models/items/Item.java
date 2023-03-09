@@ -1,24 +1,18 @@
 package no.hiof.samuelcd.tbage.models.items;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
-import java.io.*;
+import java.io.Serializable;
 
-public class Item implements Useable, JsonExternalisable {
+public class Item implements Useable, Serializable {
 
     private String name;
     private int value;
     private double dropChance;
     private String imagePath;
 
-    @JsonCreator
-    private Item(@JsonProperty("name") String name,
-                 @JsonProperty("value") int value,
-                 @JsonProperty("dropChance") double dropChance) {
+
+    private Item(String name, int value, double dropChance) {
         this.name = name;
         this.value = value;
         this.dropChance = dropChance;
@@ -78,32 +72,6 @@ public class Item implements Useable, JsonExternalisable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        Item item = om.readValue(file, Item.class);
-
-        this.name = item.name;
-        this.value = item.value;
-        this.dropChance = item.dropChance;
     }
 
     @Override

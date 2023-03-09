@@ -1,29 +1,35 @@
 package no.hiof.samuelcd.tbage.models.player;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.TreeMap;
 
-public class Player implements JsonExternalisable {
+public class Player implements Serializable {
     // Class that will hold information about a player throughout the game.
     private int inventorySlots = 10;
     private TreeMap<String, Item> inventory;
     private int maxHealth;
     private int currentHealth;
-    private static TreeMap<String, Feat> feats;
+    private TreeMap<String, Feat> feats;
 
 
-    private Player() {
+    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, TreeMap<String, Feat> feats) {
+        this.inventorySlots = inventorySlots;
+        this.maxHealth = maxHealth;
+        this.currentHealth = maxHealth;
+        this.inventory = Objects.requireNonNullElseGet(inventory, TreeMap::new);
+        this.feats = Objects.requireNonNullElseGet(feats, TreeMap::new);
 
+        if (inventory != null && !isSpaceInInventory()) {
+            this.inventorySlots = inventory.size();
+        }
     }
 
     public static Player create() {
-        return new Player();
+        return new Player(0, null, 0, null);
     }
 
     public boolean isSpaceInInventory() {
@@ -106,28 +112,6 @@ public class Player implements JsonExternalisable {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
-    }
-
-    @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        Player player = om.readValue(file, Player.class);
     }
 
     @Override

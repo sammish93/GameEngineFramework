@@ -1,9 +1,24 @@
 import no.hiof.samuelcd.tbage.*;
+import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 
 import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+
+        var encounter = CombatEncounter.create("ENCOUNTER_EXAMPLE");
+        var feat = Feat.create("FEAT_EXAMPLE");
+        encounter.addFeatToFeatChecks(feat);
+
+        System.out.println(encounter.getName() + " has the feat: " + encounter.getFeatChecks());
+
+        String path = "src/test.ser";
+        encounter.save(path);
+
+        var encounter2 = CombatEncounter.load(path);
+        encounter2.onInitiation();
+        System.out.println(encounter2.getFeatFromFeatChecks(feat.getName()).getName());
 
         // Running the game in a terminal.
         var game = GameEngine.create();

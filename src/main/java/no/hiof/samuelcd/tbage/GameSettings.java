@@ -4,7 +4,9 @@ import no.hiof.samuelcd.tbage.enums.EncounterPattern;
 import no.hiof.samuelcd.tbage.enums.GameDifficulty;
 import no.hiof.samuelcd.tbage.enums.GameTheme;
 
-public class GameSettings {
+import java.io.Serializable;
+
+public class GameSettings implements Serializable {
 
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
     private GameTheme gameTheme = GameTheme.DEFAULT;

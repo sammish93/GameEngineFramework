@@ -1,13 +1,10 @@
 package no.hiof.samuelcd.tbage.models.abilities;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import no.hiof.samuelcd.tbage.interfaces.JsonExternalisable;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.Serializable;
 
-public class Ability implements Useable, JsonExternalisable {
+public class Ability implements Useable, Serializable {
 
     private String name;
     private boolean onEncounterStart;
@@ -68,28 +65,6 @@ public class Ability implements Useable, JsonExternalisable {
 
     public void setAbilityProbabilityPerTurn(double abilityProbabilityPerTurn) {
         this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
-    }
-
-    @Override
-    public void writeToJson(File file) throws IOException {
-        ObjectMapper om = new ObjectMapper();
-        boolean fileExists = file.exists();
-
-        if (!fileExists) {
-            fileExists = file.createNewFile();
-        }
-
-        if (fileExists) {
-            om.writeValue(file, this);
-        }
-
-        // Jackson auto-closes the stream and mapper.
-    }
-
-    @Override
-    public void readFromJson(File file) throws IOException{
-        ObjectMapper om = new ObjectMapper();
-        Ability ability = om.readValue(file, Ability.class);
     }
 
     @Override
