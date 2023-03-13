@@ -3,8 +3,9 @@ package no.hiof.samuelcd.tbage;
 import no.hiof.samuelcd.tbage.enums.EncounterPattern;
 import no.hiof.samuelcd.tbage.enums.GameDifficulty;
 import no.hiof.samuelcd.tbage.enums.GameTheme;
+import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 
-import java.io.Serializable;
+import java.io.*;
 
 public class GameSettings implements Serializable {
 
@@ -90,5 +91,19 @@ public class GameSettings implements Serializable {
 
     public void setGameDifficultyToHard() {
         this.gameDifficulty = GameDifficulty.HARD;
+    }
+
+    public void save(String path) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(this);
+    }
+
+    public static GameSettings load(String path) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        return (GameSettings) objectInputStream.readObject();
     }
 }

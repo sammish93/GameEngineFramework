@@ -3,13 +3,13 @@ package no.hiof.samuelcd.tbage;
 import no.hiof.samuelcd.tbage.enums.GamePlatform;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
+import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 import no.hiof.samuelcd.tbage.models.player.Player;
 
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.util.Objects;
 
 public class GameEngine implements Serializable {
@@ -58,6 +58,9 @@ public class GameEngine implements Serializable {
     public static GameEngine create(Player player, Encounters encounters) {
         return new GameEngine(null, player, encounters);
     }
+    public static GameEngine create(GameSettings gameSettings, Player player, Encounters encounters) {
+        return new GameEngine(gameSettings, player, encounters);
+    }
 
 
     public void run() {
@@ -94,5 +97,35 @@ public class GameEngine implements Serializable {
 
     public void setGameSettings(GameSettings gameSettings) {
         this.gameSettings = gameSettings;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Encounters getEncounters() {
+        return encounters;
+    }
+
+    public void setEncounters(Encounters encounters) {
+        this.encounters = encounters;
+    }
+
+    public void save(String path) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(this);
+    }
+
+    public static GameEngine load(String path) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        return (GameEngine)objectInputStream.readObject();
     }
 }

@@ -3,7 +3,7 @@ package no.hiof.samuelcd.tbage.models.player;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -117,5 +117,19 @@ public class Player implements Serializable {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    public void save(String path) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(this);
+    }
+
+    public static Player load(String path) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        return (Player)objectInputStream.readObject();
     }
 }
