@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.GamePlatform;
+import no.hiof.samuelcd.tbage.gui.GameInterface;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
@@ -63,12 +64,14 @@ public class GameEngine implements Serializable {
     }
 
 
-    public void run() {
+    public GameInterface run() {
         if (platform.equals(GamePlatform.TERMINAL)) {
-            new Terminal(gameSettings, player, encounters);
+            return new Terminal(gameSettings, player, encounters);
         } else if (platform.equals(GamePlatform.SWING)) {
-            new Swing(gameSettings, player, encounters);
+            return new Swing(gameSettings, player, encounters);
         }
+
+        return null;
     }
 
     public void exportToFile(File file) {

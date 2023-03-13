@@ -7,20 +7,18 @@ import no.hiof.samuelcd.tbage.models.player.Player;
 
 import java.util.Scanner;
 
-public class Terminal implements Closeable<String> {
+public class Terminal extends GameInterface implements Closeable<String> {
 
-    private static GameSettings gameSettings;
-    public static Player player;
-    private static Encounters encounters;
+
     boolean exitBool = false;
     Scanner scanner = new Scanner(System.in);
 
     public Terminal(GameSettings gameSettings, Player player, Encounters encounters) {
-        Terminal.gameSettings = gameSettings;
-        Terminal.player = player;
-        Terminal.encounters = encounters;
+        this.gameSettings = gameSettings;
+        this.player = player;
+        this.encounters = encounters;
 
-        System.out.println(Terminal.gameSettings.getMessage());
+        System.out.println(this.gameSettings.getMessage());
 
         // Closes current Terminal process on user entering 'exit'.
 
@@ -37,9 +35,5 @@ public class Terminal implements Closeable<String> {
         if (word.equalsIgnoreCase(exitString)) {
             exitBool = true;
         }
-    }
-
-    public static void main(String[] args) {
-        new Terminal(gameSettings, player, encounters);
     }
 }

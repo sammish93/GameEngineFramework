@@ -8,20 +8,17 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
-public class Swing implements Closeable<JFrame> {
+public class Swing extends GameInterface implements Closeable<JFrame> {
 
-    private static GameSettings gameSettings;
-    private static Player player;
-    private static Encounters encounters;
     JFrame exampleFrame;
     public Swing(GameSettings gameSettings, Player player, Encounters encounters) {
-        Swing.gameSettings = gameSettings;
-        Swing.player = player;
-        Swing.encounters = encounters;
+        this.gameSettings = gameSettings;
+        this.player = player;
+        this.encounters = encounters;
 
         exampleFrame = new JFrame();
 
-        JTextArea exampleTextArea = new JTextArea(Swing.gameSettings.getButtonMessage());
+        JTextArea exampleTextArea = new JTextArea(this.gameSettings.getButtonMessage());
 
         exampleFrame.add(exampleTextArea);
         exampleFrame.pack();
@@ -46,11 +43,6 @@ public class Swing implements Closeable<JFrame> {
                 //System.exit(0);
             }
         });
-    }
-
-
-    public static void main(String[] args) {
-        new Swing(gameSettings, player, encounters);
     }
 }
 
