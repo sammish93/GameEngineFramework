@@ -1,18 +1,15 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.EncounterPattern;
-import no.hiof.samuelcd.tbage.enums.GameDifficulty;
-import no.hiof.samuelcd.tbage.enums.GameTheme;
-import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 
 import java.io.*;
 
 public class GameSettings implements Serializable {
 
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
-    private GameTheme gameTheme = GameTheme.DEFAULT;
-    private GameDifficulty gameDifficulty = GameDifficulty.MEDIUM;
+    private int encounterModifier = 0;
     private int encounterLength = 10;
+    private int fontSize = 12;
     private String message = "I will run in a terminal window until user types 'exit'.";
     private String buttonMessage = "I will run in a Swing window until user presses ESC.";
 
@@ -53,22 +50,6 @@ public class GameSettings implements Serializable {
         this.buttonMessage = buttonMessage;
     }
 
-    public GameTheme getGameTheme() {
-        return gameTheme;
-    }
-
-    public void setGameThemeToDefault() {
-        this.gameTheme = GameTheme.DEFAULT;
-    }
-
-    public void setGameThemeToFantasy() {
-        this.gameTheme = GameTheme.FANTASY;
-    }
-
-    public void setGameThemeToSciFi() {
-        this.gameTheme = GameTheme.SCIFI;
-    }
-
     public int getEncounterLength() {
         return encounterLength;
     }
@@ -77,20 +58,20 @@ public class GameSettings implements Serializable {
         this.encounterLength = encounterLength;
     }
 
-    public GameDifficulty getGameDifficulty() {
-        return gameDifficulty;
+    public int getEncounterModifier() {
+        return encounterModifier;
     }
 
-    public void setGameDifficultyToEasy() {
-        this.gameDifficulty = GameDifficulty.EASY;
+    public void setEncounterModifier(int encounterModifier) {
+        this.encounterModifier = encounterModifier;
     }
 
-    public void setGameDifficultyToMedium() {
-        this.gameDifficulty = GameDifficulty.MEDIUM;
+    public int getFontSize() {
+        return fontSize;
     }
 
-    public void setGameDifficultyToHard() {
-        this.gameDifficulty = GameDifficulty.HARD;
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
     }
 
     public void save(String path) throws IOException {

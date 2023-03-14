@@ -17,7 +17,7 @@ public class FixedEncounters extends Encounters {
         // Takes all vertexes and edges and links them together into a single structure.
     }
 
-    public void addInitialEncounter(String encounter) {
+    public void addEncounter(String encounter) {
         // Adds an initial encounter vertex.
     }
 

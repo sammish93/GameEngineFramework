@@ -34,19 +34,19 @@ public abstract class NonPlayableCharacter implements Serializable {
         this.NpcAbilityPool = npcAbilityPool;
     }
 
-    public Ability getAbilityFromEncounterPool(String abilityName) {
+    public Ability getAbilityFromAbilityPool(String abilityName) {
         return NpcAbilityPool.get(abilityName);
     }
 
-    public void addAbilityToEncounterPool(Ability ability) {
+    public void addAbilityToAbilityPool(Ability ability) {
         NpcAbilityPool.put(ability.getName(), ability);
     }
 
-    public void removeAbilityFromEncounterPool(Ability ability) {
+    public void removeAbilityFromAbilityPool(Ability ability) {
         NpcAbilityPool.remove(ability.getName());
     }
 
-    public void removeAbilityFromEncounterPool(String abilityName) {
+    public void removeAbilityFromAbilityPool(String abilityName) {
         NpcAbilityPool.remove(abilityName);
     }
 
