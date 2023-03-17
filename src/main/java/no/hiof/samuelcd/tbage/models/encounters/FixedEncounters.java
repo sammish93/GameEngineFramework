@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 
 public class FixedEncounters extends Encounters {
 
-    LinkedHashMap<String, EncounterVertex> encounters;
+    LinkedHashMap<String, Encounter> encounters;
     private FixedEncounters() {
         encounters = new LinkedHashMap<>();
     }
