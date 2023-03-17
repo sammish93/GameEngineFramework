@@ -1,6 +1,10 @@
 package no.hiof.samuelcd.tbage.interfaces;
 
-public interface Useable {
+import no.hiof.samuelcd.tbage.GameEngine;
 
-    void onUse();
+import java.io.Serializable;
+
+public interface Useable extends Serializable {
+
+    void onUse(GameEngine gameEngine);
 }

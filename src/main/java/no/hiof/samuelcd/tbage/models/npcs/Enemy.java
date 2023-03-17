@@ -2,6 +2,7 @@ package no.hiof.samuelcd.tbage.models.npcs;
 
 
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
+import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.util.TreeMap;
 
@@ -13,8 +14,8 @@ public class Enemy extends NonPlayableCharacter {
     private String enemyType;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, String enemyType) {
-        super(name, abilities);
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
+        super(name, abilities, items);
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
@@ -24,11 +25,11 @@ public class Enemy extends NonPlayableCharacter {
     }
 
     public static Enemy create() {
-        return new Enemy(null, 0, 0, 0, null, null);
+        return new Enemy(null, 0, 0, 0, null, null, null);
     }
 
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, String enemyType) {
-        return new Enemy(name, health, minDamage, maxDamage, abilities, enemyType);
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
+        return new Enemy(name, health, minDamage, maxDamage, abilities, items, enemyType);
     }
 
     @Override

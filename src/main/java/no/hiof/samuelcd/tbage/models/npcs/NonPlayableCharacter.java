@@ -8,18 +8,19 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public abstract class NonPlayableCharacter implements Serializable {
-    private String name;
+    private String name = "defaultNpcName";
     private TreeMap<String, Ability> NpcAbilityPool;
     private TreeMap<String, Item> NpcItemTable;
     private String imagePath;
 
 
-    public NonPlayableCharacter(String name, TreeMap<String, Ability> abilities) {
+    public NonPlayableCharacter(String name, TreeMap<String, Ability> abilities, TreeMap<String, Item> items) {
         if (name != null) {
             this.setName(name);
         }
 
         NpcAbilityPool = Objects.requireNonNullElseGet(abilities, TreeMap::new);
+        NpcItemTable = Objects.requireNonNullElseGet(items, TreeMap::new);
     }
 
     public abstract void processAbilities();

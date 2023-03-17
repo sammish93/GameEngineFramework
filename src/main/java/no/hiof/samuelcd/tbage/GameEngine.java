@@ -131,4 +131,8 @@ public class GameEngine implements Serializable {
 
         return (GameEngine)objectInputStream.readObject();
     }
+
+    public void printMessage(String s) {
+        System.out.println(s);
+    }
 }

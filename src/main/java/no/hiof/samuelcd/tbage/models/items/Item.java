@@ -1,15 +1,17 @@
 package no.hiof.samuelcd.tbage.models.items;
 
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
 
 public class Item implements Useable, Serializable {
 
-    private String name;
+    private String name = "defaultItemName";
     private int value;
     private double dropChance;
     private String imagePath;
+    private Useable useable;
 
 
     private Item(String name, int value, double dropChance) {
@@ -34,8 +36,13 @@ public class Item implements Useable, Serializable {
         return new Item(name, value, dropChance);
     }
 
-    public void onUse() {
+    public void onUse(GameEngine gameEngine) {
         // Item does this when it is used.
+        useable.onUse(gameEngine);
+    }
+
+    public void setOnUseBehaviour(Useable useable) {
+        this.useable = useable;
     }
 
     public void onReceive() {

@@ -1,5 +1,6 @@
 package no.hiof.samuelcd.tbage.models.abilities;
 
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ public class Ability implements Useable, Serializable {
     private boolean onEncounterStart;
     private boolean onEncounterFinish;
     private double abilityProbabilityPerTurn;
+    private Useable useable;
 
 
     private Ability(String name, boolean onEncounterStart, boolean onEncounterFinish, double abilityProbabilityPerTurn) {
@@ -31,8 +33,13 @@ public class Ability implements Useable, Serializable {
         return new Ability(name, onEncounterStart, onEncounterFinish, abilityProbabilityPerTurn);
     }
 
-    public void onUse() {
-        // Ability behaviour.
+    public void onUse(GameEngine gameEngine) {
+        // Item does this when it is used.
+        useable.onUse(gameEngine);
+    }
+
+    public void setOnUseBehaviour(Useable useable) {
+        this.useable = useable;
     }
 
     public String getName() {
