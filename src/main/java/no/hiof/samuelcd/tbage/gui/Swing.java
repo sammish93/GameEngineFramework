@@ -1,4 +1,5 @@
 package no.hiof.samuelcd.tbage.gui;
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
@@ -11,10 +12,11 @@ import java.awt.event.KeyEvent;
 public class Swing extends GameInterface implements Closeable<JFrame> {
 
     JFrame exampleFrame;
-    public Swing(GameSettings gameSettings, Player player, Encounters encounters) {
-        this.gameSettings = gameSettings;
-        this.player = player;
-        this.encounters = encounters;
+    public Swing(GameEngine gameEngine) {
+        this.gameSettings = gameEngine.getGameSettings();
+        this.player = gameEngine.getPlayer();
+        this.encounters = gameEngine.getEncounters();
+        this.gameEngine = gameEngine;
 
         exampleFrame = new JFrame();
 

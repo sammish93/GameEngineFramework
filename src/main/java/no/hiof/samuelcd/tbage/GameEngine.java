@@ -66,9 +66,9 @@ public class GameEngine implements Serializable {
 
     public GameInterface run() {
         if (platform.equals(GamePlatform.TERMINAL)) {
-            return new Terminal(gameSettings, player, encounters);
+            return new Terminal(this);
         } else if (platform.equals(GamePlatform.SWING)) {
-            return new Swing(gameSettings, player, encounters);
+            return new Swing(this);
         }
 
         return null;

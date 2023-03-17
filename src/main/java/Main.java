@@ -10,14 +10,12 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         var game = GameEngine.create();
-        game.setPlatformToSwing();
+        //game.setPlatformToSwing();
         //game.run();
-
-        System.out.println(game.getPlayer().getCurrentHealth());
 
 
         var item = Item.create("the item name");
-        System.out.println(game);
+        //System.out.println(game);
         Useable onUse = (gameEngine) -> {
             gameEngine.getPlayer().setCurrentHealth(500);
             gameEngine.printMessage("Your health increased!");
@@ -25,18 +23,19 @@ public class Main {
 
         item.setOnUseBehaviour(onUse);
 
-        var encounter = CombatEncounter.create();
-        var enemy = Enemy.create();
-        enemy.addItemToItemTable(item);
-        encounter.addEnemyToEnemies(enemy);
+        //System.out.println(game.getPlayer().getInventorySlots());
+        game.getPlayer().addItemToInventory(item);
 
-        encounter.save("src/encounter.ser");
+        //System.out.println(game.getPlayer().getItemFromInventory("the item name"));
+        game.save("src/game.ser");
 
 
-        CombatEncounter encounter2 = (CombatEncounter)Encounter.load("src/encounter.ser");
-        encounter2.getEnemyFromEnemies("defaultNpcName").getItemFromItemTable("the item name").onUse(game);
+        var game2 = GameEngine.load("src/game.ser");
+        System.out.println(game2.getPlayer().getCurrentHealth());
+        game2.run();
+        //encounter2.getEnemyFromEnemies("defaultNpcName").getItemFromItemTable("the item name").onUse(game);
 
-        System.out.println(game.getPlayer().getCurrentHealth());
+        //System.out.println(game.getPlayer().getCurrentHealth());
 
 
         /*
@@ -47,6 +46,5 @@ public class Main {
         encounter2.getEnemyFromEnemies("defaultNpcName").getItemFromItemTable("the item name").onUse();
         System.out.println(game.getPlayer().getCurrentHealth());
         */
-
     }
 }

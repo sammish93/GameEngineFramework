@@ -1,5 +1,6 @@
 package no.hiof.samuelcd.tbage.gui;
 
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
@@ -13,12 +14,18 @@ public class Terminal extends GameInterface implements Closeable<String> {
     boolean exitBool = false;
     Scanner scanner = new Scanner(System.in);
 
-    public Terminal(GameSettings gameSettings, Player player, Encounters encounters) {
-        this.gameSettings = gameSettings;
-        this.player = player;
-        this.encounters = encounters;
+    public Terminal(GameEngine gameEngine) {
+        this.gameSettings = gameEngine.getGameSettings();
+        this.player = gameEngine.getPlayer();
+        this.encounters = gameEngine.getEncounters();
+        this.gameEngine = gameEngine;
 
         System.out.println(this.gameSettings.getMessage());
+        System.out.println("current health from terminal:" + this.player.getCurrentHealth());
+
+        this.player.getItemFromInventory("the item name").onUse(this.gameEngine);
+        System.out.println("current health from terminal after change:" + this.player.getCurrentHealth());
+
 
         // Closes current Terminal process on user entering 'exit'.
 

@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public class Player implements Serializable {
     // Class that will hold information about a player throughout the game.
-    private int inventorySlots = 10;
+    private int inventorySlots ;
     private TreeMap<String, Item> inventory;
     private int maxHealth;
     private int currentHealth;
@@ -29,13 +29,13 @@ public class Player implements Serializable {
     }
 
     public static Player create() {
-        return new Player(0, null, 0, null);
+        return new Player(10, null, 0, null);
     }
 
     public boolean isSpaceInInventory() {
         int inventorySize = inventory.size();
 
-        return inventorySize > inventorySlots;
+        return inventorySize < inventorySlots;
     }
     public int getInventorySlots() {
         return inventorySlots;
