@@ -12,6 +12,7 @@ import no.hiof.samuelcd.tbage.models.player.Player;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class GameEngine implements Serializable {
 
@@ -19,6 +20,7 @@ public class GameEngine implements Serializable {
     private GameSettings gameSettings;
     private Player player;
     private Encounters encounters;
+    public static Scanner scanner  = new Scanner(System.in);
 
 
     private GameEngine(GameSettings gameSettings, Player player, Encounters encounters) {

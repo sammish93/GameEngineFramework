@@ -8,9 +8,9 @@ import java.util.TreeMap;
 
 public class Enemy extends NonPlayableCharacter {
 
-    private int maxHealth;
-    private int currentHealth;
-    private int[] damage = new int[2];
+    private double maxHealth;
+    private double currentHealth;
+    private double[] damage = new double[2];
     private String enemyType;
 
 
@@ -25,11 +25,11 @@ public class Enemy extends NonPlayableCharacter {
     }
 
     public static Enemy create() {
-        return new Enemy(null, 0, 0, 0, null, null, null);
+        return new Enemy(null, 10, 1, 2, null, null, null);
     }
 
     public static Enemy create(String name) {
-        return new Enemy(name, 0, 0, 0, null, null, null);
+        return new Enemy(name, 10, 1, 3, null, null, null);
     }
 
     public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
@@ -46,7 +46,7 @@ public class Enemy extends NonPlayableCharacter {
         // Determines which items have dropped from a defeated enemy.
     }
 
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         return maxHealth;
     }
 
@@ -54,7 +54,7 @@ public class Enemy extends NonPlayableCharacter {
         this.maxHealth = maxHealth;
     }
 
-    public int getMinDamage() {
+    public double getMinDamage() {
         return damage[0];
     }
 
@@ -62,7 +62,7 @@ public class Enemy extends NonPlayableCharacter {
         this.damage[0] = minDamage;
     }
 
-    public int getMaxDamage() {
+    public double getMaxDamage() {
         return damage[1];
     }
 
@@ -70,7 +70,7 @@ public class Enemy extends NonPlayableCharacter {
         this.damage[1] = maxDamage;
     }
 
-    public int getCurrentHealth() {
+    public double getCurrentHealth() {
         return currentHealth;
     }
 
@@ -84,6 +84,36 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setEnemyType(String enemyType) {
         this.enemyType = enemyType;
+    }
+
+    public String getEnemyHealthStatus() {
+        if (currentHealth == 0) {
+            return "Dead";
+        } else if (currentHealth == maxHealth) {
+            return "Full Health";
+        } else if (currentHealth / maxHealth > 0.5) {
+            return "Slightly Injured";
+        } else if ((currentHealth / maxHealth) <= 0.5 && (currentHealth / maxHealth) > 0.2) {
+            return "Injured";
+        } else if ((currentHealth / maxHealth) <= 0.2) {
+            return "Close to Death";
+        }
+
+        return "unknown";
+    }
+
+    public void subtractFromCurrentHealth(int i) {
+        currentHealth -= i;
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
+    }
+
+    public void addToCurrentHealth(int i) {
+        currentHealth += i;
+        if (currentHealth > maxHealth) {
+            currentHealth = maxHealth;
+        }
     }
 
     @Override

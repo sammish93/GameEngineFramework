@@ -1,5 +1,6 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 
 import java.io.*;
@@ -13,6 +14,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
+    private boolean isDefeated = false;
 
 
     protected Encounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
@@ -120,7 +122,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
         return (Encounter)objectInputStream.readObject();
     }
 
-    public abstract String run();
+    public abstract String run(GameEngine gameEngine);
 
     public TreeMap<String, String> getNavigationOptions() {
         return navigationOptions;
@@ -136,5 +138,13 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
 
     public String getEncounterFromPrompt(String prompt) {
         return navigationOptions.get(prompt);
+    }
+
+    public boolean isDefeated() {
+        return isDefeated;
+    }
+
+    public void setDefeated(boolean defeated) {
+        isDefeated = defeated;
     }
 }

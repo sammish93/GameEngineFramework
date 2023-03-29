@@ -9,6 +9,7 @@ public abstract class Encounters implements Serializable {
     // One 'Encounter' to many 'NonPlayableCharacter'
     // One 'NonPlayableCharacter' to many 'Ability' and to many 'Item'
 
+
     public void save(String path) throws IOException {
         FileOutputStream fileOutputStream = new FileOutputStream(path);
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);

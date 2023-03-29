@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class FixedEncounters extends Encounters {
 
@@ -37,5 +38,9 @@ public class FixedEncounters extends Encounters {
 
     public Encounter getEncounter(String encounterName) {
         return encounters.get(encounterName);
+    }
+
+    public LinkedHashMap<String, Encounter> getEncounters() {
+        return encounters;
     }
 }

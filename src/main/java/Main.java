@@ -18,22 +18,25 @@ public class Main {
         var encounters = FixedEncounters.create();
         var encounter = CombatEncounter.create("ENCOUNTER 1");
         var encounter2 = CombatEncounter.create("ENCOUNTER 2");
-        var enemy = Enemy.create("ENEMY 1");
+        var encounter3 = CombatEncounter.create("ENCOUNTER 3");
+        var enemy = Enemy.create("Skeleton King");
         var ability = Ability.create("ABILITY 1");
         var item = Item.create("ITEM 1");
-        var enemy2 = Enemy.create("ENEMY 2");
+        var enemy2 = Enemy.create("Skeleton Minion");
         var ability2 = Ability.create("ABILITY 2");
         var item2 = Item.create("ITEM 2");
         enemy.addItemToItemTable(item);
         enemy.addAbilityToAbilityPool(ability);
         encounter.addEnemyToEnemies(enemy);
-        encounter.setNavigationOption("defeated", "ENCOUNTER 2");
+        encounter.addEnemyToEnemies(enemy2);
         encounters.addEncounter(encounter);
 
         enemy2.addItemToItemTable(item2);
         enemy2.addAbilityToAbilityPool(ability2);
         encounter2.addEnemyToEnemies(enemy2);
         encounters.addEncounter(encounter, encounter2, "defeated");
+        encounters.addEncounter(encounter, encounter3, "north");
+        encounters.addEncounter(encounter3, encounter, "south");
         var game = GameEngine.create(settings, player, encounters);
         game.run();
     }

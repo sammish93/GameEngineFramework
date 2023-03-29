@@ -4,16 +4,18 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
+import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.player.Player;
 import no.hiof.samuelcd.tbage.tools.GameController;
 
 import java.util.Scanner;
 
+import static no.hiof.samuelcd.tbage.GameEngine.scanner;
+
 public class Terminal extends GameInterface implements Closeable<String> {
 
 
     boolean exitBool = false;
-    Scanner scanner = new Scanner(System.in);
 
     public Terminal(GameEngine gameEngine) {
         this.gameSettings = gameEngine.getGameSettings();
@@ -32,25 +34,35 @@ public class Terminal extends GameInterface implements Closeable<String> {
 
     private void run() {
         var controller = new GameController(encounters);
-        System.out.println("I will run in a terminal window until user types 'exit'.");
+        gameEngine.printMessage("I will run in a terminal window until user types 'exit'.");
+
+        if (!controller.checkEncounterPaths(gameEngine)) {
+            close("exit");
+        }
+
+        if (encounters == null || ((FixedEncounters)encounters).getEncounters().isEmpty()) {
+            gameEngine.printMessage("There are no encounters present.");
+        }
 
         // Closes current Terminal process on user entering 'exit'.
         while (!exitBool) {
             String output;
 
             if (controller.getCurrentEncounter() != null) {
-                output = controller.getCurrentEncounter().run();
+                output = controller.getCurrentEncounter().run(gameEngine);
             } else {
-                System.out.println("Game has finished. Please type 'exit'.");
+                gameEngine.printMessage("Game has finished. Please type 'exit'.");
                 output = scanner.nextLine();
             }
 
             close(output);
-            if (output.equalsIgnoreCase("defeated")) {
+
+            if (controller.getCurrentEncounter() != null) {
                 controller.progressToNextEncounter(output);
             }
+
         }
 
-        System.out.println("Game is exiting...");
+        gameEngine.printMessage("Game is exiting...");
     }
 }

@@ -1,10 +1,16 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
+import no.hiof.samuelcd.tbage.tools.CombatTurn;
 
+import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+
+import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
 public class CombatEncounter extends Encounter {
 
@@ -65,16 +71,67 @@ public class CombatEncounter extends Encounter {
     }
 
     @Override
-    public String run() {
-        System.out.println("Starting encounter '" + getName() + "'.");
-        Scanner scanner = new Scanner(System.in);
+    public String run(GameEngine gameEngine) {
+        String word = "";
+        int turnNumber = 1;
 
-        String word = scanner.nextLine();
-        if (word.equalsIgnoreCase("exit")) {
-            return word;
-        } else {
-            return "defeated";
+        gameEngine.printMessage("Starting encounter '" + getName());
+
+        combatEncounterIntroduction(gameEngine);
+        printEnemies(gameEngine);
+
+        while (!isDefeated()) {
+
+            word = scanner.nextLine();
+
+            // Remember to handle calls to display inventory, enemy health, item use, ability use etc.
+            if (word.equalsIgnoreCase("exit")) {
+                return "exit";
+            } else if (word.equalsIgnoreCase("defeated")) {
+                gameEngine.printMessage("You haven't defeated this encounter yet!");
+            } else if (getNavigationOptions().containsKey(word)) {
+                return word;
+            } else if (word.equalsIgnoreCase("status")) {
+                printEnemies(gameEngine);
+            } else if (word.equalsIgnoreCase("attack")) {
+                CombatTurn.turn(gameEngine, this, turnNumber++);
+            } else if (allEnemiesDead()) {
+                setDefeated(true);
+            }
         }
+
+        return "defeated";
+    }
+
+    private void combatEncounterIntroduction(GameEngine gameEngine) {
+        int enemyCount = enemies.size();
+
+        if (enemyCount > 1) {
+            gameEngine.printMessage("You face " + enemyCount + " enemies!");
+        } else if (enemyCount == 1) {
+            gameEngine.printMessage("You face an enemy!");
+        }
+    }
+
+    private void printEnemies(GameEngine gameEngine) {
+        int enemyIteration = 1;
+        var player = gameEngine.getPlayer();
+
+        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
+        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
+            var enemy = entry.getValue();
+            gameEngine.printMessage("Enemy " + enemyIteration++ + ": " + enemy.getName() + ", Status: " + enemy.getEnemyHealthStatus());
+        }
+    }
+
+    private boolean allEnemiesDead() {
+        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
+            var enemy = entry.getValue();
+            if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

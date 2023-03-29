@@ -11,15 +11,18 @@ public class Player implements Serializable {
     // Class that will hold information about a player throughout the game.
     private int inventorySlots ;
     private TreeMap<String, Item> inventory;
-    private int maxHealth;
-    private int currentHealth;
+    private double maxHealth;
+    private double currentHealth;
+    private double[] damage = new double[2];
     private TreeMap<String, Feat> feats;
 
 
-    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, TreeMap<String, Feat> feats) {
+    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats) {
         this.inventorySlots = inventorySlots;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
+        this.damage[0] = minDamage;
+        this.damage[1] = maxDamage;
         this.inventory = Objects.requireNonNullElseGet(inventory, TreeMap::new);
         this.feats = Objects.requireNonNullElseGet(feats, TreeMap::new);
 
@@ -29,7 +32,7 @@ public class Player implements Serializable {
     }
 
     public static Player create() {
-        return new Player(10, null, 0, null);
+        return new Player(10, null, 10, 2, 5, null);
     }
 
     public boolean isSpaceInInventory() {
@@ -98,7 +101,7 @@ public class Player implements Serializable {
         feats.remove(featName);
     }
 
-    public int getMaxHealth() {
+    public double getMaxHealth() {
         return maxHealth;
     }
 
@@ -106,12 +109,42 @@ public class Player implements Serializable {
         this.maxHealth = maxHealth;
     }
 
-    public int getCurrentHealth() {
+    public double getCurrentHealth() {
         return currentHealth;
     }
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public double getMinDamage() {
+        return damage[0];
+    }
+
+    public void setMinDamage(int minDamage) {
+        this.damage[0] = minDamage;
+    }
+
+    public double getMaxDamage() {
+        return damage[1];
+    }
+
+    public void setMaxDamage(int maxDamage) {
+        this.damage[1] = maxDamage;
+    }
+
+    public void subtractFromCurrentHealth(int i) {
+        currentHealth -= i;
+        if (currentHealth < 0) {
+            currentHealth = 0;
+        }
+    }
+
+    public void addToCurrentHealth(int i) {
+        currentHealth += i;
+        if (currentHealth > maxHealth) {
+            currentHealth = maxHealth;
+        }
     }
 
     @Override
