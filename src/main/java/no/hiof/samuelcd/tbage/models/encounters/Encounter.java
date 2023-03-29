@@ -12,15 +12,17 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private String imagePath;
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
+    private TreeMap<String, String> navigationOptions;
 
 
-    protected Encounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards) {
+    protected Encounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
         this.name = name;
         this.weightedProbability = weightedProbability;
         this.imagePath = imagePath;
 
         this.featChecks = Objects.requireNonNullElseGet(featChecks, TreeMap::new);
         this.featRewards = Objects.requireNonNullElseGet(featRewards, TreeMap::new);
+        this.navigationOptions = Objects.requireNonNullElseGet(navigationOptions, TreeMap::new);
     }
 
     public void onInitiation() {
@@ -116,5 +118,23 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
         return (Encounter)objectInputStream.readObject();
+    }
+
+    public abstract String run();
+
+    public TreeMap<String, String> getNavigationOptions() {
+        return navigationOptions;
+    }
+
+    public void setNavigationOptions(TreeMap<String, String> navigationOptions) {
+        this.navigationOptions = navigationOptions;
+    }
+
+    public void setNavigationOption(String prompt, String encounterName) {
+        this.navigationOptions.put(prompt, encounterName);
+    }
+
+    public String getEncounterFromPrompt(String prompt) {
+        return navigationOptions.get(prompt);
     }
 }

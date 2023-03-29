@@ -3,6 +3,7 @@ package no.hiof.samuelcd.tbage.models.encounters;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 
+import java.util.Scanner;
 import java.util.TreeMap;
 
 public class CombatEncounter extends Encounter {
@@ -12,22 +13,22 @@ public class CombatEncounter extends Encounter {
     private int turnCount = 1;
 
 
-    private CombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards) {
-        super(name, weightedProbability, imagePath, featChecks, featRewards);
+    private CombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
+        super(name, weightedProbability, imagePath, featChecks, featRewards, navigationOptions);
 
         enemies = new TreeMap<>();
     }
 
     public static CombatEncounter create() {
-        return new CombatEncounter(null, 0.5, null, null, null);
+        return new CombatEncounter(null, 0.5, null, null, null, null);
     }
 
     public static CombatEncounter create(String name) {
-        return new CombatEncounter(name, 0.5, null, null, null);
+        return new CombatEncounter(name, 0.5, null, null, null, null);
     }
 
     public static CombatEncounter create(String name, double weightedProbability) {
-        return new CombatEncounter(name, weightedProbability, null, null, null);
+        return new CombatEncounter(name, weightedProbability, null, null, null, null);
     }
 
     public void onTurn() {
@@ -61,6 +62,19 @@ public class CombatEncounter extends Encounter {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public String run() {
+        System.out.println("Starting encounter '" + getName() + "'.");
+        Scanner scanner = new Scanner(System.in);
+
+        String word = scanner.nextLine();
+        if (word.equalsIgnoreCase("exit")) {
+            return word;
+        } else {
+            return "defeated";
+        }
     }
 
 }

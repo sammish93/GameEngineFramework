@@ -15,6 +15,11 @@ public class Ally extends NonPlayableCharacter {
         return new Ally(null, null, null);
     }
 
+    public static Ally create(String name) {
+        return new Ally(name, null, null);
+    }
+
+
     public static Ally create(String name, TreeMap<String, Ability> abilities, TreeMap<String, Item> items) {
         return new Ally(name, abilities, items);
     }

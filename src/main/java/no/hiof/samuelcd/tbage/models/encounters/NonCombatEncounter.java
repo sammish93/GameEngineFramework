@@ -11,22 +11,22 @@ public class NonCombatEncounter extends Encounter {
     private int allyCount;
     private TreeMap<String, Ally> allies;
 
-    private NonCombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies) {
-        super(name, weightedProbability, imagePath, featChecks, featRewards);
+    private NonCombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions) {
+        super(name, weightedProbability, imagePath, featChecks, featRewards, navigationOptions);
 
         this.allies = Objects.requireNonNullElseGet(allies, TreeMap::new);
     }
 
     public static NonCombatEncounter create() {
-        return new NonCombatEncounter(null, 0.5, null, null, null, null);
+        return new NonCombatEncounter(null, 0.5, null, null, null, null, null);
     }
 
     public static NonCombatEncounter create(String name) {
-        return new NonCombatEncounter(name, 0.5, null, null, null, null);
+        return new NonCombatEncounter(name, 0.5, null, null, null, null, null);
     }
 
     public static NonCombatEncounter create(String name, double weightedProbability) {
-        return new NonCombatEncounter(name, weightedProbability, null, null, null, null);
+        return new NonCombatEncounter(name, weightedProbability, null, null, null, null, null);
     }
 
     public TreeMap<String, Ally> getAllies() {
@@ -56,5 +56,10 @@ public class NonCombatEncounter extends Encounter {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    @Override
+    public String run() {
+        return "hello";
     }
 }

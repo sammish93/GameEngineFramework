@@ -28,6 +28,10 @@ public class Enemy extends NonPlayableCharacter {
         return new Enemy(null, 0, 0, 0, null, null, null);
     }
 
+    public static Enemy create(String name) {
+        return new Enemy(name, 0, 0, 0, null, null, null);
+    }
+
     public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
         return new Enemy(name, health, minDamage, maxDamage, abilities, items, enemyType);
     }
