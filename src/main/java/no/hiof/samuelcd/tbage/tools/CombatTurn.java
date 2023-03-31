@@ -44,6 +44,11 @@ public class CombatTurn {
             output = scanner.nextLine();
             int outputInt = 0;
 
+            if (output.equalsIgnoreCase("back")) {
+                gameEngine.printMessage("You are no longer attacking.");
+                break;
+            }
+
             try {
                 outputInt = Integer.parseInt(output);
             } catch (Exception ex) {
@@ -60,9 +65,12 @@ public class CombatTurn {
             }
         }
 
-        playerTurn(gameEngine, player, enemyChosen);
+        if (isEnemyChosen) {
+            playerTurn(gameEngine, player, enemyChosen);
 
-        enemyTurn(gameEngine, (CombatEncounter) encounter, player);
+            enemyTurn(gameEngine, (CombatEncounter) encounter, player);
+        }
+
     }
 
     private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) {

@@ -35,6 +35,7 @@ public class Main {
         enemy2.addAbilityToAbilityPool(ability2);
         encounter2.addEnemyToEnemies(enemy2);
         encounters.addEncounter(encounter, encounter2, "defeated");
+        encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
         encounters.addEncounter(encounter3, encounter, "south");
         var game = GameEngine.create(settings, player, encounters);

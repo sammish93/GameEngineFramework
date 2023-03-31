@@ -15,6 +15,8 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
     private boolean isDefeated = false;
+    private boolean isIntroductionPrinted = false;
+    private boolean isBacktracking = false;
 
 
     protected Encounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
@@ -146,5 +148,21 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
 
     public void setDefeated(boolean defeated) {
         isDefeated = defeated;
+    }
+
+    public boolean isIntroductionPrinted() {
+        return isIntroductionPrinted;
+    }
+
+    public void setIntroductionPrinted(boolean introductionPrinted) {
+        isIntroductionPrinted = introductionPrinted;
+    }
+
+    public boolean isBacktracking() {
+        return isBacktracking;
+    }
+
+    public void setBacktracking(boolean backtracking) {
+        isBacktracking = backtracking;
     }
 }

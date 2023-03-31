@@ -15,9 +15,10 @@ public class Player implements Serializable {
     private double currentHealth;
     private double[] damage = new double[2];
     private TreeMap<String, Feat> feats;
+    private double currencyAmount;
 
 
-    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats) {
+    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount) {
         this.inventorySlots = inventorySlots;
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
@@ -25,6 +26,7 @@ public class Player implements Serializable {
         this.damage[1] = maxDamage;
         this.inventory = Objects.requireNonNullElseGet(inventory, TreeMap::new);
         this.feats = Objects.requireNonNullElseGet(feats, TreeMap::new);
+        this.currencyAmount = currencyAmount;
 
         if (inventory != null && !isSpaceInInventory()) {
             this.inventorySlots = inventory.size();
@@ -32,7 +34,7 @@ public class Player implements Serializable {
     }
 
     public static Player create() {
-        return new Player(10, null, 10, 2, 5, null);
+        return new Player(10, null, 10, 2, 5, null, 0);
     }
 
     public boolean isSpaceInInventory() {
@@ -131,6 +133,21 @@ public class Player implements Serializable {
 
     public void setMaxDamage(int maxDamage) {
         this.damage[1] = maxDamage;
+    }
+
+    public double getCurrencyAmount() {
+        return currencyAmount;
+    }
+
+    public void setCurrencyAmount(double currencyAmount) {
+        this.currencyAmount = currencyAmount;
+    }
+
+    public void subtractFromCurrencyAmount(int i) {
+        currencyAmount -= i;
+        if (currencyAmount < 0) {
+            currencyAmount = 0;
+        }
     }
 
     public void subtractFromCurrentHealth(int i) {

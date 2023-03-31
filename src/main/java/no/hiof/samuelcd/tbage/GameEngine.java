@@ -137,4 +137,8 @@ public class GameEngine implements Serializable {
     public void printMessage(String s) {
         System.out.println(s);
     }
+
+    public void printMessageFormatted(String s, Object ... args) {
+        System.out.printf(s, args);
+    }
 }
