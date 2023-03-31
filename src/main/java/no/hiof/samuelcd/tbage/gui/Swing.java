@@ -13,10 +13,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
     JFrame exampleFrame;
     public Swing(GameEngine gameEngine) {
-        this.gameSettings = gameEngine.getGameSettings();
-        this.player = gameEngine.getPlayer();
-        this.encounters = gameEngine.getEncounters();
-        this.gameEngine = gameEngine;
+        super(gameEngine);
 
         exampleFrame = new JFrame();
 

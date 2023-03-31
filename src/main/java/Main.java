@@ -3,11 +3,12 @@ import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
-import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.player.Player;
+import no.hiof.samuelcd.tbage.tools.EncounterController;
+import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
 
 import java.io.IOException;
 
@@ -20,11 +21,37 @@ public class Main {
         var encounter2 = CombatEncounter.create("ENCOUNTER 2");
         var encounter3 = CombatEncounter.create("ENCOUNTER 3");
         var enemy = Enemy.create("Skeleton King");
-        var ability = Ability.create("ABILITY 1");
-        var item = Item.create("ITEM 1");
+        var ability = Ability.create("Heal");
+        var item = Item.create("Potion of Poison");
+
+        Useable onUse = (gameEngine) -> {
+            var playerthing = gameEngine.getPlayer();
+            playerthing.subtractFromCurrentHealth(5);
+
+            gameEngine.printMessage("You have taken 5 damage!");
+        };
+
+        Useable onUse2 = (gameEngine) -> {
+            var playerthing = gameEngine.getPlayer();
+            //CombatTurn.
+            var encounterthing = EncounterTraversalController.getCurrentEncounter();
+            var target = EncounterController.chooseNpc(gameEngine, encounterthing);
+            if (target instanceof Enemy) {
+                ((Enemy) target).subtractFromCurrentHealth(5);
+                gameEngine.printMessage(((Enemy) target).getName() + " has taken 5 damage!");
+            }
+        };
+        item.setOnUseBehaviour(onUse);
+
+
+
         var enemy2 = Enemy.create("Skeleton Minion");
-        var ability2 = Ability.create("ABILITY 2");
-        var item2 = Item.create("ITEM 2");
+        var ability2 = Ability.create("Fireball");
+        var item2 = Item.create("Mithril Javelin");
+        item2.setNumberOfUses(3);
+        item2.setOnUseBehaviour(onUse2);
+
+        var item3 = Item.create("Skeleton Key");
         enemy.addItemToItemTable(item);
         enemy.addAbilityToAbilityPool(ability);
         encounter.addEnemyToEnemies(enemy);
@@ -38,6 +65,8 @@ public class Main {
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
         encounters.addEncounter(encounter3, encounter, "south");
+        player.addItemToInventory(item);
+        player.addItemToInventory(item2);
         var game = GameEngine.create(settings, player, encounters);
         game.run();
     }

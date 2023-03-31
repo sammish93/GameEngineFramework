@@ -42,6 +42,10 @@ public class Ability implements Useable, Serializable {
         this.useable = useable;
     }
 
+    public Useable getOnUseBehaviour() {
+        return useable;
+    }
+
     public String getName() {
         return name;
     }

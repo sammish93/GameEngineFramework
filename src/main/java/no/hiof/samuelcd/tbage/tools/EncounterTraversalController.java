@@ -7,12 +7,15 @@ import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 
 import java.util.Set;
 
-public class GameController {
+public class EncounterTraversalController {
 
-    private Encounter currentEncounter;
+    private static Encounter currentEncounter;
     private Encounters encounters;
 
-    public GameController(Encounters encounters) {
+
+
+
+    public EncounterTraversalController(Encounters encounters) {
         this.encounters = encounters;
 
         if (encounters instanceof FixedEncounters) {
@@ -20,7 +23,7 @@ public class GameController {
         }
     }
 
-    public Encounter getCurrentEncounter() {
+    public static Encounter getCurrentEncounter() {
         return currentEncounter;
     }
 

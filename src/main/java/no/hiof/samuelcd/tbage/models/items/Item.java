@@ -12,28 +12,33 @@ public class Item implements Useable, Serializable {
     private double dropChance;
     private String imagePath;
     private Useable useable;
+    private int numberOfUses;
 
 
-    private Item(String name, int value, double dropChance) {
+    private Item(String name, int value, double dropChance, int numberOfUses) {
         this.name = name;
         this.value = value;
         this.dropChance = dropChance;
+        this.numberOfUses = numberOfUses;
     }
 
     public static Item create() {
-        return new Item(null, 0, 0);
+        return new Item(null, 0, 0, 0);
     }
 
     public static Item create(String name) {
-        return new Item(name, 0, 0);
+        return new Item(name, 0, 0, 0);
     }
 
     public static Item create(String name, int value) {
-        return new Item(name, value, 0);
+        return new Item(name, value, 0, 0);
     }
 
     public static Item create(String name, int value, double dropChance) {
-        return new Item(name, value, dropChance);
+        return new Item(name, value, dropChance, 1);
+    }
+    public static Item create(String name, int value, double dropChance, int numberOfUses) {
+        return new Item(name, value, dropChance, numberOfUses);
     }
 
     public void onUse(GameEngine gameEngine) {
@@ -43,6 +48,10 @@ public class Item implements Useable, Serializable {
 
     public void setOnUseBehaviour(Useable useable) {
         this.useable = useable;
+    }
+
+    public Useable getOnUseBehaviour() {
+        return useable;
     }
 
     public void onReceive() {
@@ -79,6 +88,14 @@ public class Item implements Useable, Serializable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public int getNumberOfUses() {
+        return numberOfUses;
+    }
+
+    public void setNumberOfUses(int numberOfUses) {
+        this.numberOfUses = numberOfUses;
     }
 
     @Override

@@ -4,7 +4,7 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
-import no.hiof.samuelcd.tbage.tools.CombatTurn;
+import no.hiof.samuelcd.tbage.tools.EncounterController;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -113,14 +113,16 @@ public class CombatEncounter extends Encounter {
             } else if (word.equalsIgnoreCase("status")) {
                 printEnemies(gameEngine);
             } else if (word.equalsIgnoreCase("attack")) {
-                CombatTurn.turn(gameEngine, this, turnNumber++);
+                EncounterController.turn(gameEngine, this, turnNumber++);
             } else if (word.equalsIgnoreCase("inventory")) {
                 printInventory(gameEngine);
+            } else if (word.equalsIgnoreCase("use")) {
+                EncounterController.useItem(gameEngine, this);
             } else if (allEnemiesDead() || word.equalsIgnoreCase("skip")) {
                 setDefeated(true);
             }
 
-            if (!isBacktracking()) {
+            if (isDefeated() && !isBacktracking()) {
                 String answer;
 
                 gameEngine.printMessage("Would you like to progress to the next encounter?");
@@ -163,15 +165,19 @@ public class CombatEncounter extends Encounter {
         int itemIteration = 1;
         var player = gameEngine.getPlayer();
 
-        gameEngine.printMessage("You have " + (int)player.getCurrencyAmount() + " gold.");
 
-        if (player.getInventory().isEmpty()) {
+
+        if (player.getInventory().isEmpty() && player.getCurrencyAmount() == 0) {
+            gameEngine.printMessage("You currently have no gold, nor any items in your inventory.");
+        } else if (player.getInventory().isEmpty()) {
+            gameEngine.printMessage("You have " + (int)player.getCurrencyAmount() + " gold.");
             gameEngine.printMessage("You currently have no items in your inventory.");
         } else {
-            gameEngine.printMessage("Your inventory: ");
+            gameEngine.printMessage("Your inventory (" + (int)player.getCurrencyAmount() + " gold): ");
+            gameEngine.printMessage((int)player.getCurrencyAmount() + " gold");
             for (Map.Entry<String, Item> entry : player.getInventory().entrySet()) {
                 var item = entry.getValue();
-                gameEngine.printMessage("Item " + itemIteration++ + ": " + item.getName());
+                gameEngine.printMessage(itemIteration++ + ": " + item.getName());
             }
         }
     }

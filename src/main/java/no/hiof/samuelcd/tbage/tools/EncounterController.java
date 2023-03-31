@@ -1,0 +1,289 @@
+package no.hiof.samuelcd.tbage.tools;
+
+import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
+import no.hiof.samuelcd.tbage.models.encounters.Encounter;
+import no.hiof.samuelcd.tbage.models.encounters.NonCombatEncounter;
+import no.hiof.samuelcd.tbage.models.items.Item;
+import no.hiof.samuelcd.tbage.models.npcs.Ally;
+import no.hiof.samuelcd.tbage.models.npcs.Enemy;
+import no.hiof.samuelcd.tbage.models.npcs.NonPlayableCharacter;
+import no.hiof.samuelcd.tbage.models.player.Player;
+
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
+
+import static no.hiof.samuelcd.tbage.GameEngine.scanner;
+
+public class EncounterController {
+    // This class is used to determine behaviour for a single combat turn.
+    private Player player;
+    private Encounter encounter;
+    private GameEngine gameEngine;
+
+    public EncounterController(GameEngine gameEngine, Encounter encounter) {
+        this.gameEngine = gameEngine;
+        this.player = gameEngine.getPlayer();
+        this.encounter = encounter;
+    }
+
+    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) {
+        var player = gameEngine.getPlayer();
+        boolean isEnemyChosen = false;
+        Enemy enemyChosen = null;
+        int enemyCount = ((CombatEncounter)encounter).getEnemies().size();
+
+        String output = "";
+        var enemiesWithIndex = getEnemiesWithIndex(encounter);
+
+        gameEngine.printMessage("Turn " + turnNumber);
+        gameEngine.printMessage("Choose a target to attack:");
+        for (Map.Entry<Integer, String> entry : enemiesWithIndex.entrySet()) {
+            gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+        }
+
+        while (!isEnemyChosen) {
+            output = scanner.nextLine();
+            int outputInt = 0;
+
+            if (output.equalsIgnoreCase("back")) {
+                gameEngine.printMessage("You are no longer attacking.");
+                break;
+            }
+
+            try {
+                outputInt = Integer.parseInt(output);
+            } catch (Exception ex) {
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                output = scanner.nextLine();
+            }
+
+            if (enemiesWithIndex.containsKey(outputInt)) {
+                var enemyName = enemiesWithIndex.get(outputInt);
+                enemyChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
+                isEnemyChosen = true;
+            } else {
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+            }
+        }
+
+        if (isEnemyChosen) {
+            playerTurn(gameEngine, player, enemyChosen);
+
+            enemyTurn(gameEngine, (CombatEncounter) encounter, player);
+        }
+
+    }
+
+    public static void useItem(GameEngine gameEngine, Encounter encounter) {
+        var player = gameEngine.getPlayer();
+        boolean isItemChosen = false;
+        Item itemChosen = null;
+        int itemCount = player.getInventory().size();
+
+        String output = "";
+        var itemsWithIndex = getItemsWithIndex(gameEngine);
+
+        gameEngine.printMessage("Choose an item to use:");
+        for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
+            gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+        }
+
+        while (!isItemChosen) {
+            output = scanner.nextLine();
+            int outputInt = 0;
+
+            if (output.equalsIgnoreCase("back")) {
+                gameEngine.printMessage("You are no longer about to use an item.");
+                break;
+            }
+
+            try {
+                outputInt = Integer.parseInt(output);
+            } catch (Exception ex) {
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                output = scanner.nextLine();
+            }
+
+            if (itemsWithIndex.containsKey(outputInt)) {
+                var itemName = itemsWithIndex.get(outputInt);
+                itemChosen = player.getItemFromInventory(itemName);
+                isItemChosen = true;
+            } else {
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+            }
+        }
+
+        if (isItemChosen) {
+            int numberOfUsesRemaining = itemChosen.getNumberOfUses();
+            itemChosen.onUse(gameEngine);
+
+            if (numberOfUsesRemaining != 0) {
+                itemChosen.setNumberOfUses(numberOfUsesRemaining-- - 1);
+                if (itemChosen.getNumberOfUses() != 0) {
+                    gameEngine.printMessage("You now have " + numberOfUsesRemaining + " use(s) remaining of the item '" + itemChosen.getName() + "'");
+                } else {
+                    gameEngine.printMessage("You have depleted " + itemChosen.getName() + "'s uses.");
+                    gameEngine.getPlayer().removeItemFromInventory(itemChosen.getName());
+                }
+
+            }
+        }
+    }
+
+    public static NonPlayableCharacter chooseNpc(GameEngine gameEngine, Encounter encounter) {
+        boolean isTargetChosen = false;
+        NonPlayableCharacter targetChosen = null;
+        String output = "";
+
+        gameEngine.printMessage("Choose a target to use this item on a target:");
+
+        if (encounter instanceof CombatEncounter) {
+            int enemyCount = ((CombatEncounter)encounter).getEnemies().size();
+            var enemiesWithIndex = getEnemiesWithIndex(encounter);
+
+            for (Map.Entry<Integer, String> entry : enemiesWithIndex.entrySet()) {
+                gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+            }
+
+            while (!isTargetChosen) {
+                output = scanner.nextLine();
+                int outputInt = 0;
+
+                if (output.equalsIgnoreCase("back")) {
+                    gameEngine.printMessage("You are no longer about to use this item on an enemy.");
+                    break;
+                }
+
+                try {
+                    outputInt = Integer.parseInt(output);
+                } catch (Exception ex) {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                    output = scanner.nextLine();
+                }
+
+                if (enemiesWithIndex.containsKey(outputInt)) {
+                    var enemyName = enemiesWithIndex.get(outputInt);
+                    targetChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
+                    isTargetChosen = true;
+                } else {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                }
+            }
+
+            if (isTargetChosen) {
+                return targetChosen;
+            }
+        } else if (encounter instanceof NonCombatEncounter) {
+            int allyCount = ((NonCombatEncounter)encounter).getAllies().size();
+            var alliesWithIndex = getAlliesWithIndex(encounter);
+
+            for (Map.Entry<Integer, String> entry : alliesWithIndex.entrySet()) {
+                gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+            }
+
+            while (!isTargetChosen) {
+                output = scanner.nextLine();
+                int outputInt = 0;
+
+                if (output.equalsIgnoreCase("back")) {
+                    gameEngine.printMessage("You are no longer about to use this item on an ally.");
+                    break;
+                }
+
+                try {
+                    outputInt = Integer.parseInt(output);
+                } catch (Exception ex) {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + allyCount + ".");
+                    output = scanner.nextLine();
+                }
+
+                if (alliesWithIndex.containsKey(outputInt)) {
+                    var allyName = alliesWithIndex.get(outputInt);
+                    targetChosen = ((NonCombatEncounter) encounter).getAllyFromAllies(allyName);
+                    isTargetChosen = true;
+                } else {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + allyCount + ".");
+                }
+            }
+
+            if (isTargetChosen) {
+                return targetChosen;
+            }
+        }
+
+        return null;
+    }
+
+    private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) {
+        for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
+            var enemy = entry.getValue();
+            if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+                int enemyDamage = damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
+                player.subtractFromCurrentHealth(enemyDamage);
+                gameEngine.printMessage(enemy.getName() + " did " + enemyDamage + " damage to you.");
+                gameEngine.printMessage("Your current health is " + (int) player.getCurrentHealth() + "/" + (int) player.getMaxHealth());
+            }
+        }
+    }
+
+    private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen) {
+        int playerDamage = damageCalculator((int) player.getMinDamage(), (int) player.getMaxDamage());
+        enemyChosen.subtractFromCurrentHealth(playerDamage);
+
+        gameEngine.printMessage("You did " + playerDamage + " damage to " + enemyChosen.getName() + ".");
+        if (enemyChosen.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+            gameEngine.printMessage(enemyChosen.getName() + " has died!");
+        }
+    }
+
+    private static TreeMap<Integer, String> getEnemiesWithIndex(Encounter encounter) {
+        int enemyIteration = 1;
+        TreeMap<Integer, String> enemiesWithIndex = new TreeMap<>();
+
+        for (Map.Entry<String, Enemy> entry : ((CombatEncounter)encounter).getEnemies().entrySet()) {
+            var enemy = entry.getValue();
+            if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+                enemiesWithIndex.put(enemyIteration++, enemy.getName());
+            }
+        }
+
+        return enemiesWithIndex;
+    }
+
+    private static TreeMap<Integer, String> getAlliesWithIndex(Encounter encounter) {
+        int allyIteration = 1;
+        TreeMap<Integer, String> alliesWithIndex = new TreeMap<>();
+
+        for (Map.Entry<String, Ally> entry : ((NonCombatEncounter)encounter).getAllies().entrySet()) {
+            var ally = entry.getValue();
+
+            alliesWithIndex.put(allyIteration++, ally.getName());
+
+        }
+
+        return alliesWithIndex;
+    }
+
+    private static TreeMap<Integer, String> getItemsWithIndex(GameEngine gameEngine) {
+        int itemIteration = 1;
+        TreeMap<Integer, String> itemsWithIndex = new TreeMap<>();
+
+        for (Map.Entry<String, Item> entry : gameEngine.getPlayer().getInventory().entrySet()) {
+            var item = entry.getValue();
+            if (item.getOnUseBehaviour() != null) {
+                itemsWithIndex.put(itemIteration++, item.getName());
+            }
+        }
+
+        return itemsWithIndex;
+    }
+
+    private static int damageCalculator(int minDamage, int maxDamage) {
+
+        var random = new Random();
+
+        return random.nextInt(maxDamage - minDamage) + minDamage;
+    }
+}
