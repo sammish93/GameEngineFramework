@@ -9,11 +9,14 @@ import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.player.Player;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
+import no.hiof.samuelcd.tbage.tools.WeightedProbabilityCalculator;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
+
         var settings = GameSettings.create();
         var player = Player.create();
         var encounters = FixedEncounters.create();
@@ -42,6 +45,15 @@ public class Main {
             }
         };
         item.setOnUseBehaviour(onUse);
+
+        Useable onUse3 = (gameEngine) -> {
+            var playerthing = gameEngine.getPlayer();
+
+            playerthing.subtractFromCurrentHealth(5);
+            gameEngine.printMessage("You have taken 5 damage!");
+        };
+        ability.setOnUseBehaviour(onUse3);
+        ability.setAbilityProbabilityPerTurn(0.6);
 
 
 

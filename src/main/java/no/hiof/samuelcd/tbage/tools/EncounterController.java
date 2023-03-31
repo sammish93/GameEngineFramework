@@ -56,7 +56,6 @@ public class EncounterController {
                 outputInt = Integer.parseInt(output);
             } catch (Exception ex) {
                 gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
-                output = scanner.nextLine();
             }
 
             if (enemiesWithIndex.containsKey(outputInt)) {
@@ -70,6 +69,22 @@ public class EncounterController {
 
         if (isEnemyChosen) {
             playerTurn(gameEngine, player, enemyChosen);
+
+            String answer;
+
+            while(true) {
+                gameEngine.printMessage("Would you like to use an item?");
+
+                answer = scanner.nextLine();
+
+                if (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes")) {
+                    EncounterController.useItem(gameEngine, encounter);
+                } else if (answer.equalsIgnoreCase("n") || answer.equalsIgnoreCase("no")) {
+                    break;
+                } else {
+                    gameEngine.printMessage("I'm sorry, I didn't understand.");
+                }
+            }
 
             enemyTurn(gameEngine, (CombatEncounter) encounter, player);
         }

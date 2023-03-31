@@ -13,8 +13,6 @@ public class EncounterTraversalController {
     private Encounters encounters;
 
 
-
-
     public EncounterTraversalController(Encounters encounters) {
         this.encounters = encounters;
 
