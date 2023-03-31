@@ -164,6 +164,14 @@ public class Player implements Serializable {
         }
     }
 
+    public boolean isAlive() {
+        if (currentHealth > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     public String toString() {
         return super.toString();

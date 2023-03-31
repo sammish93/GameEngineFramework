@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.tools;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.NonCombatEncounter;
@@ -87,8 +88,8 @@ public class EncounterController {
             }
 
             enemyTurn(gameEngine, (CombatEncounter) encounter, player);
+            gameEngine.printMessage("Your current health is " + (int) player.getCurrentHealth() + "/" + (int) player.getMaxHealth());
         }
-
     }
 
     public static void useItem(GameEngine gameEngine, Encounter encounter) {
@@ -234,11 +235,35 @@ public class EncounterController {
     private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) {
         for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
             var enemy = entry.getValue();
+
             if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
-                int enemyDamage = damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
-                player.subtractFromCurrentHealth(enemyDamage);
-                gameEngine.printMessage(enemy.getName() + " did " + enemyDamage + " damage to you.");
-                gameEngine.printMessage("Your current health is " + (int) player.getCurrentHealth() + "/" + (int) player.getMaxHealth());
+
+                Ability ability = null;
+
+                if (!enemy.getNpcAbilityPool().isEmpty()) {
+                    WeightedProbabilityCalculator<String> wpc = new WeightedProbabilityCalculator<>();
+
+                    for (Map.Entry<String, Ability> abilityEntry : enemy.getNpcAbilityPool().entrySet()) {
+                        ability = abilityEntry.getValue();
+                        wpc.add(ability.getAbilityProbabilityPerTurn(), ability.getName());
+                    }
+
+                    ability = enemy.getAbilityFromAbilityPool(wpc.next());
+                }
+                if (enemy.isMelee()) {
+                    if (enemy.isMeleeAttackThisTurn()) {
+                        int enemyDamage = damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
+                        player.subtractFromCurrentHealth(enemyDamage);
+                        gameEngine.printMessage(enemy.getName() + " did " + enemyDamage + " damage to you.");
+
+                    } else if (ability != null && ability.getOnUseBehaviour() != null) {
+                        ability.onUse(gameEngine);
+                    }
+                } else if (ability != null && ability.getOnUseBehaviour() != null) {
+                    ability.onUse(gameEngine);
+                } else {
+                    gameEngine.printMessage(enemy.getName() + " does nothing this turn.");
+                }
             }
         }
     }

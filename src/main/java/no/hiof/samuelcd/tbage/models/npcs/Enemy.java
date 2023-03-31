@@ -3,7 +3,9 @@ package no.hiof.samuelcd.tbage.models.npcs;
 
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
+import no.hiof.samuelcd.tbage.tools.WeightedProbabilityCalculator;
 
+import java.util.Random;
 import java.util.TreeMap;
 
 public class Enemy extends NonPlayableCharacter {
@@ -12,9 +14,11 @@ public class Enemy extends NonPlayableCharacter {
     private double currentHealth;
     private double[] damage = new double[2];
     private String enemyType;
+    private boolean isMelee;
+    private double meleeChancePerTurn;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
         super(name, abilities, items);
 
         this.maxHealth = maxHealth;
@@ -22,18 +26,20 @@ public class Enemy extends NonPlayableCharacter {
         this.damage[0] = minDamage;
         this.damage[1] = maxDamage;
         this.enemyType = enemyType;
+        this.isMelee = isMelee;
+        this.meleeChancePerTurn = meleeChancePerTurn;
     }
 
     public static Enemy create() {
-        return new Enemy(null, 10, 1, 2, null, null, null);
+        return new Enemy(null, 10, 1, 2, null, null, null, true, 1);
     }
 
     public static Enemy create(String name) {
-        return new Enemy(name, 10, 1, 3, null, null, null);
+        return new Enemy(name, 10, 1, 3, null, null, null, true, 1);
     }
 
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType) {
-        return new Enemy(name, health, minDamage, maxDamage, abilities, items, enemyType);
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
+        return new Enemy(name, health, minDamage, maxDamage, abilities, items, enemyType, isMelee, meleeChancePerTurn);
     }
 
     @Override
@@ -84,6 +90,37 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setEnemyType(String enemyType) {
         this.enemyType = enemyType;
+    }
+
+    public boolean isMelee() {
+        return isMelee;
+    }
+
+    public void setMelee(boolean melee) {
+        isMelee = melee;
+    }
+
+    public double getMeleeChancePerTurn() {
+        return meleeChancePerTurn;
+    }
+
+    public boolean isMeleeAttackThisTurn() {
+        var random = new Random();
+
+        int randomChance = 100 - ((int) (meleeChancePerTurn * 100));
+        if (randomChance != 0) {
+            int randomInt = random.nextInt(100 - ((int) meleeChancePerTurn * 100)) + ((int) meleeChancePerTurn * 100);
+
+            if (randomInt < ((int) (meleeChancePerTurn * 100))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void setMeleeChancePerTurn(double meleeChancePerTurn) {
+        this.meleeChancePerTurn = meleeChancePerTurn;
     }
 
     public String getEnemyHealthStatus() {

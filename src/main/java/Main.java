@@ -27,6 +27,8 @@ public class Main {
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
 
+        enemy.setMeleeChancePerTurn(0.5);
+
         Useable onUse = (gameEngine) -> {
             var playerthing = gameEngine.getPlayer();
             playerthing.subtractFromCurrentHealth(5);

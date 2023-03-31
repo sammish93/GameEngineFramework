@@ -93,6 +93,16 @@ public class CombatEncounter extends Encounter {
 
             word = scanner.nextLine();
 
+            if (!gameEngine.getPlayer().isAlive()) {
+                while (true) {
+                    gameEngine.printMessage("Game has finished. Please type 'exit'.");
+
+                    if (scanner.nextLine().equalsIgnoreCase("exit")) {
+                        return "exit";
+                    }
+                }
+            }
+
             // Remember to handle calls to display inventory, enemy health, item use, ability use etc.
             if (word.equalsIgnoreCase("exit")) {
                 return "exit";
@@ -102,6 +112,8 @@ public class CombatEncounter extends Encounter {
                 gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'south'.");
             } else if (word.equalsIgnoreCase("defeated")) {
                 gameEngine.printMessage("You haven't defeated this encounter yet!");
+            } else if (word.equalsIgnoreCase("playerdeath")) {
+                gameEngine.printMessage("You aren't dead!");
             } else if (word.equalsIgnoreCase("progress")) {
                 if (isDefeated()) {
                     return "defeated";
@@ -114,10 +126,18 @@ public class CombatEncounter extends Encounter {
                 printEnemies(gameEngine);
             } else if (word.equalsIgnoreCase("attack")) {
                 EncounterController.turn(gameEngine, this, turnNumber++);
+
+                if (!gameEngine.getPlayer().isAlive()) {
+                    gameEngine.printMessage("You have died!");
+                }
             } else if (word.equalsIgnoreCase("inventory")) {
                 printInventory(gameEngine);
             } else if (word.equalsIgnoreCase("use")) {
                 EncounterController.useItem(gameEngine, this);
+
+                if (!gameEngine.getPlayer().isAlive()) {
+                    gameEngine.printMessage("You have died!");
+                }
             } else if (allEnemiesDead() || word.equalsIgnoreCase("skip")) {
                 setDefeated(true);
             }
