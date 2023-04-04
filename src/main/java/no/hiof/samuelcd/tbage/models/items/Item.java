@@ -5,7 +5,7 @@ import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
 
-public class Item implements Useable, Serializable {
+public class Item implements Useable, Serializable, Cloneable {
 
     private String name = "defaultItemName";
     private int value;
@@ -96,6 +96,12 @@ public class Item implements Useable, Serializable {
 
     public void setNumberOfUses(int numberOfUses) {
         this.numberOfUses = numberOfUses;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
     }
 
     @Override

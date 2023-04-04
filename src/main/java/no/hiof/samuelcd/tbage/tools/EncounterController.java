@@ -141,7 +141,7 @@ public class EncounterController {
                     gameEngine.printMessage("You now have " + numberOfUsesRemaining + " use(s) remaining of the item '" + itemChosen.getName() + "'");
                 } else {
                     gameEngine.printMessage("You have depleted " + itemChosen.getName() + "'s uses.");
-                    gameEngine.getPlayer().removeItemFromInventory(itemChosen.getName());
+                    gameEngine.getPlayer().removeItemFromInventory(itemChosen);
                 }
 
             }
@@ -345,8 +345,8 @@ public class EncounterController {
                         if ((item.getDropChance() * 100) == 0 ||
                                 ProbabilityCalculator.isDropped(random, (int)(item.getDropChance() * 100))) {
 
-                            player.addItemToInventory(item);
                             gameEngine.printMessage("You received " + item.getName() + " from " + enemy.getName());
+                            player.addItemToInventory(item);
                         }
                     }
                 }

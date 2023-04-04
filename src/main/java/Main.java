@@ -24,7 +24,6 @@ public class Main {
         var enemy = Enemy.create("Skeleton King");
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
-        item.setDropChance(0.5);
         enemy.addItemToItemTable(item);
 
         enemy.setMeleeChancePerTurn(0.5);
@@ -62,7 +61,7 @@ public class Main {
         var enemy2 = Enemy.create("Skeleton Minion");
         var ability2 = Ability.create("Fireball");
         var item2 = Item.create("Mithril Javelin");
-        item2.setNumberOfUses(3);
+        item2.setNumberOfUses(1);
         item2.setOnUseBehaviour(onUse2);
 
         var item3 = Item.create("Skeleton Key");
@@ -79,7 +78,9 @@ public class Main {
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
         encounters.addEncounter(encounter3, encounter, "south");
-        player.addItemToInventory(item);
+        //player.addItemToInventory(item);
+        player.addItemToInventory(item2);
+        player.addItemToInventory(item2);
         player.addItemToInventory(item2);
 
         var game = GameEngine.create(settings, player, encounters);

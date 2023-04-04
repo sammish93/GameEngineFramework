@@ -1,9 +1,11 @@
 package no.hiof.samuelcd.tbage.models.player;
 
+import com.sun.source.tree.Tree;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.io.*;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -11,6 +13,7 @@ public class Player implements Serializable {
     // Class that will hold information about a player throughout the game.
     private int inventorySlots ;
     private TreeMap<String, Item> inventory;
+    private TreeMap<String, Integer> duplicateItemsInInventory;
     private double maxHealth;
     private double currentHealth;
     private double[] damage = new double[2];
@@ -25,6 +28,7 @@ public class Player implements Serializable {
         this.damage[0] = minDamage;
         this.damage[1] = maxDamage;
         this.inventory = Objects.requireNonNullElseGet(inventory, TreeMap::new);
+        this.duplicateItemsInInventory = new TreeMap<>();
         this.feats = Objects.requireNonNullElseGet(feats, TreeMap::new);
         this.currencyAmount = currencyAmount;
 
@@ -64,14 +68,139 @@ public class Player implements Serializable {
 
     public void addItemToInventory(Item item) {
         if (isSpaceInInventory()) {
-            inventory.put(item.getName(), item);
-            inventorySlots++;
+
+            try {
+                int iteration = 1;
+
+                if (getItemFromInventory(item.getName()) != null) {
+                    int amountOfDuplicates = 2;
+
+                    duplicateItemsInInventory.put(item.getName(), amountOfDuplicates);
+
+                    Item itemFromInventory = (Item)getItemFromInventory(item.getName()).clone();
+                    itemFromInventory.setName(item.getName() + " " + iteration++);
+
+                    inventory.remove(item.getName());
+                    inventory.put(itemFromInventory.getName(), itemFromInventory);
+                } else if (duplicateItemsInInventory.get(item.getName()) != null) {
+                    iteration = duplicateItemsInInventory.get(item.getName());
+                    duplicateItemsInInventory.remove(item.getName());
+                    duplicateItemsInInventory.put(item.getName(), iteration++ + 1);
+                }
+
+                if (iteration == 1) {
+                    inventory.put(item.getName(), item);
+                } else {
+                    Item itemCloned = (Item)item.clone();
+                    itemCloned.setName(itemCloned.getName() + " " + iteration);
+                    inventory.put(itemCloned.getName(), itemCloned);
+                }
+
+                inventorySlots++;
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     public void removeItemFromInventory(Item item) {
-        inventory.remove(item.getName());
-        inventorySlots--;
+
+        int iteration = 1;
+
+        String nameWithoutIteration = getStringWithoutIteration(item.getName());
+
+        if (duplicateItemsInInventory.get(nameWithoutIteration) != null) {
+            iteration = duplicateItemsInInventory.get(nameWithoutIteration);
+            duplicateItemsInInventory.remove(nameWithoutIteration);
+
+            iteration--;
+
+            if (iteration > 1) {
+                duplicateItemsInInventory.put(nameWithoutIteration, iteration);
+            }
+        }
+
+        if (iteration == 0) {
+            inventory.remove(item.getName());
+        } else if (iteration == 1) {
+            inventory.remove(item.getName());
+
+            TreeMap<String, Item> newInventory = (TreeMap<String, Item>)getInventory().clone();
+
+            for (Map.Entry<String, Item> itemEntry : newInventory.entrySet()) {
+                Item itemFromEntry = itemEntry.getValue();
+
+                if (nameWithoutIteration.equalsIgnoreCase(getStringWithoutIteration(itemFromEntry.getName()))) {
+                    inventory.remove(itemFromEntry.getName());
+
+                    try {
+                        itemFromEntry.setName(nameWithoutIteration);
+                        inventory.put(itemFromEntry.getName(), itemFromEntry);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                };
+            }
+        } else
+        {
+            TreeMap<String, Item> newInventory = (TreeMap<String, Item>)getInventory().clone();
+
+            for (Map.Entry<String, Item> itemEntry : newInventory.entrySet()) {
+                boolean isItemToBeRemoved = false;
+
+                Item itemFromEntry = itemEntry.getValue();
+
+                if (itemFromEntry.getName().equalsIgnoreCase(item.getName())) {
+                    isItemToBeRemoved = true;
+                }
+
+                String nameWithoutIterationItemFromEntry = getStringWithoutIteration(itemFromEntry.getName());
+
+                if (isNumeric(getStringIteration(itemFromEntry.getName()))) {
+                    Integer iterationFromEntry = Integer.parseInt(getStringIteration(itemFromEntry.getName()));
+                    iterationFromEntry--;
+                    inventory.remove(itemFromEntry.getName());
+
+                    if (iterationFromEntry == 0) {
+                        itemFromEntry.setName(nameWithoutIterationItemFromEntry + " " + 1);
+                    } else {
+                        itemFromEntry.setName(nameWithoutIterationItemFromEntry + " " + iterationFromEntry);
+
+                    }
+                    if (!isItemToBeRemoved) {
+                        addItemToInventory(itemFromEntry);
+                    }
+                }
+            }
+        }
+    }
+
+    private String getStringWithoutIteration(String itemName) {
+        String[] splitName = itemName.split("\\s+");
+
+        String nameWithoutIteration = splitName[0];
+
+        for (int i = 1; i < splitName.length - 1; i++) {
+            nameWithoutIteration += " " + splitName[i];
+
+        }
+        return nameWithoutIteration;
+    }
+
+    private String getStringIteration(String itemName) {
+        String[] splitName = itemName.split("\\s+");
+
+        return splitName[splitName.length - 1];
+    }
+
+    private boolean isNumeric(String string) {
+        try {
+            Integer.parseInt(string);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+
+        return true;
     }
 
     public void removeItemFromInventory(String itemName) {
