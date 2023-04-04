@@ -195,7 +195,7 @@ public class CombatEncounter extends Encounter {
                     String verb = inputMap.get("verb");
                     String noun = inputMap.get("noun");
 
-                    if (noun.equalsIgnoreCase("defeated")) {
+                    if (noun.equalsIgnoreCase("defeated") || !isDefeated()) {
                         gameEngine.printMessage("You haven't defeated this encounter yet!");
                     } else if (getNavigationOptions().containsKey(noun) && !getNavigationalVerbs().contains(verb)) {
                         gameEngine.printMessage("Try another means of traversal.");
