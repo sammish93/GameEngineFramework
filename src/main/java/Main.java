@@ -9,10 +9,8 @@ import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.player.Player;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
-import no.hiof.samuelcd.tbage.tools.WeightedProbabilityCalculator;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -26,6 +24,8 @@ public class Main {
         var enemy = Enemy.create("Skeleton King");
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
+        item.setDropChance(0.5);
+        enemy.addItemToItemTable(item);
 
         enemy.setMeleeChancePerTurn(0.5);
 
@@ -81,6 +81,7 @@ public class Main {
         encounters.addEncounter(encounter3, encounter, "south");
         player.addItemToInventory(item);
         player.addItemToInventory(item2);
+
         var game = GameEngine.create(settings, player, encounters);
         game.run();
     }

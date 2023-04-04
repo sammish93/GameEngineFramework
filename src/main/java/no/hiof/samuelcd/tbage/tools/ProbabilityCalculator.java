@@ -8,7 +8,7 @@ import java.util.TreeMap;
 // Added behaviour to handle so-called 'guaranteed chance' being given (i.e. 100% chance of happening), while
 // returning only a single value.
 
-public class WeightedProbabilityCalculator<T> {
+public class ProbabilityCalculator<T> {
     private final NavigableMap<Double, T> mapOfNonGuaranteedValues = new TreeMap<Double, T>();
     private final NavigableMap<Double, T> mapOfGuaranteedValues = new TreeMap<Double, T>();
     private final Random random;
@@ -16,17 +16,17 @@ public class WeightedProbabilityCalculator<T> {
     private double totalGuaranteedValues = 0;
     private boolean isGuaranteedValuePresent;
 
-    public WeightedProbabilityCalculator() {
+    public ProbabilityCalculator() {
         this(new Random());
         isGuaranteedValuePresent = false;
     }
 
-    public WeightedProbabilityCalculator(Random random) {
+    public ProbabilityCalculator(Random random) {
         this.random = random;
         isGuaranteedValuePresent = false;
     }
 
-    public WeightedProbabilityCalculator<T> add(double weight, T result) {
+    public ProbabilityCalculator<T> add(double weight, T result) {
         if (weight <= 0){
 
             return this;
@@ -52,4 +52,10 @@ public class WeightedProbabilityCalculator<T> {
             return mapOfNonGuaranteedValues.higherEntry(value).getValue();
         }
     }
+    public static boolean isDropped(Random random, int chanceUpToOneHundred) {
+        int chance = random.nextInt(100);
+
+        return chance <= chanceUpToOneHundred;
+    }
+
 }

@@ -241,7 +241,7 @@ public class EncounterController {
                 Ability ability = null;
 
                 if (!enemy.getNpcAbilityPool().isEmpty()) {
-                    WeightedProbabilityCalculator<String> wpc = new WeightedProbabilityCalculator<>();
+                    ProbabilityCalculator<String> wpc = new ProbabilityCalculator<>();
 
                     for (Map.Entry<String, Ability> abilityEntry : enemy.getNpcAbilityPool().entrySet()) {
                         ability = abilityEntry.getValue();
@@ -325,5 +325,32 @@ public class EncounterController {
         var random = new Random();
 
         return random.nextInt(maxDamage - minDamage) + minDamage;
+    }
+
+    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) {
+
+        var random = new Random();
+
+        Player player = gameEngine.getPlayer();
+
+        if (encounter instanceof CombatEncounter) {
+            for (Map.Entry<String, Enemy> enemyEntry : ((CombatEncounter) encounter).getEnemies().entrySet()) {
+                Enemy enemy = enemyEntry.getValue();
+
+                if (!enemy.getNpcItemTable().isEmpty()) {
+
+                    for (Map.Entry<String, Item> itemEntry : enemy.getNpcItemTable().entrySet()) {
+                        Item item = itemEntry.getValue();
+
+                        if ((item.getDropChance() * 100) == 0 ||
+                                ProbabilityCalculator.isDropped(random, (int)(item.getDropChance() * 100))) {
+
+                            player.addItemToInventory(item);
+                            gameEngine.printMessage("You received " + item.getName() + " from " + enemy.getName());
+                        }
+                    }
+                }
+            }
+        }
     }
 }

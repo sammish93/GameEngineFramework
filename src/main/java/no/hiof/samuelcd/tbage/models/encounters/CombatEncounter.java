@@ -140,6 +140,7 @@ public class CombatEncounter extends Encounter {
                 }
             } else if (allEnemiesDead() || word.equalsIgnoreCase("skip")) {
                 setDefeated(true);
+                EncounterController.getEncounterDrops(gameEngine, this);
             }
 
             if (isDefeated() && !isBacktracking()) {

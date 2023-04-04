@@ -3,7 +3,6 @@ package no.hiof.samuelcd.tbage.models.npcs;
 
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
-import no.hiof.samuelcd.tbage.tools.WeightedProbabilityCalculator;
 
 import java.util.Random;
 import java.util.TreeMap;
