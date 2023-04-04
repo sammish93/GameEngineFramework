@@ -1,5 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import no.hiof.samuelcd.tbage.tools.StringParser;
+
 import java.util.LinkedHashMap;
 import java.util.Set;
 
@@ -29,6 +31,7 @@ public class FixedEncounters extends Encounters {
     public void addEncounter(Encounter encounterFrom, Encounter encounterTo, String event) {
         encounterFrom.setNavigationOption(event, encounterTo.getName());
         encounters.put(encounterTo.getName(), encounterTo);
+        StringParser.addNoun(event);
         // Encounter x progresses to encounter y if event is triggered.
     }
 

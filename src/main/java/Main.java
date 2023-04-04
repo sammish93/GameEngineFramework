@@ -12,6 +12,7 @@ import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Main {
@@ -84,8 +85,12 @@ public class Main {
         encounters.addEncounter(encounter, encounter2, "defeated");
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
-        encounters.addEncounter(encounter3, encounter, "south");
-        //player.addItemToInventory(item);
+        encounters.addEncounter(encounter3, encounter, "ladder");
+        ArrayList<String> traversal = new ArrayList<>();
+        traversal.add("climb");
+        encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
+
+        player.addItemToInventory(item);
         player.addItemToInventory(item2);
         player.addItemToInventory(item2);
         player.addItemToInventory(item2);

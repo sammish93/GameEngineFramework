@@ -2,8 +2,10 @@ package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
+import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -14,7 +16,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
-    private TreeMap<String, String> interactionOptions;
+    private ArrayList<String> navigationalVerbs;
     private boolean isDefeated = false;
     private boolean isIntroductionPrinted = false;
     private boolean isBacktracking = false;
@@ -28,6 +30,9 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
         this.featChecks = Objects.requireNonNullElseGet(featChecks, TreeMap::new);
         this.featRewards = Objects.requireNonNullElseGet(featRewards, TreeMap::new);
         this.navigationOptions = Objects.requireNonNullElseGet(navigationOptions, TreeMap::new);
+        navigationalVerbs = new ArrayList<>();
+
+        addDefaultNavigationalVerbs();
     }
 
     public void onInitiation() {
@@ -165,5 +170,35 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
 
     public void setBacktracking(boolean backtracking) {
         isBacktracking = backtracking;
+    }
+
+    public ArrayList<String> getNavigationalVerbs() {
+        return navigationalVerbs;
+    }
+
+    public void setNavigationalVerbs(ArrayList<String> navigationalVerbs) {
+        for (String navVerb : navigationalVerbs) {
+            StringParser.addVerb(navVerb);
+        }
+        this.navigationalVerbs = navigationalVerbs;
+    }
+
+    public void removeNavigationalVerb(String verb) {
+        navigationalVerbs.remove(verb);
+    }
+
+    public void removeDefaultNavigationalVerbs() {
+        navigationalVerbs.clear();
+    }
+
+    public void addNavigationalVerb(String verb) {
+        navigationalVerbs.add(verb);
+        StringParser.addVerb(verb);
+    }
+
+    private void addDefaultNavigationalVerbs() {
+        addNavigationalVerb("go");
+        addNavigationalVerb("travel");
+        addNavigationalVerb("move");
     }
 }

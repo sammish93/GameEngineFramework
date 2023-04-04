@@ -34,8 +34,10 @@ public class StringParser {
             } else
             {
                 map.put("verb", splitString[0]);
-                map.put("noun", splitString[0]);
+                map.put("noun", splitString[1]);
             }
+        } else {
+            gameEngine.printMessage("Sorry, I don't understand. Type 'help' for help.");
         }
 
         return map;

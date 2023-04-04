@@ -4,7 +4,6 @@ import no.hiof.samuelcd.tbage.enums.GamePlatform;
 import no.hiof.samuelcd.tbage.gui.GameInterface;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
-import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
@@ -13,7 +12,6 @@ import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -37,7 +35,7 @@ public class GameEngine implements Serializable {
             this.encounters = null;
         }
 
-        addDefaultCommands();
+        addDefaultParserParameters();
     }
 
     public static GameEngine create() {
@@ -147,10 +145,11 @@ public class GameEngine implements Serializable {
         System.out.printf(s, args);
     }
 
-    private static void addDefaultCommands() {
+    private static void addDefaultParserParameters() {
         ArrayList<String> defaultCommands = new ArrayList<String>();
         defaultCommands.add("exit");
         defaultCommands.add("options");
+        defaultCommands.add("help");
         defaultCommands.add("back");
         defaultCommands.add("defeated");
         defaultCommands.add("playerdeath");
@@ -162,10 +161,17 @@ public class GameEngine implements Serializable {
         // ***** FOR DEBUGGING PURPOSES *****
         defaultCommands.add("skip");
 
+        ArrayList<String> defaultNouns = new ArrayList<String>();
+        defaultNouns.add("player");
+        defaultNouns.add("me");
+        defaultNouns.add("myself");
+        defaultNouns.add("self");
+
+
         StringParser.setCommands(defaultCommands);
     }
 
-    public void removeAllCommands() {
+    public void removeAllDefaultParsingParameters() {
         StringParser.setCommands(new ArrayList<>());
         StringParser.setNouns(new ArrayList<>());
         StringParser.setVerbs(new ArrayList<>());

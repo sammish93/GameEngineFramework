@@ -137,16 +137,16 @@ public class CombatEncounter extends Encounter {
             }
 
             if (!inputMap.isEmpty()) {
-                String typeOfCommand = inputMap.firstKey();
-                String value = inputMap.get(typeOfCommand);
+                if (inputMap.get("command") != null) {
 
-                if (typeOfCommand.equals("command")) {
+                    String value = inputMap.get("command");
+
                     if (value.equalsIgnoreCase("exit")) {
                         return "exit";
                     } else if (value.equalsIgnoreCase("options") || value.equalsIgnoreCase("help")) {
                         printOptions(gameEngine);
                     } else if (value.equalsIgnoreCase("back")) {
-                        gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'south'.");
+                        gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'go south'.");
                     } else if (value.equalsIgnoreCase("defeated")) {
                         gameEngine.printMessage("You haven't defeated this encounter yet!");
                     } else if (value.equalsIgnoreCase("playerdeath")) {
@@ -157,8 +157,6 @@ public class CombatEncounter extends Encounter {
                         } else {
                             gameEngine.printMessage("You haven't defeated this encounter yet!");
                         }
-                    } else if (getNavigationOptions().containsKey(value)) {
-                        return value;
                     } else if (value.equalsIgnoreCase("status")) {
                         printEnemies(gameEngine);
                     } else if (value.equalsIgnoreCase("attack")) {
@@ -193,9 +191,21 @@ public class CombatEncounter extends Encounter {
                         setDefeated(true);
                         EncounterController.getEncounterDrops(gameEngine, this);
                     }
+                } else if (inputMap.get("verb") != null && inputMap.get("noun") != null) {
+                    String verb = inputMap.get("verb");
+                    String noun = inputMap.get("noun");
+
+                    if (noun.equalsIgnoreCase("defeated")) {
+                        gameEngine.printMessage("You haven't defeated this encounter yet!");
+                    } else if (getNavigationOptions().containsKey(noun) && !getNavigationalVerbs().contains(verb)) {
+                        gameEngine.printMessage("Try another means of traversal.");
+                    } else if (getNavigationOptions().containsKey(noun) && getNavigationalVerbs().contains(verb)) {
+                        return noun;
+                    } else {
+                        gameEngine.printMessage("Try something else.");
+                    }
                 }
             }
-
 
 
             if (isDefeated() && !isBacktracking()) {
