@@ -92,31 +92,6 @@ public class Main {
 
         var game = GameEngine.create(settings, player, encounters);
 
-
-        StringParser.addCommand("go");
-        StringParser.addCommand("enter");
-        StringParser.addCommand("q");
-        StringParser.addNoun("cake");
-        StringParser.addVerb("eat");
-
-        var scanner = GameEngine.scanner;
-        String input = "";
-        TreeMap<String, String> map = new TreeMap<>();
-        while (true) {
-            input = scanner.nextLine();
-
-            map = StringParser.read(game, input);
-
-            if (!map.isEmpty()) {
-                String typeOfCommand = map.firstKey();
-                String value = map.get(typeOfCommand);
-
-                if (typeOfCommand.equals("command") && value.equals("q")) {
-                    break;
-                }
-            }
-        }
-
         game.run();
     }
 }

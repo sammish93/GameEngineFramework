@@ -9,8 +9,11 @@ import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 import no.hiof.samuelcd.tbage.models.player.Player;
+import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -33,6 +36,8 @@ public class GameEngine implements Serializable {
             // Temporary - will have a default pool of encounters.
             this.encounters = null;
         }
+
+        addDefaultCommands();
     }
 
     public static GameEngine create() {
@@ -140,5 +145,29 @@ public class GameEngine implements Serializable {
 
     public void printMessageFormatted(String s, Object ... args) {
         System.out.printf(s, args);
+    }
+
+    private static void addDefaultCommands() {
+        ArrayList<String> defaultCommands = new ArrayList<String>();
+        defaultCommands.add("exit");
+        defaultCommands.add("options");
+        defaultCommands.add("back");
+        defaultCommands.add("defeated");
+        defaultCommands.add("playerdeath");
+        defaultCommands.add("progress");
+        defaultCommands.add("status");
+        defaultCommands.add("attack");
+        defaultCommands.add("inventory");
+        defaultCommands.add("use");
+        // ***** FOR DEBUGGING PURPOSES *****
+        defaultCommands.add("skip");
+
+        StringParser.setCommands(defaultCommands);
+    }
+
+    public void removeAllCommands() {
+        StringParser.setCommands(new ArrayList<>());
+        StringParser.setNouns(new ArrayList<>());
+        StringParser.setVerbs(new ArrayList<>());
     }
 }

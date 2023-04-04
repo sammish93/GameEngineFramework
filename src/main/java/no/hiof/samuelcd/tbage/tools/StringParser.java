@@ -31,9 +31,6 @@ public class StringParser {
         if (isValid) {
             if (splitString.length == 1) {
                 map.put("command", splitString[0]);
-            } else if (commands.contains(splitString[0])) {
-                map.put("command", splitString[0]);
-                map.put("noun", splitString[0]);
             } else
             {
                 map.put("verb", splitString[0]);
@@ -49,8 +46,7 @@ public class StringParser {
         if (splitString.length == 1) {
             return commands.contains(splitString[0]);
         } else if (splitString.length == 2) {
-            return verbs.contains(splitString[0]) && nouns.contains(splitString[1]) ||
-                    commands.contains(splitString[0]) && nouns.contains(splitString[1]);
+            return verbs.contains(splitString[0]) && nouns.contains(splitString[1]);
         }
 
         return false;
@@ -80,4 +76,27 @@ public class StringParser {
         }
     }
 
+    public static ArrayList<String> getVerbs() {
+        return verbs;
+    }
+
+    public static void setVerbs(ArrayList<String> verbs) {
+        StringParser.verbs = verbs;
+    }
+
+    public static ArrayList<String> getNouns() {
+        return nouns;
+    }
+
+    public static void setNouns(ArrayList<String> nouns) {
+        StringParser.nouns = nouns;
+    }
+
+    public static ArrayList<String> getCommands() {
+        return commands;
+    }
+
+    public static void setCommands(ArrayList<String> commands) {
+        StringParser.commands = commands;
+    }
 }

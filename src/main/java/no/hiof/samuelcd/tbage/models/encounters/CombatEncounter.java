@@ -5,6 +5,7 @@ import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
+import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -102,7 +103,8 @@ public class CombatEncounter extends Encounter {
 
     @Override
     public String run(GameEngine gameEngine) {
-        String word = "";
+        String input = "";
+        TreeMap<String, String> inputMap = new TreeMap<>();
         int turnNumber = 1;
         setBacktracking(isDefeated());
 
@@ -121,7 +123,8 @@ public class CombatEncounter extends Encounter {
 
         while (!isDefeated() || isBacktracking()) {
 
-            word = scanner.nextLine();
+            input = scanner.nextLine();
+            inputMap = StringParser.read(gameEngine, input);
 
             if (!gameEngine.getPlayer().isAlive()) {
                 while (true) {
@@ -133,59 +136,67 @@ public class CombatEncounter extends Encounter {
                 }
             }
 
-            // Remember to handle calls to display inventory, enemy health, item use, ability use etc.
-            if (word.equalsIgnoreCase("exit")) {
-                return "exit";
-            } else if (word.equalsIgnoreCase("options") || word.equalsIgnoreCase("help")) {
-                printOptions(gameEngine);
-            } else if (word.equalsIgnoreCase("back")) {
-                gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'south'.");
-            } else if (word.equalsIgnoreCase("defeated")) {
-                gameEngine.printMessage("You haven't defeated this encounter yet!");
-            } else if (word.equalsIgnoreCase("playerdeath")) {
-                gameEngine.printMessage("You aren't dead!");
-            } else if (word.equalsIgnoreCase("progress")) {
-                if (isDefeated()) {
-                    return "defeated";
-                } else {
-                    gameEngine.printMessage("You haven't defeated this encounter yet!");
-                }
-            } else if (getNavigationOptions().containsKey(word)) {
-                return word;
-            } else if (word.equalsIgnoreCase("status")) {
-                printEnemies(gameEngine);
-            } else if (word.equalsIgnoreCase("attack")) {
-                EncounterController.turn(gameEngine, this, turnNumber++);
+            if (!inputMap.isEmpty()) {
+                String typeOfCommand = inputMap.firstKey();
+                String value = inputMap.get(typeOfCommand);
 
-                if (allEnemiesDead()) {
-                    setDefeated(true);
-                    EncounterController.getEncounterDrops(gameEngine, this);
-                }
+                if (typeOfCommand.equals("command")) {
+                    if (value.equalsIgnoreCase("exit")) {
+                        return "exit";
+                    } else if (value.equalsIgnoreCase("options") || value.equalsIgnoreCase("help")) {
+                        printOptions(gameEngine);
+                    } else if (value.equalsIgnoreCase("back")) {
+                        gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'south'.");
+                    } else if (value.equalsIgnoreCase("defeated")) {
+                        gameEngine.printMessage("You haven't defeated this encounter yet!");
+                    } else if (value.equalsIgnoreCase("playerdeath")) {
+                        gameEngine.printMessage("You aren't dead!");
+                    } else if (value.equalsIgnoreCase("progress")) {
+                        if (isDefeated()) {
+                            return "defeated";
+                        } else {
+                            gameEngine.printMessage("You haven't defeated this encounter yet!");
+                        }
+                    } else if (getNavigationOptions().containsKey(value)) {
+                        return value;
+                    } else if (value.equalsIgnoreCase("status")) {
+                        printEnemies(gameEngine);
+                    } else if (value.equalsIgnoreCase("attack")) {
+                        EncounterController.turn(gameEngine, this, turnNumber++);
 
-                if (!gameEngine.getPlayer().isAlive()) {
-                    gameEngine.printMessage("You have died!");
-                }
-            } else if (word.equalsIgnoreCase("inventory")) {
-                printInventory(gameEngine);
-            } else if (word.equalsIgnoreCase("use")) {
-                if (!gameEngine.getPlayer().getInventory().isEmpty()) {
-                    EncounterController.useItem(gameEngine, this);
+                        if (allEnemiesDead()) {
+                            setDefeated(true);
+                            EncounterController.getEncounterDrops(gameEngine, this);
+                        }
 
-                    if (allEnemiesDead()) {
+                        if (!gameEngine.getPlayer().isAlive()) {
+                            gameEngine.printMessage("You have died!");
+                        }
+                    } else if (value.equalsIgnoreCase("inventory")) {
+                        printInventory(gameEngine);
+                    } else if (value.equalsIgnoreCase("use")) {
+                        if (!gameEngine.getPlayer().getInventory().isEmpty()) {
+                            EncounterController.useItem(gameEngine, this);
+
+                            if (allEnemiesDead()) {
+                                setDefeated(true);
+                                EncounterController.getEncounterDrops(gameEngine, this);
+                            }
+                        } else {
+                            gameEngine.printMessage("You have no items in your inventory.");
+                        }
+
+                        if (!gameEngine.getPlayer().isAlive()) {
+                            gameEngine.printMessage("You have died!");
+                        }
+                    } else if (allEnemiesDead() || input.equalsIgnoreCase("skip")) {
                         setDefeated(true);
                         EncounterController.getEncounterDrops(gameEngine, this);
                     }
-                } else {
-                    gameEngine.printMessage("You have no items in your inventory.");
                 }
-
-                if (!gameEngine.getPlayer().isAlive()) {
-                    gameEngine.printMessage("You have died!");
-                }
-            } else if (allEnemiesDead() || word.equalsIgnoreCase("skip")) {
-                setDefeated(true);
-                EncounterController.getEncounterDrops(gameEngine, this);
             }
+
+
 
             if (isDefeated() && !isBacktracking()) {
                 String answer;
