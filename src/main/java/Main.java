@@ -9,8 +9,10 @@ import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.player.Player;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
+import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.IOException;
+import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
@@ -41,8 +43,11 @@ public class Main {
             var encounterthing = EncounterTraversalController.getCurrentEncounter();
             var target = EncounterController.chooseNpc(gameEngine, encounterthing);
             if (target instanceof Enemy) {
-                ((Enemy) target).subtractFromCurrentHealth(5);
-                gameEngine.printMessage(((Enemy) target).getName() + " has taken 5 damage!");
+                ((Enemy) target).subtractFromCurrentHealth(10);
+                gameEngine.printMessage(((Enemy) target).getName() + " has taken 10 damage!");
+                if (((Enemy) target).getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+                    gameEngine.printMessage(target.getName() + " dies from your item!");
+                }
             }
         };
         item.setOnUseBehaviour(onUse);
@@ -61,7 +66,7 @@ public class Main {
         var enemy2 = Enemy.create("Skeleton Minion");
         var ability2 = Ability.create("Fireball");
         var item2 = Item.create("Mithril Javelin");
-        item2.setNumberOfUses(1);
+        item2.setNumberOfUses(0);
         item2.setOnUseBehaviour(onUse2);
 
         var item3 = Item.create("Skeleton Key");
@@ -69,6 +74,8 @@ public class Main {
         enemy.addAbilityToAbilityPool(ability);
         encounter.addEnemyToEnemies(enemy);
         encounter.addEnemyToEnemies(enemy2);
+        encounter.addEnemyToEnemies(enemy2);
+
         encounters.addEncounter(encounter);
 
         enemy2.addItemToItemTable(item2);
@@ -84,6 +91,32 @@ public class Main {
         player.addItemToInventory(item2);
 
         var game = GameEngine.create(settings, player, encounters);
+
+
+        StringParser.addCommand("go");
+        StringParser.addCommand("enter");
+        StringParser.addCommand("q");
+        StringParser.addNoun("cake");
+        StringParser.addVerb("eat");
+
+        var scanner = GameEngine.scanner;
+        String input = "";
+        TreeMap<String, String> map = new TreeMap<>();
+        while (true) {
+            input = scanner.nextLine();
+
+            map = StringParser.read(game, input);
+
+            if (!map.isEmpty()) {
+                String typeOfCommand = map.firstKey();
+                String value = map.get(typeOfCommand);
+
+                if (typeOfCommand.equals("command") && value.equals("q")) {
+                    break;
+                }
+            }
+        }
+
         game.run();
     }
 }

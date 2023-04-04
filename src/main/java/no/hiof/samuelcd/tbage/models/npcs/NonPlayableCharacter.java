@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public abstract class NonPlayableCharacter implements Serializable {
+public abstract class NonPlayableCharacter implements Serializable, Cloneable {
     private String name = "defaultNpcName";
     private TreeMap<String, Ability> NpcAbilityPool;
     private TreeMap<String, Item> NpcItemTable;
@@ -89,5 +89,11 @@ public abstract class NonPlayableCharacter implements Serializable {
 
     public void removeItemFromItemTable(String itemName) {
         NpcItemTable.remove(itemName);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
     }
 }

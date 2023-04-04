@@ -103,6 +103,11 @@ public class Player implements Serializable {
         }
     }
 
+    public void addItemToInventory(String itemName) {
+        Item item = getItemFromInventory(itemName);
+        addItemToInventory(item);
+    }
+
     public void removeItemFromInventory(Item item) {
 
         int iteration = 1;

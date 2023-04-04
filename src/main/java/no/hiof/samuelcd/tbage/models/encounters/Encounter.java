@@ -14,6 +14,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
+    private TreeMap<String, String> interactionOptions;
     private boolean isDefeated = false;
     private boolean isIntroductionPrinted = false;
     private boolean isBacktracking = false;

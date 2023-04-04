@@ -16,6 +16,7 @@ public class CombatEncounter extends Encounter {
 
     private int enemyCount;
     private TreeMap<String, Enemy> enemies;
+    private TreeMap<String, Integer> duplicateEnemiesInEnemies;
     private int turnCount = 1;
 
 
@@ -23,6 +24,7 @@ public class CombatEncounter extends Encounter {
         super(name, weightedProbability, imagePath, featChecks, featRewards, navigationOptions);
 
         enemies = new TreeMap<>();
+        duplicateEnemiesInEnemies = new TreeMap<>();
     }
 
     public static CombatEncounter create() {
@@ -54,7 +56,35 @@ public class CombatEncounter extends Encounter {
     }
 
     public void addEnemyToEnemies(Enemy enemy) {
-        enemies.put(enemy.getName(), enemy);
+        try {
+            int iteration = 1;
+
+            if (getEnemyFromEnemies(enemy.getName()) != null) {
+                int amountOfDuplicates = 2;
+
+                duplicateEnemiesInEnemies.put(enemy.getName(), amountOfDuplicates);
+
+                Enemy enemyFromEnemies = (Enemy)getEnemyFromEnemies(enemy.getName()).clone();
+                enemyFromEnemies.setName(enemy.getName() + " " + iteration++);
+
+                enemies.remove(enemy.getName());
+                enemies.put(enemyFromEnemies.getName(), enemyFromEnemies);
+            } else if (duplicateEnemiesInEnemies.get(enemy.getName()) != null) {
+                iteration = duplicateEnemiesInEnemies.get(enemy.getName());
+                duplicateEnemiesInEnemies.remove(enemy.getName());
+                duplicateEnemiesInEnemies.put(enemy.getName(), iteration++ + 1);
+            }
+
+            if (iteration == 1) {
+                enemies.put(enemy.getName(), enemy);
+            } else {
+                Enemy enemyCloned = (Enemy)enemy.clone();
+                enemyCloned.setName(enemyCloned.getName() + " " + iteration);
+                enemies.put(enemyCloned.getName(), enemyCloned);
+            }
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void removeEnemyFromEnemies(Enemy enemy) {
@@ -127,13 +157,27 @@ public class CombatEncounter extends Encounter {
             } else if (word.equalsIgnoreCase("attack")) {
                 EncounterController.turn(gameEngine, this, turnNumber++);
 
+                if (allEnemiesDead()) {
+                    setDefeated(true);
+                    EncounterController.getEncounterDrops(gameEngine, this);
+                }
+
                 if (!gameEngine.getPlayer().isAlive()) {
                     gameEngine.printMessage("You have died!");
                 }
             } else if (word.equalsIgnoreCase("inventory")) {
                 printInventory(gameEngine);
             } else if (word.equalsIgnoreCase("use")) {
-                EncounterController.useItem(gameEngine, this);
+                if (!gameEngine.getPlayer().getInventory().isEmpty()) {
+                    EncounterController.useItem(gameEngine, this);
+
+                    if (allEnemiesDead()) {
+                        setDefeated(true);
+                        EncounterController.getEncounterDrops(gameEngine, this);
+                    }
+                } else {
+                    gameEngine.printMessage("You have no items in your inventory.");
+                }
 
                 if (!gameEngine.getPlayer().isAlive()) {
                     gameEngine.printMessage("You have died!");
@@ -195,7 +239,6 @@ public class CombatEncounter extends Encounter {
             gameEngine.printMessage("You currently have no items in your inventory.");
         } else {
             gameEngine.printMessage("Your inventory (" + (int)player.getCurrencyAmount() + " gold): ");
-            gameEngine.printMessage((int)player.getCurrencyAmount() + " gold");
             for (Map.Entry<String, Item> entry : player.getInventory().entrySet()) {
                 var item = entry.getValue();
                 gameEngine.printMessage(itemIteration++ + ": " + item.getName());
