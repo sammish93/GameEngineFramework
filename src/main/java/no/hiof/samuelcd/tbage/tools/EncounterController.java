@@ -153,38 +153,43 @@ public class EncounterController {
         NonPlayableCharacter targetChosen = null;
         String output = "";
 
-        gameEngine.printMessage("Choose a target to use this item on a target:");
-
         if (encounter instanceof CombatEncounter) {
             int enemyCount = ((CombatEncounter)encounter).getEnemies().size();
             var enemiesWithIndex = getEnemiesWithIndex(encounter);
 
-            for (Map.Entry<Integer, String> entry : enemiesWithIndex.entrySet()) {
-                gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
-            }
+            if (enemyCount == 0) {
+                gameEngine.printMessage("There are currently no targets to use the item on.");
+                return null;
+            } else {
+                gameEngine.printMessage("Choose a target to use this item on:");
 
-            while (!isTargetChosen) {
-                output = scanner.nextLine();
-                int outputInt = 0;
-
-                if (output.equalsIgnoreCase("back")) {
-                    gameEngine.printMessage("You are no longer about to use this item on an enemy.");
-                    break;
+                for (Map.Entry<Integer, String> entry : enemiesWithIndex.entrySet()) {
+                    gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
                 }
 
-                try {
-                    outputInt = Integer.parseInt(output);
-                } catch (Exception ex) {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                while (!isTargetChosen) {
                     output = scanner.nextLine();
-                }
+                    int outputInt = 0;
 
-                if (enemiesWithIndex.containsKey(outputInt)) {
-                    var enemyName = enemiesWithIndex.get(outputInt);
-                    targetChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
-                    isTargetChosen = true;
-                } else {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                    if (output.equalsIgnoreCase("back")) {
+                        gameEngine.printMessage("You are no longer about to use this item on an enemy.");
+                        break;
+                    }
+
+                    try {
+                        outputInt = Integer.parseInt(output);
+                    } catch (Exception ex) {
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                        output = scanner.nextLine();
+                    }
+
+                    if (enemiesWithIndex.containsKey(outputInt)) {
+                        var enemyName = enemiesWithIndex.get(outputInt);
+                        targetChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
+                        isTargetChosen = true;
+                    } else {
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                    }
                 }
             }
 

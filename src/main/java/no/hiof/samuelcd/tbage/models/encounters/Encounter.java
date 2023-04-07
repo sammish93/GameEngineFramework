@@ -11,7 +11,6 @@ import java.util.TreeMap;
 
 public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private String name;
-    private double weightedProbability;
     private String imagePath;
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
@@ -22,9 +21,8 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
     private boolean isBacktracking = false;
 
 
-    protected Encounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
+    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
         this.name = name;
-        this.weightedProbability = weightedProbability;
         this.imagePath = imagePath;
 
         this.featChecks = Objects.requireNonNullElseGet(featChecks, TreeMap::new);
@@ -54,14 +52,6 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public double getWeightedProbability() {
-        return weightedProbability;
-    }
-
-    public void setWeightedProbability(double weightedProbability) {
-        this.weightedProbability = weightedProbability;
     }
 
     public TreeMap<String, Feat> getFeatChecks() {

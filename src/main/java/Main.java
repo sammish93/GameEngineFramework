@@ -82,7 +82,7 @@ public class Main {
         enemy2.addItemToItemTable(item2);
         enemy2.addAbilityToAbilityPool(ability2);
         encounter2.addEnemyToEnemies(enemy2);
-        encounters.addEncounter(encounter, encounter2, "defeated");
+        encounters.addEncounter(encounter, encounter3, "defeated");
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
         encounters.addEncounter(encounter3, encounter, "ladder");

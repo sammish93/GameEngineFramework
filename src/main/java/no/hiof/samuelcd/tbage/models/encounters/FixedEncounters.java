@@ -8,6 +8,7 @@ import java.util.Set;
 public class FixedEncounters extends Encounters {
 
     LinkedHashMap<String, Encounter> encounters;
+    
     private Encounter initialEncounter;
 
     private FixedEncounters() {

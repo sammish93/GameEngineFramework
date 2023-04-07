@@ -21,23 +21,19 @@ public class CombatEncounter extends Encounter {
     private int turnCount = 1;
 
 
-    private CombatEncounter(String name, double weightedProbability, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
-        super(name, weightedProbability, imagePath, featChecks, featRewards, navigationOptions);
+    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
+        super(name, imagePath, featChecks, featRewards, navigationOptions);
 
         enemies = new TreeMap<>();
         duplicateEnemiesInEnemies = new TreeMap<>();
     }
 
     public static CombatEncounter create() {
-        return new CombatEncounter(null, 0.5, null, null, null, null);
+        return new CombatEncounter(null,  null, null, null, null);
     }
 
     public static CombatEncounter create(String name) {
-        return new CombatEncounter(name, 0.5, null, null, null, null);
-    }
-
-    public static CombatEncounter create(String name, double weightedProbability) {
-        return new CombatEncounter(name, weightedProbability, null, null, null, null);
+        return new CombatEncounter(name,null, null, null, null);
     }
 
     public void onTurn() {
@@ -219,6 +215,7 @@ public class CombatEncounter extends Encounter {
                 } else {
                     gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to another encounter.");
                     setBacktracking(true);
+                    continue;
                 }
             }
         }
