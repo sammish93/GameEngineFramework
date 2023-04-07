@@ -6,10 +6,12 @@ import java.util.*;
 
 public class RandomEncounters extends Encounters{
 
-    LinkedHashMap<String, Encounter> encounterPool;
-    LinkedHashMap<String, Double> encounterProbability;
-    Queue<String> encounterOrder;
-    int nrOfEncounters;
+    private LinkedHashMap<String, Encounter> encounterPool;
+    private LinkedHashMap<String, Double> encounterProbability;
+    private Queue<String> encounterOrder;
+    private int nrOfEncounters;
+    private boolean isCompleted;
+    private int encountersRemaining;
 
 
     private RandomEncounters(int nrOfEncounters) {
@@ -17,6 +19,8 @@ public class RandomEncounters extends Encounters{
         encounterProbability = new LinkedHashMap<>();
         this.nrOfEncounters = nrOfEncounters;
         encounterOrder = new LinkedList<>();
+        isCompleted = false;
+        encountersRemaining = nrOfEncounters;
     }
 
     public static RandomEncounters create() {
@@ -128,9 +132,19 @@ public class RandomEncounters extends Encounters{
     }
 
     public Encounter getNextEncounter() {
-        if (encounterOrder.isEmpty()) {
+        if (!isCompleted && encounterOrder.isEmpty()) {
             randomiseEncounters();
+            encountersRemaining = encounterOrder.size();
         }
-        return encounterPool.get(encounterOrder.poll());
+
+        if (isCompleted) {
+            return null;
+        } else {
+            encountersRemaining--;
+            if (encountersRemaining == 0) {
+                isCompleted = true;
+            }
+            return encounterPool.get(encounterOrder.poll());
+        }
     }
 }
