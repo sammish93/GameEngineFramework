@@ -35,6 +35,14 @@ public class FixedEncounters extends Encounters {
         // Encounter x progresses to encounter y if event is triggered.
     }
 
+    public void addEncounter(Encounter encounterFrom, Encounter encounterTo) {
+        String defaultEvent = "defeated";
+        encounterFrom.setNavigationOption(defaultEvent, encounterTo.getName());
+        encounters.put(encounterTo.getName(), encounterTo);
+        StringParser.addNoun(defaultEvent);
+        // Encounter x progresses to encounter y if event is triggered.
+    }
+
     public Encounter getInitialEncounter() {
         return initialEncounter;
     }

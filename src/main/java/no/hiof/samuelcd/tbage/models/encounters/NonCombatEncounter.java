@@ -152,14 +152,18 @@ public class NonCombatEncounter extends Encounter {
                     } else if (value.equalsIgnoreCase("interact")) {
                         if (!getAllies().isEmpty()) {
                             Ally ally = ((Ally) EncounterController.chooseNpc(gameEngine, this));
-                            ally.onInteraction(gameEngine);
+                            if (ally != null) {
+                                ally.onInteraction(gameEngine);
+                            }
                         } else {
                             gameEngine.printMessage("There is currently no one to interact with.");
                         }
                     } else if (value.equalsIgnoreCase("investigate")) {
                         if (!getProps().isEmpty()) {
                             Prop propToBeUsed = EncounterController.chooseProp(gameEngine, this);
-                            propToBeUsed.onUse(gameEngine);
+                            if (propToBeUsed != null) {
+                                propToBeUsed.onUse(gameEngine);
+                            }
                         } else {
                             gameEngine.printMessage("There is currently nothing to investigate");
                         }
@@ -180,8 +184,11 @@ public class NonCombatEncounter extends Encounter {
                     String verb = inputMap.get("verb");
                     String noun = inputMap.get("noun");
 
-                    if (noun.equalsIgnoreCase("defeated") || !isDefeated()) {
+                    if (noun.equalsIgnoreCase("defeated")) {
                         gameEngine.printMessage("You haven't defeated this encounter yet!");
+                    } else if (!isDefeated()) {
+                        setDefeated(true);
+                        return noun;
                     } else if (getNavigationOptions().containsKey(noun) && !getNavigationalVerbs().contains(verb)) {
                         gameEngine.printMessage("Try another means of traversal.");
                     } else if (getNavigationOptions().containsKey(noun) && getNavigationalVerbs().contains(verb)) {

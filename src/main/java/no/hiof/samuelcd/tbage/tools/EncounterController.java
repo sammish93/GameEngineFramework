@@ -210,7 +210,7 @@ public class EncounterController {
                 int outputInt = 0;
 
                 if (output.equalsIgnoreCase("back")) {
-                    gameEngine.printMessage("You are no longer about to use this item on an ally.");
+                    gameEngine.printMessage("You are no longer about to interact.");
                     break;
                 }
 

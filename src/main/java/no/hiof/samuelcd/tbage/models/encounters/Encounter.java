@@ -17,6 +17,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
     private String name;
     private String imagePath;
     private String introductoryMessage;
+    private String onDefeatedMessage;
     private String hint;
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
@@ -37,6 +38,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
         this.navigationOptions = Objects.requireNonNullElseGet(navigationOptions, TreeMap::new);
         navigationalVerbs = new ArrayList<>();
         introductoryMessage = "";
+        onDefeatedMessage = "";
         hint = "";
 
         addDefaultNavigationalVerbs();
@@ -123,6 +125,14 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
 
     public void setIntroductoryMessage(String introductoryMessage) {
         this.introductoryMessage = introductoryMessage;
+    }
+
+    public String getOnDefeatedMessage() {
+        return onDefeatedMessage;
+    }
+
+    public void setOnDefeatedMessage(String onDefeatedMessage) {
+        this.onDefeatedMessage = onDefeatedMessage;
     }
 
     public String getHint() {

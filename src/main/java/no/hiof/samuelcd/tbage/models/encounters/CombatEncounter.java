@@ -148,8 +148,10 @@ public class CombatEncounter extends Encounter {
                     } else if (value.equalsIgnoreCase("playerdeath")) {
                         gameEngine.printMessage("You aren't dead!");
                     } else if (value.equalsIgnoreCase("progress")) {
-                        if (isDefeated()) {
+                        if (isDefeated() && getNavigationOptions().get("defeated") != null) {
                             return "defeated";
+                        } else if (getNavigationOptions().get("defeated") == null) {
+                            gameEngine.printMessage("Try something else.");
                         } else {
                             gameEngine.printMessage("You haven't defeated this encounter yet!");
                         }
@@ -216,13 +218,19 @@ public class CombatEncounter extends Encounter {
             if (isDefeated() && !isBacktracking()) {
                 String answer;
 
-                gameEngine.printMessage("Would you like to progress to the next encounter?");
-                answer = scanner.nextLine();
+                if (getNavigationOptions().get("defeated") != null) {
+                    gameEngine.printMessage("Would you like to progress to the next encounter?");
+                    answer = scanner.nextLine();
 
-                if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
-                    break;
+                    if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                        break;
+                    } else {
+                        gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to another encounter.");
+                        setBacktracking(true);
+                    }
                 } else {
-                    gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to another encounter.");
+                    gameEngine.printMessage(getOnDefeatedMessage());
+                    gameEngine.printMessage("Enter a navigational command to traverse to another encounter.");
                     setBacktracking(true);
                 }
             }

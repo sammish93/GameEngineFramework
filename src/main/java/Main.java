@@ -24,6 +24,8 @@ public class Main {
 
         var settings = GameSettings.create();
         var player = Player.create();
+        player.setMaxHealth(20);
+        player.setCurrentHealth(20);
         var encounter = CombatEncounter.create("ENCOUNTER 1");
         var encounter2 = CombatEncounter.create("ENCOUNTER 2");
         var encounter3 = CombatEncounter.create("ENCOUNTER 3");
@@ -115,6 +117,8 @@ public class Main {
         encounter2.addEnemyToEnemies(enemy2);
 
         var nCoEncounter = NonCombatEncounter.create();
+        var nCoEncounter2 = NonCombatEncounter.create();
+        var nCoEncounter3 = NonCombatEncounter.create();
         var prop1 = Prop.create("Door");
         var prop2 = Prop.create("Barrel");
         var prop3 = Prop.create("Switch");
@@ -164,14 +168,37 @@ public class Main {
         };
         nCoEncounter.setOnInitiationBehaviour(onUseInitiationFriendly);
 
+        nCoEncounter2.removeDefaultNavigationalVerbs();
+        nCoEncounter2.addNavigationalVerb("open");
+        nCoEncounter2.setIntroductoryMessage("You enter a dark room. You hear mice crawling on the floor, and can make " +
+                "out what appears to be footprints that disappear right before a carelessly flung carpet.");
+        nCoEncounter2.setHint("The carpet looks to be covering something. Maybe you should investigate.");
+        var hatchProp = Prop.create("Hatch");
+        Useable onUseHatch = (gameEngine) -> {
+            gameEngine.printMessage("It looks like it could be opened!");
+        };
+        hatchProp.setOnUseBehaviour(onUseHatch);
+        nCoEncounter2.addPropToProps(hatchProp);
 
 
-        encounter.setIntroductoryMessage("This is a nice encounter with 3 friendly skeletons.");
+
+        encounter.setIntroductoryMessage("The room is pitch black. You take a few steps forward and suddenly the " +
+                "sconces on the wall come to life. A pile of bones scattered about the floor begin to coalesce into " +
+                "a threatening form. Ready your weapon!.");
+        encounter.setOnDefeatedMessage("The skeletons are reduced to a pile of bone meal. You find a skeleton key in " +
+                "the ash. Maybe it will fit in the door to the north..");
         var encounters = FixedEncounters.create();
         //encounters.addEncounter(encounter);
         //encounters.addEncounter(encounter, nCoEncounter, "defeated");
         encounters.addEncounter(nCoEncounter);
-        encounters.addEncounter(nCoEncounter, encounter2, "defeated");
+        encounters.addEncounter(nCoEncounter, nCoEncounter2, "defeated");
+        encounters.addEncounter(nCoEncounter2, encounter, "hatch");
+
+        encounter.removeDefaultNavigationalVerbs();
+        encounter.addNavigationalVerb("unlock");
+
+        encounters.addEncounter(encounter, encounter2, "door");
+        encounters.addEncounter(encounter2, encounter3);
 
         /*
         encounters.addEncounter(encounter2, encounter, "previous");
