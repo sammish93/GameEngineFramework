@@ -108,8 +108,6 @@ public class CombatEncounter extends Encounter {
 
         if (isBacktracking()) {
             gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational command or 'progress' to return to where you came from.");
-        } else {
-            gameEngine.printMessage("Starting encounter '" + getName() + "'");
         }
 
         if (!isIntroductionPrinted()) {
@@ -226,6 +224,12 @@ public class CombatEncounter extends Encounter {
     }
 
     private void combatEncounterIntroduction(GameEngine gameEngine) {
+        if (!getIntroductoryMessage().isEmpty()) {
+            gameEngine.printMessage(getIntroductoryMessage());
+        }
+
+        onInitiation(gameEngine);
+
         int enemyCount = enemies.size();
 
         if (enemyCount > 1) {

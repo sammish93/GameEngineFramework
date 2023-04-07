@@ -71,6 +71,15 @@ public class Main {
         item2.setNumberOfUses(0);
         item2.setOnUseBehaviour(onUse2);
 
+        var hintItem = Item.create("Hint Scroll");
+        hintItem.setNumberOfUses(1);
+        Useable onUseInitiation = (gameEngine) -> {
+            var playerthing = gameEngine.getPlayer();
+            playerthing.subtractFromCurrentHealth(6);
+            gameEngine.printMessage("On entering the encounter you suffered 6 damage from a rusty doornail!");
+        };
+        encounter.setOnInitiationBehaviour(onUseInitiation);
+
         var item3 = Item.create("Skeleton Key");
         enemy.addItemToItemTable(item);
         enemy.addAbilityToAbilityPool(ability);
@@ -84,6 +93,7 @@ public class Main {
 
         var nCoEncounter = NonCombatEncounter.create();
 
+        encounter.setIntroductoryMessage("This is a nice encounter with 3 friendly skeletons.");
         var encounters = FixedEncounters.create();
         encounters.addEncounter(encounter);
         encounters.addEncounter(encounter, nCoEncounter, "defeated");
@@ -112,6 +122,7 @@ public class Main {
         player.addItemToInventory(item);
         player.addItemToInventory(item2);
         player.addItemToInventory(item2);
+        player.addItemToInventory(hintItem);
 
 
         var game = GameEngine.create(settings, player, encounters);

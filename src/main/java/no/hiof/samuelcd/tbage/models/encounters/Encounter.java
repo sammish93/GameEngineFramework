@@ -1,6 +1,8 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.interfaces.Useable;
+import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
@@ -9,13 +11,16 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public abstract class Encounter implements Comparable<Encounter>, Serializable {
+public abstract class Encounter implements Comparable<Encounter>, Serializable, Useable {
     private String name;
     private String imagePath;
+    private String introductoryMessage;
+    private String hint;
     private TreeMap<String, Feat> featChecks;
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
     private ArrayList<String> navigationalVerbs;
+    private Useable onInitiationBehaviour;
     private boolean isDefeated = false;
     private boolean isIntroductionPrinted = false;
     private boolean isBacktracking = false;
@@ -29,13 +34,21 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
         this.featRewards = Objects.requireNonNullElseGet(featRewards, TreeMap::new);
         this.navigationOptions = Objects.requireNonNullElseGet(navigationOptions, TreeMap::new);
         navigationalVerbs = new ArrayList<>();
+        introductoryMessage = "";
+        hint = "";
 
         addDefaultNavigationalVerbs();
     }
 
-    public void onInitiation() {
-        // Do something here when encounter begins.
-        System.out.println("hello!");
+    public void onUse(GameEngine gameEngine) {
+        // Item does this when it is used.
+        onInitiationBehaviour.onUse(gameEngine);
+    }
+
+    public void onInitiation(GameEngine gameEngine) {
+        if (onInitiationBehaviour != null) {
+            onInitiationBehaviour.onUse(gameEngine);
+        }
     };
 
     public String getName() {
@@ -100,6 +113,30 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable {
 
     public void removeFeatFromFeatRewards(String featName) {
         featRewards.remove(featName);
+    }
+
+    public String getIntroductoryMessage() {
+        return introductoryMessage;
+    }
+
+    public void setIntroductoryMessage(String introductoryMessage) {
+        this.introductoryMessage = introductoryMessage;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
+
+    public void setOnInitiationBehaviour(Useable onInitiationBehaviour) {
+        this.onInitiationBehaviour = onInitiationBehaviour;
+    }
+
+    public Useable getOnInitiationBehaviour() {
+        return onInitiationBehaviour;
     }
 
     public int compareTo(Encounter encounter) {

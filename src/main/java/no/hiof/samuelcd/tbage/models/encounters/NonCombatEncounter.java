@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
 
@@ -59,7 +60,12 @@ public class NonCombatEncounter extends Encounter {
 
     @Override
     public String run(GameEngine gameEngine) {
-        gameEngine.printMessage("hello and welcome to " + getName());
         return "defeated";
+    }
+
+    private void nonCombatEncounterIntroduction(GameEngine gameEngine) {
+        if (!getIntroductoryMessage().isEmpty()) {
+            gameEngine.printMessage(getIntroductoryMessage());
+        }
     }
 }
