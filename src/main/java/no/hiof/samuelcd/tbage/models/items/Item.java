@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Item implements Useable, Serializable, Cloneable {
 
@@ -23,7 +24,8 @@ public class Item implements Useable, Serializable, Cloneable {
     }
 
     public static Item create() {
-        return new Item(null, 0, 0, 0);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new Item(randomlyGeneratedId.toString(), 0, 0, 0);
     }
 
     public static Item create(String name) {

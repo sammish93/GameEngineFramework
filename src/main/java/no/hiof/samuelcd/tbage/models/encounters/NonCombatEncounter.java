@@ -6,6 +6,7 @@ import no.hiof.samuelcd.tbage.models.npcs.Ally;
 
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.UUID;
 
 public class NonCombatEncounter extends Encounter {
 
@@ -19,7 +20,8 @@ public class NonCombatEncounter extends Encounter {
     }
 
     public static NonCombatEncounter create() {
-        return new NonCombatEncounter(null, null, null, null, null, null);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new NonCombatEncounter(randomlyGeneratedId.toString(), null, null, null, null, null);
     }
 
     public static NonCombatEncounter create(String name) {
@@ -57,6 +59,7 @@ public class NonCombatEncounter extends Encounter {
 
     @Override
     public String run(GameEngine gameEngine) {
-        return "hello";
+        gameEngine.printMessage("hello and welcome to " + getName());
+        return "defeated";
     }
 }

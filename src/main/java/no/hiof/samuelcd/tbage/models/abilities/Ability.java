@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Ability implements Useable, Serializable {
 
@@ -22,7 +23,8 @@ public class Ability implements Useable, Serializable {
     }
 
     public static Ability create() {
-        return new Ability(null, false, false, 0);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new Ability(randomlyGeneratedId.toString(), false, false, 0);
     }
 
     public static Ability create(String name) {

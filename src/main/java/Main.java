@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
+import no.hiof.samuelcd.tbage.models.encounters.NonCombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
@@ -21,7 +22,6 @@ public class Main {
 
         var settings = GameSettings.create();
         var player = Player.create();
-        //var encounters = FixedEncounters.create();
         var encounter = CombatEncounter.create("ENCOUNTER 1");
         var encounter2 = CombatEncounter.create("ENCOUNTER 2");
         var encounter3 = CombatEncounter.create("ENCOUNTER 3");
@@ -81,27 +81,38 @@ public class Main {
         enemy2.addItemToItemTable(item2);
         enemy2.addAbilityToAbilityPool(ability2);
         encounter2.addEnemyToEnemies(enemy2);
-        /*
+
+        var nCoEncounter = NonCombatEncounter.create();
+
+        var encounters = FixedEncounters.create();
         encounters.addEncounter(encounter);
-        encounters.addEncounter(encounter, encounter3, "defeated");
+        encounters.addEncounter(encounter, nCoEncounter, "defeated");
+        encounters.addEncounter(nCoEncounter, encounter2, "defeated");
+
+        /*
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
         encounters.addEncounter(encounter3, encounter, "ladder");
+         */
         ArrayList<String> traversal = new ArrayList<>();
         traversal.add("climb");
-        encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
-         */
+        //encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
 
+
+
+
+        /*
         var encounters = RandomEncounters.create();
         encounters.addEncounter(encounter);
         encounters.addEncounter(encounter2);
         encounters.addEncounter(encounter3);
+        */
 
 
         player.addItemToInventory(item);
         player.addItemToInventory(item2);
         player.addItemToInventory(item2);
-        player.addItemToInventory(item2);
+
 
         var game = GameEngine.create(settings, player, encounters);
 

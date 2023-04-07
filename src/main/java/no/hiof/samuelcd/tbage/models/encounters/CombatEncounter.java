@@ -9,6 +9,7 @@ import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import static java.lang.String.format;
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
@@ -29,7 +30,8 @@ public class CombatEncounter extends Encounter {
     }
 
     public static CombatEncounter create() {
-        return new CombatEncounter(null,  null, null, null, null);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null);
     }
 
     public static CombatEncounter create(String name) {

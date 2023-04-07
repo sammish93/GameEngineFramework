@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.feats;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class Feat implements Serializable {
 
@@ -12,7 +13,8 @@ public class Feat implements Serializable {
     }
 
     public static Feat create() {
-        return new Feat(null);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new Feat(randomlyGeneratedId.toString());
     }
 
     public static Feat create(String name) {

@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.util.TreeMap;
+import java.util.UUID;
 
 public class Ally extends NonPlayableCharacter {
 
@@ -12,7 +13,8 @@ public class Ally extends NonPlayableCharacter {
     }
 
     public static Ally create() {
-        return new Ally(null, null, null);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new Ally(randomlyGeneratedId.toString(), null, null);
     }
 
     public static Ally create(String name) {

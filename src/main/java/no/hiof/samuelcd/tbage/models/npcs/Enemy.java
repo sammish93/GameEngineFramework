@@ -6,6 +6,7 @@ import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.UUID;
 
 public class Enemy extends NonPlayableCharacter {
 
@@ -30,7 +31,8 @@ public class Enemy extends NonPlayableCharacter {
     }
 
     public static Enemy create() {
-        return new Enemy(null, 10, 1, 2, null, null, null, true, 1);
+        UUID randomlyGeneratedId = UUID.randomUUID();
+        return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2, null, null, null, true, 1);
     }
 
     public static Enemy create(String name) {
