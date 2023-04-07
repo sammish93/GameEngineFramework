@@ -4,10 +4,12 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
+import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
@@ -227,5 +229,42 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
         addNavigationalVerb("go");
         addNavigationalVerb("travel");
         addNavigationalVerb("move");
+    }
+
+    protected void printInventory(GameEngine gameEngine) {
+        int itemIteration = 1;
+        var player = gameEngine.getPlayer();
+
+
+
+        if (player.getInventory().isEmpty() && player.getCurrencyAmount() == 0) {
+            gameEngine.printMessage("You currently have no gold, nor any items in your inventory.");
+        } else if (player.getInventory().isEmpty()) {
+            gameEngine.printMessage("You have " + (int)player.getCurrencyAmount() + " gold.");
+            gameEngine.printMessage("You currently have no items in your inventory.");
+        } else {
+            gameEngine.printMessage("Your inventory (" + (int)player.getCurrencyAmount() + " gold): ");
+            for (Map.Entry<String, Item> entry : player.getInventory().entrySet()) {
+                var item = entry.getValue();
+                gameEngine.printMessage(itemIteration++ + ": " + item.getName());
+            }
+        }
+    }
+
+    protected void printOptions(GameEngine gameEngine) {
+        gameEngine.printMessage("Type one of the following commands: ");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Help", "Prints a list of commands that the player can enter.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Exit", "Exits the game.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Inventory", "Lists the items and gold a player currently has in their inventory.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Status", "Lists the player's health points, as well as the condition of all enemies in an encounter.");
+        if (this instanceof CombatEncounter) {
+            gameEngine.printMessageFormatted("%-15s %s\n", "Attack", "Starts a new round of combat.");
+        }
+        if (this instanceof NonCombatEncounter) {
+            gameEngine.printMessageFormatted("%-15s %s\n", "Investigate", "Investigates your immediate surroundings.");
+            gameEngine.printMessageFormatted("%-15s %s\n", "Interact", "Interact with non-hostile beings.");
+        }
+        gameEngine.printMessageFormatted("%-15s %s\n", "Back", "Exits the current activity when possible.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>", "Navigates to another encounter when possible (e.g. 'north').");
     }
 }

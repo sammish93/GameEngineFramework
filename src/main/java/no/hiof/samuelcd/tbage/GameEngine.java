@@ -156,6 +156,8 @@ public class GameEngine implements Serializable {
         defaultCommands.add("progress");
         defaultCommands.add("status");
         defaultCommands.add("attack");
+        defaultCommands.add("investigate");
+        defaultCommands.add("interact");
         defaultCommands.add("inventory");
         defaultCommands.add("use");
         // ***** FOR DEBUGGING PURPOSES *****

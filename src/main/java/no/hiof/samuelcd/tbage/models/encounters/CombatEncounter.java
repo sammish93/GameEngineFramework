@@ -155,16 +155,23 @@ public class CombatEncounter extends Encounter {
                         }
                     } else if (value.equalsIgnoreCase("status")) {
                         printEnemies(gameEngine);
+                    } else if (value.equalsIgnoreCase("investigate")) {
+                        gameEngine.printMessage("There is currently nothing to investigate.");
                     } else if (value.equalsIgnoreCase("attack")) {
-                        EncounterController.turn(gameEngine, this, turnNumber++);
+                        if (isDefeated()) {
+                            gameEngine.printMessage("There are no enemies living!");
+                        } else {
 
-                        if (allEnemiesDead()) {
-                            setDefeated(true);
-                            EncounterController.getEncounterDrops(gameEngine, this);
-                        }
+                            EncounterController.turn(gameEngine, this, turnNumber++);
 
-                        if (!gameEngine.getPlayer().isAlive()) {
-                            gameEngine.printMessage("You have died!");
+                            if (allEnemiesDead()) {
+                                setDefeated(true);
+                                EncounterController.getEncounterDrops(gameEngine, this);
+                            }
+
+                            if (!gameEngine.getPlayer().isAlive()) {
+                                gameEngine.printMessage("You have died!");
+                            }
                         }
                     } else if (value.equalsIgnoreCase("inventory")) {
                         printInventory(gameEngine);
@@ -174,15 +181,17 @@ public class CombatEncounter extends Encounter {
 
                             if (allEnemiesDead()) {
                                 setDefeated(true);
-                                EncounterController.getEncounterDrops(gameEngine, this);
+
+                                if (!gameEngine.getPlayer().isAlive()) {
+                                    gameEngine.printMessage("You have died!");
+                                } else {
+                                    EncounterController.getEncounterDrops(gameEngine, this);
+                                }
                             }
                         } else {
                             gameEngine.printMessage("You have no items in your inventory.");
                         }
 
-                        if (!gameEngine.getPlayer().isAlive()) {
-                            gameEngine.printMessage("You have died!");
-                        }
                     } else if (allEnemiesDead() || input.equalsIgnoreCase("skip")) {
                         setDefeated(true);
                         EncounterController.getEncounterDrops(gameEngine, this);
@@ -215,7 +224,6 @@ public class CombatEncounter extends Encounter {
                 } else {
                     gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to another encounter.");
                     setBacktracking(true);
-                    continue;
                 }
             }
         }
@@ -250,36 +258,7 @@ public class CombatEncounter extends Encounter {
         }
     }
 
-    private void printInventory(GameEngine gameEngine) {
-        int itemIteration = 1;
-        var player = gameEngine.getPlayer();
 
-
-
-        if (player.getInventory().isEmpty() && player.getCurrencyAmount() == 0) {
-            gameEngine.printMessage("You currently have no gold, nor any items in your inventory.");
-        } else if (player.getInventory().isEmpty()) {
-            gameEngine.printMessage("You have " + (int)player.getCurrencyAmount() + " gold.");
-            gameEngine.printMessage("You currently have no items in your inventory.");
-        } else {
-            gameEngine.printMessage("Your inventory (" + (int)player.getCurrencyAmount() + " gold): ");
-            for (Map.Entry<String, Item> entry : player.getInventory().entrySet()) {
-                var item = entry.getValue();
-                gameEngine.printMessage(itemIteration++ + ": " + item.getName());
-            }
-        }
-    }
-
-    private void printOptions(GameEngine gameEngine) {
-        gameEngine.printMessage("Type one of the following commands: ");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Help", "Prints a list of commands that the player can enter.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Exit", "Exits the game.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Inventory", "Lists the items and gold a player currently has in their inventory.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Status", "Lists the player's health points, as well as the condition of all enemies in an encounter.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Attack", "Starts a new round of combat.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Back", "Exits the current activity when possible.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>", "Navigates to another encounter when possible (e.g. 'north').");
-    }
 
     private boolean allEnemiesDead() {
         for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {

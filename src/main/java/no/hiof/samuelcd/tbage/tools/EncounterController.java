@@ -10,6 +10,7 @@ import no.hiof.samuelcd.tbage.models.npcs.Ally;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.npcs.NonPlayableCharacter;
 import no.hiof.samuelcd.tbage.models.player.Player;
+import no.hiof.samuelcd.tbage.models.props.Prop;
 
 import java.util.Map;
 import java.util.Random;
@@ -99,7 +100,7 @@ public class EncounterController {
         int itemCount = player.getInventory().size();
 
         String output = "";
-        var itemsWithIndex = getItemsWithIndex(gameEngine);
+        var itemsWithIndex = getInventoryItemsWithIndex(gameEngine);
 
         gameEngine.printMessage("Choose an item to use:");
         for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
@@ -237,6 +238,127 @@ public class EncounterController {
         return null;
     }
 
+    public static Prop chooseProp(GameEngine gameEngine, Encounter encounter) {
+        boolean isTargetChosen = false;
+        Prop targetChosen = null;
+        String output = "";
+
+        if (encounter instanceof NonCombatEncounter) {
+            int propCount = ((NonCombatEncounter)encounter).getProps().size();
+            var propsWithIndex = getPropsWithIndex(encounter);
+
+            if (propCount == 0) {
+                gameEngine.printMessage("There are currently no objects to interact with.");
+                return null;
+            } else {
+                gameEngine.printMessage("Choose an object to interact with:");
+
+                for (Map.Entry<Integer, String> entry : propsWithIndex.entrySet()) {
+                    gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+                }
+
+                while (!isTargetChosen) {
+                    output = scanner.nextLine();
+                    int outputInt = 0;
+
+                    if (output.equalsIgnoreCase("back")) {
+                        gameEngine.printMessage("You are no longer about to interact with an object.");
+                        break;
+                    }
+
+                    try {
+                        outputInt = Integer.parseInt(output);
+                    } catch (Exception ex) {
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
+                        output = scanner.nextLine();
+                    }
+
+                    if (propsWithIndex.containsKey(outputInt)) {
+                        var propName = propsWithIndex.get(outputInt);
+                        targetChosen = ((NonCombatEncounter) encounter).getPropFromProps(propName);
+                        isTargetChosen = true;
+                    } else {
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
+                    }
+                }
+            }
+
+            if (isTargetChosen) {
+                return targetChosen;
+            }
+        }
+
+        return null;
+    }
+
+    public static Item chooseItem(GameEngine gameEngine, Ally ally) {
+        boolean isTargetChosen = false;
+        Item targetChosen = null;
+        String output = "";
+
+        var itemsWithIndex = getAllyItemsWithIndex(ally);
+        int itemCount = itemsWithIndex.size();
+
+        if (itemCount == 0) {
+            gameEngine.printMessage("There are currently no items to purchase.");
+            return null;
+        } else {
+            gameEngine.printMessage("Choose an item to purchase (" + (int)gameEngine.getPlayer().getCurrencyAmount()
+                    + " gold):");
+
+            for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
+                Item itemFromTable = ally.getItemFromItemTable(entry.getValue());
+                gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " + itemFromTable.getValue(), entry.getValue());
+            }
+
+            while (!isTargetChosen) {
+                output = scanner.nextLine();
+                int outputInt = 0;
+
+                if (output.equalsIgnoreCase("back")) {
+                    gameEngine.printMessage("You are no longer trading.");
+                    break;
+                }
+
+                try {
+                    outputInt = Integer.parseInt(output);
+                } catch (Exception ex) {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                    output = scanner.nextLine();
+                }
+
+                if (itemsWithIndex.containsKey(outputInt)) {
+                    var itemName = itemsWithIndex.get(outputInt);
+                    targetChosen = ally.getItemFromItemTable(itemName);
+
+                    double currentGold = gameEngine.getPlayer().getCurrencyAmount();
+                    int itemValue = targetChosen.getValue();
+                    if (itemValue > currentGold) {
+                        gameEngine.printMessage("You do not have enough gold to purchase this item.");
+                    } else {
+                        gameEngine.printMessage("Would you like to purchase this item for " + targetChosen.getValue() + " gold?");
+
+                        String answer;
+
+                        answer = scanner.nextLine();
+
+                        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                            isTargetChosen = true;
+                        }
+                    }
+                } else {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                }
+            }
+
+            if (isTargetChosen) {
+                return targetChosen;
+            }
+        }
+
+        return null;
+    }
+
     private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) {
         for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
             var enemy = entry.getValue();
@@ -311,13 +433,41 @@ public class EncounterController {
         return alliesWithIndex;
     }
 
-    private static TreeMap<Integer, String> getItemsWithIndex(GameEngine gameEngine) {
+    private static TreeMap<Integer, String> getPropsWithIndex(Encounter encounter) {
+        int propIteration = 1;
+        TreeMap<Integer, String> propsWithIndex = new TreeMap<>();
+
+        for (Map.Entry<String, Prop> entry : ((NonCombatEncounter)encounter).getProps().entrySet()) {
+            var prop = entry.getValue();
+            if (!prop.isUsed()) {
+                propsWithIndex.put(propIteration++, prop.getName());
+            }
+        }
+
+        return propsWithIndex;
+    }
+
+    private static TreeMap<Integer, String> getInventoryItemsWithIndex(GameEngine gameEngine) {
         int itemIteration = 1;
         TreeMap<Integer, String> itemsWithIndex = new TreeMap<>();
 
         for (Map.Entry<String, Item> entry : gameEngine.getPlayer().getInventory().entrySet()) {
             var item = entry.getValue();
             if (item.getOnUseBehaviour() != null) {
+                itemsWithIndex.put(itemIteration++, item.getName());
+            }
+        }
+
+        return itemsWithIndex;
+    }
+
+    private static TreeMap<Integer, String> getAllyItemsWithIndex(Ally ally) {
+        int itemIteration = 1;
+        TreeMap<Integer, String> itemsWithIndex = new TreeMap<>();
+
+        for (Map.Entry<String, Item> entry : ally.getNpcItemTable().entrySet()) {
+            var item = entry.getValue();
+            if (item.getValue() != 0) {
                 itemsWithIndex.put(itemIteration++, item.getName());
             }
         }
