@@ -1,18 +1,22 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
-import java.util.LinkedHashMap;
+import no.hiof.samuelcd.tbage.tools.ProbabilityCalculator;
+
+import java.util.*;
 
 public class RandomEncounters extends Encounters{
 
     LinkedHashMap<String, Encounter> encounterPool;
     LinkedHashMap<String, Double> encounterProbability;
+    Queue<String> encounterOrder;
     int nrOfEncounters;
 
 
     private RandomEncounters(int nrOfEncounters) {
-        this.encounterPool = new LinkedHashMap<>();
-        this.encounterProbability = new LinkedHashMap<>();
+        encounterPool = new LinkedHashMap<>();
+        encounterProbability = new LinkedHashMap<>();
         this.nrOfEncounters = nrOfEncounters;
+        encounterOrder = new LinkedList<>();
     }
 
     public static RandomEncounters create() {
@@ -30,6 +34,11 @@ public class RandomEncounters extends Encounters{
     public void addEncounter(Encounter encounter, double probability) {
         encounterPool.put(encounter.getName(), encounter);
         encounterProbability.put(encounter.getName(), probability);
+    }
+
+    public void addEncounter(Encounter encounter) {
+        encounterPool.put(encounter.getName(), encounter);
+        encounterProbability.put(encounter.getName(), 0.5);
     }
 
     public void removeEncounter(String encounterName) {
@@ -82,5 +91,46 @@ public class RandomEncounters extends Encounters{
 
     public void setNrOfEncounters(int nrOfEncounters) {
         this.nrOfEncounters = nrOfEncounters;
+    }
+
+    private void randomiseEncounters() {
+        ProbabilityCalculator<String> probabilityCalculator = new ProbabilityCalculator<>();
+        ArrayList<String> encounterOrderBeforeShuffle = new ArrayList<>();
+
+        for (Map.Entry<String, Double> encounterProbabilityEntry : encounterProbability.entrySet()) {
+            String encounterName = encounterProbabilityEntry.getKey();
+            double probability = encounterProbabilityEntry.getValue();
+            probabilityCalculator.add(probability, encounterName);
+        }
+
+        for (int i = 0; i < nrOfEncounters; i++) {
+            String chosenEncounter = probabilityCalculator.nextRandomEncounter();
+
+            if (chosenEncounter == null) {
+                break;
+            }
+
+            encounterOrderBeforeShuffle.add(chosenEncounter);
+        }
+
+        Collections.shuffle(encounterOrderBeforeShuffle);
+
+        encounterOrder.addAll(encounterOrderBeforeShuffle);
+
+    }
+
+    public Queue<String> getEncounterOrder() {
+        if (encounterOrder.isEmpty()) {
+            randomiseEncounters();
+            return encounterOrder;
+        }
+        return encounterOrder;
+    }
+
+    public Encounter getNextEncounter() {
+        if (encounterOrder.isEmpty()) {
+            randomiseEncounters();
+        }
+        return encounterPool.get(encounterOrder.poll());
     }
 }

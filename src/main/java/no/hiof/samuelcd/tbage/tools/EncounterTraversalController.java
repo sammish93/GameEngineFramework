@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounters;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
+import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 
 import java.util.Set;
 
@@ -18,6 +19,8 @@ public class EncounterTraversalController {
 
         if (encounters instanceof FixedEncounters) {
             currentEncounter = ((FixedEncounters) encounters).getInitialEncounter();
+        } else if (encounters instanceof RandomEncounters) {
+            currentEncounter = ((RandomEncounters) encounters).getNextEncounter();
         }
     }
 
@@ -29,6 +32,8 @@ public class EncounterTraversalController {
         if (encounters instanceof FixedEncounters) {
             String encounterName = currentEncounter.getEncounterFromPrompt(prompt);
             currentEncounter = ((FixedEncounters) encounters).getEncounter(encounterName);
+        } else if (encounters instanceof RandomEncounters) {
+            currentEncounter = ((RandomEncounters) encounters).getNextEncounter();
         }
     }
 

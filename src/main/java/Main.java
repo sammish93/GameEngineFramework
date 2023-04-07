@@ -4,6 +4,7 @@ import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
+import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.player.Player;
@@ -20,7 +21,7 @@ public class Main {
 
         var settings = GameSettings.create();
         var player = Player.create();
-        var encounters = FixedEncounters.create();
+        //var encounters = FixedEncounters.create();
         var encounter = CombatEncounter.create("ENCOUNTER 1");
         var encounter2 = CombatEncounter.create("ENCOUNTER 2");
         var encounter3 = CombatEncounter.create("ENCOUNTER 3");
@@ -77,11 +78,11 @@ public class Main {
         encounter.addEnemyToEnemies(enemy2);
         encounter.addEnemyToEnemies(enemy2);
 
-        encounters.addEncounter(encounter);
-
         enemy2.addItemToItemTable(item2);
         enemy2.addAbilityToAbilityPool(ability2);
         encounter2.addEnemyToEnemies(enemy2);
+        /*
+        encounters.addEncounter(encounter);
         encounters.addEncounter(encounter, encounter3, "defeated");
         encounters.addEncounter(encounter2, encounter, "previous");
         encounters.addEncounter(encounter, encounter3, "north");
@@ -89,6 +90,13 @@ public class Main {
         ArrayList<String> traversal = new ArrayList<>();
         traversal.add("climb");
         encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
+         */
+
+        var encounters = RandomEncounters.create();
+        encounters.addEncounter(encounter);
+        encounters.addEncounter(encounter2);
+        encounters.addEncounter(encounter3);
+
 
         player.addItemToInventory(item);
         player.addItemToInventory(item2);

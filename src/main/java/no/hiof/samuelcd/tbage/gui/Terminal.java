@@ -3,6 +3,8 @@ package no.hiof.samuelcd.tbage.gui;
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
+import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
+import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
 
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
@@ -31,7 +33,9 @@ public class Terminal extends GameInterface implements Closeable<String> {
             close("exit");
         }
 
-        if (encounters == null || ((FixedEncounters)encounters).getEncounters().isEmpty()) {
+        if (encounters == null ||
+                (encounters instanceof FixedEncounters) && ((FixedEncounters)encounters).getEncounters().isEmpty() ||
+                (encounters instanceof RandomEncounters) && ((RandomEncounters) encounters).getEncounterOrder().isEmpty()) {
             gameEngine.printMessage("There are no encounters present.");
         }
 
@@ -39,8 +43,8 @@ public class Terminal extends GameInterface implements Closeable<String> {
         while (!exitBool) {
             String output;
 
-            if (controller.getCurrentEncounter() != null) {
-                output = controller.getCurrentEncounter().run(gameEngine);
+            if (EncounterTraversalController.getCurrentEncounter() != null) {
+                output = EncounterTraversalController.getCurrentEncounter().run(gameEngine);
             } else {
                 gameEngine.printMessage("Game has finished. Please type 'exit'.");
                 output = scanner.nextLine();

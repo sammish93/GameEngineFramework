@@ -1,5 +1,6 @@
 package no.hiof.samuelcd.tbage.tools;
 
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
@@ -52,6 +53,32 @@ public class ProbabilityCalculator<T> {
             return mapOfNonGuaranteedValues.higherEntry(value).getValue();
         }
     }
+
+    public T nextRandomEncounter() {
+        if (mapOfGuaranteedValues.isEmpty()) {
+            isGuaranteedValuePresent = false;
+        }
+
+        if (isGuaranteedValuePresent) {
+            double value = random.nextDouble() * totalGuaranteedValues;
+            Map.Entry<Double, T> entry = mapOfGuaranteedValues.higherEntry(value);
+            if (entry != null) {
+                mapOfGuaranteedValues.remove(entry.getKey(), entry.getValue());
+                return entry.getValue();
+            }
+            return null;
+
+        } else {
+            double value = random.nextDouble() * totalNonGuaranteedValues;
+            Map.Entry<Double, T> entry = mapOfNonGuaranteedValues.higherEntry(value);
+            if (entry != null) {
+                mapOfNonGuaranteedValues.remove(entry.getKey(), entry.getValue());
+                return entry.getValue();
+            }
+            return null;
+        }
+    }
+
     public static boolean isDropped(Random random, int chanceUpToOneHundred) {
         int chance = random.nextInt(100);
 
