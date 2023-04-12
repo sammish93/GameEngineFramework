@@ -159,6 +159,8 @@ public class CombatEncounter extends Encounter {
                         }
                     } else if (value.equalsIgnoreCase("status")) {
                         printEnemies(gameEngine);
+                    } else if (value.equalsIgnoreCase("interact")) {
+                        gameEngine.printMessage("There is no one to interact with.");
                     } else if (value.equalsIgnoreCase("investigate")) {
                         if (!getProps().isEmpty()) {
                             Prop propToBeUsed = EncounterController.chooseProp(gameEngine, this);

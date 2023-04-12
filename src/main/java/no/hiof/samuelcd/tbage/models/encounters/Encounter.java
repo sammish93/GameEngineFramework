@@ -264,6 +264,11 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
         StringParser.addVerb(verb);
     }
 
+    public void addNavigationalNoun(String noun) {
+        navigationOptions.put(noun, "defeated");
+        StringParser.addNoun(noun);
+    }
+
     private void addDefaultNavigationalVerbs() {
         addNavigationalVerb("go");
         addNavigationalVerb("travel");
@@ -300,9 +305,9 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
             gameEngine.printMessageFormatted("%-15s %s\n", "Attack", "Starts a new round of combat.");
         }
         if (this instanceof NonCombatEncounter) {
-            gameEngine.printMessageFormatted("%-15s %s\n", "Investigate", "Investigates your immediate surroundings.");
             gameEngine.printMessageFormatted("%-15s %s\n", "Interact", "Interact with non-hostile beings.");
         }
+        gameEngine.printMessageFormatted("%-15s %s\n", "Investigate", "Investigates your immediate surroundings.");
         gameEngine.printMessageFormatted("%-15s %s\n", "Back", "Exits the current activity when possible.");
         gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>", "Navigates to another encounter when possible (e.g. 'north').");
     }

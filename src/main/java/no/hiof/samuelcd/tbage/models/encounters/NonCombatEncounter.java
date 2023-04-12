@@ -163,12 +163,10 @@ public class NonCombatEncounter extends Encounter {
 
                     if (noun.equalsIgnoreCase("defeated")) {
                         gameEngine.printMessage("You haven't defeated this encounter yet!");
-                    } else if (!isDefeated()) {
-                        setDefeated(true);
-                        return noun;
                     } else if (getNavigationOptions().containsKey(noun) && !getNavigationalVerbs().contains(verb)) {
                         gameEngine.printMessage("Try another means of traversal.");
                     } else if (getNavigationOptions().containsKey(noun) && getNavigationalVerbs().contains(verb)) {
+                        setDefeated(true);
                         return noun;
                     } else {
                         gameEngine.printMessage("Try something else.");

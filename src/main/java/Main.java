@@ -189,12 +189,13 @@ public class Main {
         encounter.setOnDefeatedMessage("The skeletons are reduced to a pile of bone meal. You find a skeleton key in " +
                 "the ash. Maybe it will fit in the door to the north..");
         encounter3.setIntroductoryMessage("You have reached the end of the game!");
-        var encounters = FixedEncounters.create();
         encounter.addPropToProps(prop2);
         encounter.addPropToProps(prop3);
 
-        //encounters.addEncounter(encounter);
-        //encounters.addEncounter(encounter, nCoEncounter, "defeated");
+        // FIXED TRAVERSAL
+
+        var encounters = FixedEncounters.create();
+
         encounters.addEncounter(nCoEncounter);
         encounters.addEncounter(nCoEncounter, nCoEncounter2, "defeated");
         encounters.addEncounter(nCoEncounter2, encounter, "hatch");
@@ -205,23 +206,27 @@ public class Main {
         encounters.addEncounter(encounter, encounter2, "door");
         encounters.addEncounter(encounter2, encounter3);
 
-        /*
-        encounters.addEncounter(encounter2, encounter, "previous");
-        encounters.addEncounter(encounter, encounter3, "north");
-        encounters.addEncounter(encounter3, encounter, "ladder");
-         */
-        ArrayList<String> traversal = new ArrayList<>();
-        traversal.add("climb");
+        //ArrayList<String> traversal = new ArrayList<>();
+        //traversal.add("climb");
         //encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
 
 
 
 
         /*
+
+        // RANDOM TRAVERSAL
+
         var encounters = RandomEncounters.create();
+        nCoEncounter2.removeDefaultNavigationalVerbs();
+        nCoEncounter2.addNavigationalVerb("open");
+        nCoEncounter2.addNavigationalNoun("hatch");
+        encounter.removeDefaultNavigationalVerbs();
+        encounter.addNavigationalVerb("unlock");
+        encounter.addNavigationalNoun("door");
+        encounters.addEncounter(nCoEncounter);
+        encounters.addEncounter(nCoEncounter2);
         encounters.addEncounter(encounter);
-        encounters.addEncounter(encounter2);
-        encounters.addEncounter(encounter3);
         */
 
 
