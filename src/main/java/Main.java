@@ -190,6 +190,9 @@ public class Main {
                 "the ash. Maybe it will fit in the door to the north..");
         encounter3.setIntroductoryMessage("You have reached the end of the game!");
         var encounters = FixedEncounters.create();
+        encounter.addPropToProps(prop2);
+        encounter.addPropToProps(prop3);
+
         //encounters.addEncounter(encounter);
         //encounters.addEncounter(encounter, nCoEncounter, "defeated");
         encounters.addEncounter(nCoEncounter);

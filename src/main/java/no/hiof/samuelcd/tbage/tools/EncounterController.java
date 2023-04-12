@@ -244,49 +244,48 @@ public class EncounterController {
         Prop targetChosen = null;
         String output = "";
 
-        if (encounter instanceof NonCombatEncounter) {
-            int propCount = ((NonCombatEncounter)encounter).getProps().size();
-            var propsWithIndex = getPropsWithIndex(encounter);
 
-            if (propCount == 0) {
-                gameEngine.printMessage("There are currently no objects to interact with.");
-                return null;
-            } else {
-                gameEngine.printMessage("Choose an object to interact with:");
+        int propCount = encounter.getProps().size();
+        var propsWithIndex = getPropsWithIndex(encounter);
 
-                for (Map.Entry<Integer, String> entry : propsWithIndex.entrySet()) {
-                    gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+        if (propCount == 0) {
+            gameEngine.printMessage("There are currently no objects to interact with.");
+            return null;
+        } else {
+            gameEngine.printMessage("Choose an object to interact with:");
+
+            for (Map.Entry<Integer, String> entry : propsWithIndex.entrySet()) {
+                gameEngine.printMessage("\t" + entry.getKey() + ". " + entry.getValue());
+            }
+
+            while (!isTargetChosen) {
+                output = scanner.nextLine();
+                int outputInt = 0;
+
+                if (output.equalsIgnoreCase("back")) {
+                    gameEngine.printMessage("You are no longer about to interact with an object.");
+                    break;
                 }
 
-                while (!isTargetChosen) {
+                try {
+                    outputInt = Integer.parseInt(output);
+                } catch (Exception ex) {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
                     output = scanner.nextLine();
-                    int outputInt = 0;
+                }
 
-                    if (output.equalsIgnoreCase("back")) {
-                        gameEngine.printMessage("You are no longer about to interact with an object.");
-                        break;
-                    }
-
-                    try {
-                        outputInt = Integer.parseInt(output);
-                    } catch (Exception ex) {
-                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
-                        output = scanner.nextLine();
-                    }
-
-                    if (propsWithIndex.containsKey(outputInt)) {
-                        var propName = propsWithIndex.get(outputInt);
-                        targetChosen = ((NonCombatEncounter) encounter).getPropFromProps(propName);
-                        isTargetChosen = true;
-                    } else {
-                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
-                    }
+                if (propsWithIndex.containsKey(outputInt)) {
+                    var propName = propsWithIndex.get(outputInt);
+                    targetChosen = encounter.getPropFromProps(propName);
+                    isTargetChosen = true;
+                } else {
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
                 }
             }
+        }
 
-            if (isTargetChosen) {
-                return targetChosen;
-            }
+        if (isTargetChosen) {
+            return targetChosen;
         }
 
         return null;
@@ -438,7 +437,7 @@ public class EncounterController {
         int propIteration = 1;
         TreeMap<Integer, String> propsWithIndex = new TreeMap<>();
 
-        for (Map.Entry<String, Prop> entry : ((NonCombatEncounter)encounter).getProps().entrySet()) {
+        for (Map.Entry<String, Prop> entry : encounter.getProps().entrySet()) {
             var prop = entry.getValue();
             if (!prop.isUsed()) {
                 propsWithIndex.put(propIteration++, prop.getName());

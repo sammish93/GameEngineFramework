@@ -5,6 +5,7 @@ import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
+import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
@@ -23,8 +24,8 @@ public class CombatEncounter extends Encounter {
     private int turnCount = 1;
 
 
-    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
-        super(name, imagePath, featChecks, featRewards, navigationOptions);
+    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
+        super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
         enemies = new TreeMap<>();
         duplicateEnemiesInEnemies = new TreeMap<>();
@@ -32,11 +33,11 @@ public class CombatEncounter extends Encounter {
 
     public static CombatEncounter create() {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null);
+        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null, null);
     }
 
     public static CombatEncounter create(String name) {
-        return new CombatEncounter(name,null, null, null, null);
+        return new CombatEncounter(name,null, null, null, null, null);
     }
 
     public void onTurn() {
@@ -159,7 +160,14 @@ public class CombatEncounter extends Encounter {
                     } else if (value.equalsIgnoreCase("status")) {
                         printEnemies(gameEngine);
                     } else if (value.equalsIgnoreCase("investigate")) {
-                        gameEngine.printMessage("There is currently nothing to investigate.");
+                        if (!getProps().isEmpty()) {
+                            Prop propToBeUsed = EncounterController.chooseProp(gameEngine, this);
+                            if (propToBeUsed != null) {
+                                propToBeUsed.onUse(gameEngine);
+                            }
+                        } else {
+                            gameEngine.printMessage("There is currently nothing to investigate");
+                        }
                     } else if (value.equalsIgnoreCase("attack")) {
                         if (isDefeated()) {
                             gameEngine.printMessage("There are no enemies living!");

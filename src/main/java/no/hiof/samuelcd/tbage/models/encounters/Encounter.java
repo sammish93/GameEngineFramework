@@ -6,6 +6,8 @@ import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
+import no.hiof.samuelcd.tbage.models.npcs.Enemy;
+import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.io.*;
@@ -24,19 +26,21 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
     private TreeMap<String, Feat> featRewards;
     private TreeMap<String, String> navigationOptions;
     private ArrayList<String> navigationalVerbs;
+    private TreeMap<String, Prop> props;
     private Useable onInitiationBehaviour;
     private boolean isDefeated = false;
     private boolean isIntroductionPrinted = false;
     private boolean isBacktracking = false;
 
 
-    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions) {
+    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
         this.name = name;
         this.imagePath = imagePath;
 
         this.featChecks = Objects.requireNonNullElseGet(featChecks, TreeMap::new);
         this.featRewards = Objects.requireNonNullElseGet(featRewards, TreeMap::new);
         this.navigationOptions = Objects.requireNonNullElseGet(navigationOptions, TreeMap::new);
+        this.props = Objects.requireNonNullElseGet(props, TreeMap::new);
         navigationalVerbs = new ArrayList<>();
         introductoryMessage = "";
         onDefeatedMessage = "";
@@ -113,6 +117,35 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
 
     public void removeFeatFromFeatRewards(String featName) {
         featRewards.remove(featName);
+    }
+
+    public TreeMap<String, Prop> getProps() {
+        return props;
+    }
+
+    public void setProps(TreeMap<String, Prop> props) {
+        this.props = props;
+    }
+
+    public Prop getPropFromProps(String propName) {
+        return props.get(propName);
+    }
+
+    public void addPropToProps(Prop prop) {
+        try {
+            Prop propCloned = (Prop)prop.clone();
+            props.put(propCloned.getName(), propCloned);
+        } catch (CloneNotSupportedException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void removePropFromProps(Prop prop) {
+        props.remove(prop.getName());
+    }
+
+    public void removePropFromProps(String propName) {
+        props.remove(propName);
     }
 
     public String getIntroductoryMessage() {

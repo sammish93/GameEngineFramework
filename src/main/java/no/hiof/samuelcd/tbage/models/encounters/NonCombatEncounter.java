@@ -21,13 +21,13 @@ public class NonCombatEncounter extends Encounter {
 
     private int allyCount;
     private TreeMap<String, Ally> allies;
-    private TreeMap<String, Prop> props;
 
-    private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, Prop> props, TreeMap<String, String> navigationOptions) {
-        super(name, imagePath, featChecks, featRewards, navigationOptions);
+
+    private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
+        super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
         this.allies = Objects.requireNonNullElseGet(allies, TreeMap::new);
-        this.props = Objects.requireNonNullElseGet(props, TreeMap::new);
+
     }
 
     public static NonCombatEncounter create() {
@@ -61,30 +61,6 @@ public class NonCombatEncounter extends Encounter {
 
     public void removeAllyFromAllies(String allyName) {
         allies.remove(allyName);
-    }
-
-    public TreeMap<String, Prop> getProps() {
-        return props;
-    }
-
-    public void setProps(TreeMap<String, Prop> props) {
-        this.props = props;
-    }
-
-    public Prop getPropFromProps(String propName) {
-        return props.get(propName);
-    }
-
-    public void addPropToProps(Prop prop) {
-        props.put(prop.getName(), prop);
-    }
-
-    public void removePropFromProps(Prop prop) {
-        props.remove(prop.getName());
-    }
-
-    public void removePropFromProps(String propName) {
-        props.remove(propName);
     }
 
     @Override
