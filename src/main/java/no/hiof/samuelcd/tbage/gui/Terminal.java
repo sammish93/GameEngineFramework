@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.gui;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
 import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
 import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
@@ -13,7 +14,7 @@ public class Terminal extends GameInterface implements Closeable<String> {
 
     boolean exitBool = false;
 
-    public Terminal(GameEngine gameEngine) {
+    public Terminal(GameEngine gameEngine) throws InventoryFullException {
         super(gameEngine);
 
         run();
@@ -25,7 +26,7 @@ public class Terminal extends GameInterface implements Closeable<String> {
         }
     }
 
-    private void run() {
+    private void run() throws InventoryFullException {
         var controller = getEncounterController();
         gameEngine.printMessage("I will run in a terminal window until user types 'exit'.");
 

@@ -1,5 +1,6 @@
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InventoryFullException {
 
         var settings = GameSettings.create();
         var player = Player.create();
@@ -33,7 +34,6 @@ public class Main {
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
         enemy.addItemToItemTable(item);
-
         enemy.setMeleeChancePerTurn(0.5);
 
         Useable onUse = (gameEngine) -> {
@@ -74,6 +74,7 @@ public class Main {
 
 
         var enemy2 = Enemy.create("Skeleton Minion");
+        enemy2.setCurrencyReceivedOnDeath(12);
         var ability2 = Ability.create("Fireball");
         var item2 = Item.create("Mithril Javelin");
         item2.setNumberOfUses(0);
@@ -187,6 +188,7 @@ public class Main {
                 "a threatening form. Ready your weapon!.");
         encounter.setOnDefeatedMessage("The skeletons are reduced to a pile of bone meal. You find a skeleton key in " +
                 "the ash. Maybe it will fit in the door to the north..");
+        encounter3.setIntroductoryMessage("You have reached the end of the game!");
         var encounters = FixedEncounters.create();
         //encounters.addEncounter(encounter);
         //encounters.addEncounter(encounter, nCoEncounter, "defeated");

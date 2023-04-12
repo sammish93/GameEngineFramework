@@ -13,18 +13,20 @@ public class Enemy extends NonPlayableCharacter {
     private double maxHealth;
     private double currentHealth;
     private double[] damage = new double[2];
+    private double currencyReceivedOnDeath;
     private String enemyType;
     private boolean isMelee;
     private double meleeChancePerTurn;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, double currencyReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
         super(name, abilities, items);
 
         this.maxHealth = maxHealth;
         this.currentHealth = maxHealth;
         this.damage[0] = minDamage;
         this.damage[1] = maxDamage;
+        this.currencyReceivedOnDeath = currencyReceivedOnDeath;
         this.enemyType = enemyType;
         this.isMelee = isMelee;
         this.meleeChancePerTurn = meleeChancePerTurn;
@@ -32,15 +34,15 @@ public class Enemy extends NonPlayableCharacter {
 
     public static Enemy create() {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2, null, null, null, true, 1);
+        return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2, 0.0, null, null, null, true, 1);
     }
 
     public static Enemy create(String name) {
-        return new Enemy(name, 10, 1, 3, null, null, null, true, 1);
+        return new Enemy(name, 10, 1, 3, 0.0, null, null, null, true, 1);
     }
 
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
-        return new Enemy(name, health, minDamage, maxDamage, abilities, items, enemyType, isMelee, meleeChancePerTurn);
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, double goldReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
+        return new Enemy(name, health, minDamage, maxDamage, goldReceivedOnDeath, abilities, items, enemyType, isMelee, meleeChancePerTurn);
     }
 
     @Override
@@ -83,6 +85,14 @@ public class Enemy extends NonPlayableCharacter {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public double getCurrencyReceivedOnDeath() {
+        return currencyReceivedOnDeath;
+    }
+
+    public void setCurrencyReceivedOnDeath(double currencyReceivedOnDeath) {
+        this.currencyReceivedOnDeath = currencyReceivedOnDeath;
     }
 
     public String getEnemyType() {

@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
@@ -13,7 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public abstract class Encounter implements Comparable<Encounter>, Serializable, Useable {
+public abstract class Encounter implements Comparable<Encounter>, Serializable{
     private String name;
     private String imagePath;
     private String introductoryMessage;
@@ -42,11 +43,6 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
         hint = "";
 
         addDefaultNavigationalVerbs();
-    }
-
-    public void onUse(GameEngine gameEngine) {
-        // Item does this when it is used.
-        onInitiationBehaviour.onUse(gameEngine);
     }
 
     public void onInitiation(GameEngine gameEngine) {
@@ -169,7 +165,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable, 
         return (Encounter)objectInputStream.readObject();
     }
 
-    public abstract String run(GameEngine gameEngine);
+    public abstract String run(GameEngine gameEngine) throws InventoryFullException;
 
     public TreeMap<String, String> getNavigationOptions() {
         return navigationOptions;

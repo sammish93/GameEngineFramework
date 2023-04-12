@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
@@ -80,10 +81,15 @@ public class Ally extends NonPlayableCharacter implements Useable {
                     Item item = EncounterController.chooseItem(gameEngine, this);
                     if (item != null) {
                         var player = gameEngine.getPlayer();
-                        player.addItemToInventory(item);
-                        player.subtractFromCurrencyAmount(item.getValue());
-                        gameEngine.printMessage(item.getName() + " is added to your inventory.");
-                        gameEngine.printMessage("You now have " + (int) player.getCurrencyAmount() + " gold remaining.");
+                        try {
+                            player.addItemToInventory(item);
+                            player.subtractFromCurrencyAmount(item.getValue());
+                            gameEngine.printMessage(item.getName() + " is added to your inventory.");
+                            gameEngine.printMessage("You now have " + (int) player.getCurrencyAmount() + " gold remaining.");
+
+                        } catch (InventoryFullException ex) {
+                            gameEngine.printMessage(ex.getMessage());
+                        }
                     }
                 }
 

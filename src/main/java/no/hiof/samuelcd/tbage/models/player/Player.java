@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.player;
 
 import com.sun.source.tree.Tree;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
@@ -66,7 +67,7 @@ public class Player implements Serializable {
         return inventory.get(itemName);
     }
 
-    public void addItemToInventory(Item item) {
+    public void addItemToInventory(Item item) throws InventoryFullException {
         if (isSpaceInInventory()) {
 
             try {
@@ -96,19 +97,21 @@ public class Player implements Serializable {
                     inventory.put(itemCloned.getName(), itemCloned);
                 }
 
-                inventorySlots++;
             } catch (CloneNotSupportedException ex) {
                 ex.printStackTrace();
             }
+        } else {
+            throw new InventoryFullException("You cannot add " + item.getName() + " to your inventory because" +
+                    " your inventory is full.");
         }
     }
 
-    public void addItemToInventory(String itemName) {
+    public void addItemToInventory(String itemName) throws InventoryFullException {
         Item item = getItemFromInventory(itemName);
         addItemToInventory(item);
     }
 
-    public void removeItemFromInventory(Item item) {
+    public void removeItemFromInventory(Item item) throws InventoryFullException {
 
         int iteration = 1;
 
@@ -282,6 +285,10 @@ public class Player implements Serializable {
         if (currencyAmount < 0) {
             currencyAmount = 0;
         }
+    }
+
+    public void addToCurrencyAmount(int i) {
+        currencyAmount += i;
     }
 
     public void subtractFromCurrentHealth(int i) {

@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.tools;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
@@ -30,7 +31,7 @@ public class EncounterController {
         this.encounter = encounter;
     }
 
-    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) {
+    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) throws InventoryFullException {
         var player = gameEngine.getPlayer();
         boolean isEnemyChosen = false;
         Enemy enemyChosen = null;
@@ -93,7 +94,7 @@ public class EncounterController {
         }
     }
 
-    public static void useItem(GameEngine gameEngine, Encounter encounter) {
+    public static void useItem(GameEngine gameEngine, Encounter encounter) throws InventoryFullException {
         var player = gameEngine.getPlayer();
         boolean isItemChosen = false;
         Item itemChosen = null;
@@ -482,15 +483,19 @@ public class EncounterController {
         return random.nextInt(maxDamage - minDamage) + minDamage;
     }
 
-    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) {
+    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InventoryFullException {
 
         var random = new Random();
 
         Player player = gameEngine.getPlayer();
 
+        double totalCurrencyReceived = 0;
+
         if (encounter instanceof CombatEncounter) {
             for (Map.Entry<String, Enemy> enemyEntry : ((CombatEncounter) encounter).getEnemies().entrySet()) {
                 Enemy enemy = enemyEntry.getValue();
+
+                totalCurrencyReceived += enemy.getCurrencyReceivedOnDeath();
 
                 if (!enemy.getNpcItemTable().isEmpty()) {
 
@@ -500,11 +505,20 @@ public class EncounterController {
                         if ((item.getDropChance() * 100) == 0 ||
                                 ProbabilityCalculator.isDropped(random, (int)(item.getDropChance() * 100))) {
 
-                            gameEngine.printMessage("You received " + item.getName() + " from " + enemy.getName());
-                            player.addItemToInventory(item);
+                            try {
+                                player.addItemToInventory(item);
+                                gameEngine.printMessage("You received " + item.getName() + " from " + enemy.getName() + ".");
+                            } catch (InventoryFullException ex) {
+                                gameEngine.printMessage(ex.getMessage());
+                            }
+
                         }
                     }
                 }
+            }
+            if (totalCurrencyReceived > 0) {
+                gameEngine.printMessage("You received " + (int)totalCurrencyReceived + " gold.");
+                player.addToCurrencyAmount((int)totalCurrencyReceived);
             }
         }
     }

@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
@@ -100,7 +101,7 @@ public class CombatEncounter extends Encounter {
     }
 
     @Override
-    public String run(GameEngine gameEngine) {
+    public String run(GameEngine gameEngine) throws InventoryFullException {
         String input = "";
         TreeMap<String, String> inputMap = new TreeMap<>();
         int turnNumber = 1;

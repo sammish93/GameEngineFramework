@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.GamePlatform;
+import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.gui.GameInterface;
 import no.hiof.samuelcd.tbage.gui.Swing;
 import no.hiof.samuelcd.tbage.gui.Terminal;
@@ -69,7 +70,7 @@ public class GameEngine implements Serializable {
     }
 
 
-    public GameInterface run() {
+    public GameInterface run() throws InventoryFullException {
         if (platform.equals(GamePlatform.TERMINAL)) {
             return new Terminal(this);
         } else if (platform.equals(GamePlatform.SWING)) {
