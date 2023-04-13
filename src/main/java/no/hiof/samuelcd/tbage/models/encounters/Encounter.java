@@ -4,10 +4,8 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
-import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
-import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 

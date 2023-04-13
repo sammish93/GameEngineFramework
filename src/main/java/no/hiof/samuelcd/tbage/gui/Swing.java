@@ -1,9 +1,7 @@
 package no.hiof.samuelcd.tbage.gui;
+
 import no.hiof.samuelcd.tbage.GameEngine;
-import no.hiof.samuelcd.tbage.GameSettings;
 import no.hiof.samuelcd.tbage.interfaces.Closeable;
-import no.hiof.samuelcd.tbage.models.encounters.Encounters;
-import no.hiof.samuelcd.tbage.models.player.Player;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

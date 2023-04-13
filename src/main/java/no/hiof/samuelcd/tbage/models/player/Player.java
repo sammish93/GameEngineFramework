@@ -1,6 +1,5 @@
 package no.hiof.samuelcd.tbage.models.player;
 
-import com.sun.source.tree.Tree;
 import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;

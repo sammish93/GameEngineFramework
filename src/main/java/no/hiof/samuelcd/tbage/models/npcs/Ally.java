@@ -5,11 +5,9 @@ import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
-import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 

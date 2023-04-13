@@ -5,7 +5,6 @@ import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class FixedEncounters extends Encounters {
 

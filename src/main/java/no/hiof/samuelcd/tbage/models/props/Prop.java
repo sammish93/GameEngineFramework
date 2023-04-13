@@ -2,13 +2,8 @@ package no.hiof.samuelcd.tbage.models.props;
 
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
-import no.hiof.samuelcd.tbage.models.abilities.Ability;
-import no.hiof.samuelcd.tbage.models.items.Item;
-import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.TreeMap;
 import java.util.UUID;
 
 public class Prop implements Serializable, Cloneable, Useable {

@@ -5,7 +5,6 @@ import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
-import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.UUID;

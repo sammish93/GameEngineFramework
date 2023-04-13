@@ -4,7 +4,6 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
-import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
@@ -14,7 +13,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import static java.lang.String.format;
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
 public class CombatEncounter extends Encounter {
