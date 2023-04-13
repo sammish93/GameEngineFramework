@@ -16,7 +16,7 @@ public class StringParser {
     private static ArrayList<String> commands = new ArrayList<>();
 
     public static TreeMap<String, String> read(GameEngine gameEngine, String input) {
-        String[] splitString = input.split("\\s+");
+        String[] splitString = input.trim().split("\\s+");
         TreeMap<String, String> map = new TreeMap<>();
         boolean isValid = false;
 
@@ -55,7 +55,7 @@ public class StringParser {
     }
 
     public static void addCommand(String command) {
-        String[] splitString = command.split("\\s+");
+        String[] splitString = command.trim().split("\\s+");
 
         if (splitString.length == 1) {
             commands.add(splitString[0]);
@@ -63,7 +63,7 @@ public class StringParser {
     }
 
     public static void addNoun(String noun) {
-        String[] splitString = noun.split("\\s+");
+        String[] splitString = noun.trim().split("\\s+");
 
         if (splitString.length == 1) {
             nouns.add(splitString[0]);
@@ -71,7 +71,7 @@ public class StringParser {
     }
 
     public static void addVerb(String verb) {
-        String[] splitString = verb.split("\\s+");
+        String[] splitString = verb.trim().split("\\s+");
 
         if (splitString.length == 1) {
             verbs.add(splitString[0]);
