@@ -12,6 +12,8 @@ import java.awt.event.KeyEvent;
 public class Swing extends GameInterface implements Closeable<JFrame> {
 
     JFrame exampleFrame;
+
+
     public Swing(GameEngine gameEngine) {
         super(gameEngine);
 
@@ -28,6 +30,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
         close(exampleFrame);
     }
+
 
     public void close(JFrame jFrameToClose) {
         jFrameToClose.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(

@@ -12,12 +12,12 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 public class Prop implements Serializable, Cloneable, Useable {
-    private String name = "defaultPropName";
+    private String name;
     private Useable onUseBehaviour;
     private boolean isUsed;
 
 
-    public Prop(String name) {
+    private Prop(String name) {
         if (name != null) {
             this.setName(name);
         }
@@ -34,11 +34,16 @@ public class Prop implements Serializable, Cloneable, Useable {
         return new Prop(name);
     }
 
+
     public void onUse(GameEngine gameEngine) {
         // Item does this when it is used.
         if (!isUsed) {
             if (getOnUseBehaviour() != null) {
-                onUseBehaviour.onUse(gameEngine);
+                try {
+                    onUseBehaviour.onUse(gameEngine);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
                 isUsed = true;
             } else {
                 gameEngine.printMessage("Interacting with this object does nothing.");
@@ -48,6 +53,10 @@ public class Prop implements Serializable, Cloneable, Useable {
             gameEngine.printMessage("You have already investigated this object.");
         }
 
+    }
+
+    public boolean isUseable() {
+        return (onUseBehaviour != null);
     }
 
     public void setOnUseBehaviour(Useable useable) {
@@ -78,5 +87,12 @@ public class Prop implements Serializable, Cloneable, Useable {
     public Object clone() throws CloneNotSupportedException
     {
         return super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "Prop Name: '" + name + "', " +
+                "Is Useable: " + isUseable() + ", " +
+                "Is Used: " + isUsed;
     }
 }

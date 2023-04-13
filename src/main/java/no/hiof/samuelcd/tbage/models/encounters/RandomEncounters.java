@@ -1,5 +1,6 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.tools.ProbabilityCalculator;
 
 import java.util.*;
@@ -14,35 +15,39 @@ public class RandomEncounters extends Encounters{
     private int encountersRemaining;
 
 
-    private RandomEncounters(int nrOfEncounters) {
+    private RandomEncounters(int nrOfEncounters) throws InvalidValueException {
         encounterPool = new LinkedHashMap<>();
         encounterProbability = new LinkedHashMap<>();
-        this.nrOfEncounters = nrOfEncounters;
+
+        if (nrOfEncounters > 0) {
+            this.nrOfEncounters = nrOfEncounters;
+        } else {
+            throw new InvalidValueException("Value " + nrOfEncounters + " is invalid. Enter an integer " +
+                    "value greater than 0.");
+        }
+
         encounterOrder = new LinkedList<>();
         isCompleted = false;
         encountersRemaining = nrOfEncounters;
     }
 
-    public static RandomEncounters create() {
+    public static RandomEncounters create() throws InvalidValueException {
         return new RandomEncounters(10);
     }
 
-    public static RandomEncounters create(int nrOfEncounters) {
+    public static RandomEncounters create(int nrOfEncounters) throws InvalidValueException {
         return new RandomEncounters(nrOfEncounters);
     }
 
-    private void randomiseEncounters(int nrOfEncounters) {
-        // Takes n number of encounters from the given encounterPool and places them into a LinkedHashMap.
+
+    public void addEncounter(Encounter encounter) {
+        encounterPool.put(encounter.getName(), encounter);
+        encounterProbability.put(encounter.getName(), 0.5);
     }
 
     public void addEncounter(Encounter encounter, double probability) {
         encounterPool.put(encounter.getName(), encounter);
         encounterProbability.put(encounter.getName(), probability);
-    }
-
-    public void addEncounter(Encounter encounter) {
-        encounterPool.put(encounter.getName(), encounter);
-        encounterProbability.put(encounter.getName(), 0.5);
     }
 
     public void removeEncounter(String encounterName) {
@@ -89,12 +94,17 @@ public class RandomEncounters extends Encounters{
         encounterProbability.put(encounter.getName(), probability);
     }
 
-    public int getNrOfEncounters() {
+    public int getNumberOfEncounters() {
         return nrOfEncounters;
     }
 
-    public void setNrOfEncounters(int nrOfEncounters) {
-        this.nrOfEncounters = nrOfEncounters;
+    public void setNumberOfEncounters(int nrOfEncounters) throws InvalidValueException {
+        if (nrOfEncounters > 0) {
+            this.nrOfEncounters = nrOfEncounters;
+        } else {
+            throw new InvalidValueException("Value " + nrOfEncounters + " is invalid. Enter an integer " +
+                    "value greater than 0.");
+        }
     }
 
     private void randomiseEncounters() {
@@ -120,7 +130,6 @@ public class RandomEncounters extends Encounters{
         Collections.shuffle(encounterOrderBeforeShuffle);
 
         encounterOrder.addAll(encounterOrderBeforeShuffle);
-
     }
 
     public Queue<String> getEncounterOrder() {
@@ -146,5 +155,17 @@ public class RandomEncounters extends Encounters{
             }
             return encounterPool.get(encounterOrder.poll());
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Random Encounters In Order:");
+
+        for (String encounterName : getEncounterOrder()) {
+            sb.append("\n" + encounterPool.get(encounterName).toString());
+        }
+
+        return sb.toString();
     }
 }

@@ -1,14 +1,17 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class FixedEncounters extends Encounters {
 
     LinkedHashMap<String, Encounter> encounters;
     private Encounter initialEncounter;
+
 
     private FixedEncounters() {
         encounters = new LinkedHashMap<>();
@@ -18,24 +21,20 @@ public class FixedEncounters extends Encounters {
         return new FixedEncounters();
     }
 
-    private void linkEncounters() {
-        // Takes all vertexes and edges and links them together into a single structure.
-    }
 
     public void addEncounter(Encounter encounter) {
         initialEncounter = encounter;
         encounters.put(encounter.getName(), encounter);
-        // Adds an initial encounter vertex.
     }
 
-    public void addEncounter(Encounter encounterFrom, Encounter encounterTo, String event) {
+    public void addEncounter(Encounter encounterFrom, Encounter encounterTo, String event) throws InvalidValueException {
         encounterFrom.setNavigationOption(event, encounterTo.getName());
         encounters.put(encounterTo.getName(), encounterTo);
         StringParser.addNoun(event);
         // Encounter x progresses to encounter y if event is triggered.
     }
 
-    public void addEncounter(Encounter encounterFrom, Encounter encounterTo) {
+    public void addEncounter(Encounter encounterFrom, Encounter encounterTo) throws InvalidValueException {
         String defaultEvent = "defeated";
         encounterFrom.setNavigationOption(defaultEvent, encounterTo.getName());
         encounters.put(encounterTo.getName(), encounterTo);
@@ -53,5 +52,17 @@ public class FixedEncounters extends Encounters {
 
     public LinkedHashMap<String, Encounter> getEncounters() {
         return encounters;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Fixed Encounters:");
+
+        for (Map.Entry<String, Encounter> encounterSet : encounters.entrySet()) {
+            sb.append("\n" + encounterSet.getValue().toString());
+        }
+
+        return sb.toString();
     }
 }

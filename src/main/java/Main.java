@@ -1,5 +1,6 @@
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException, InventoryFullException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, InventoryFullException, InvalidValueException {
 
         var settings = GameSettings.create();
         var player = Player.create();
@@ -34,7 +35,7 @@ public class Main {
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
         enemy.addItemToItemTable(item);
-        enemy.setMeleeChancePerTurn(0.5);
+        enemy.setMeleeChancePerTurn(0);
 
         Useable onUse = (gameEngine) -> {
             var playerthing = gameEngine.getPlayer();
@@ -69,7 +70,7 @@ public class Main {
             gameEngine.printMessage("You have taken 5 damage!");
         };
         ability.setOnUseBehaviour(onUse3);
-        ability.setAbilityProbabilityPerTurn(0.6);
+        ability.setAbilityProbabilityPerTurn(0.8);
 
 
 
@@ -192,6 +193,9 @@ public class Main {
         encounter.addPropToProps(prop2);
         encounter.addPropToProps(prop3);
 
+
+
+
         // FIXED TRAVERSAL
 
         var encounters = FixedEncounters.create();
@@ -206,6 +210,9 @@ public class Main {
         encounters.addEncounter(encounter, encounter2, "door");
         encounters.addEncounter(encounter2, encounter3);
 
+
+
+
         //ArrayList<String> traversal = new ArrayList<>();
         //traversal.add("climb");
         //encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
@@ -213,8 +220,8 @@ public class Main {
 
 
 
-        /*
 
+        /*
         // RANDOM TRAVERSAL
 
         var encounters = RandomEncounters.create();
@@ -227,7 +234,7 @@ public class Main {
         encounters.addEncounter(nCoEncounter);
         encounters.addEncounter(nCoEncounter2);
         encounters.addEncounter(encounter);
-        */
+
 
 
         player.addItemToInventory(item);
@@ -235,6 +242,8 @@ public class Main {
         player.addItemToInventory(item2);
         player.addItemToInventory(hintItem);
         player.setCurrencyAmount(1000.0);
+         */
+
 
 
         var game = GameEngine.create(settings, player, encounters);

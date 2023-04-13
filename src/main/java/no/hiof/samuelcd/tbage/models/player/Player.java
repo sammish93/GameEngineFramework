@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.player;
 
 import com.sun.source.tree.Tree;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
@@ -11,7 +12,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public class Player implements Serializable {
-    // Class that will hold information about a player throughout the game.
+
     private int inventorySlots ;
     private TreeMap<String, Item> inventory;
     private TreeMap<String, Integer> duplicateItemsInInventory;
@@ -22,12 +23,36 @@ public class Player implements Serializable {
     private double currencyAmount;
 
 
-    private Player(int inventorySlots, TreeMap<String, Item> inventory, int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount) {
-        this.inventorySlots = inventorySlots;
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
-        this.damage[0] = minDamage;
-        this.damage[1] = maxDamage;
+    private Player(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory) throws InvalidValueException {
+        if (inventorySlots >= 0) {
+            this.inventorySlots = inventorySlots;
+        } else {
+            throw new InvalidValueException("Value " + inventorySlots + " is invalid. Enter an integer " +
+                    "value greater than 0");
+        }
+
+        if (maxHealth > 0) {
+            this.maxHealth = maxHealth;
+            this.currentHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + maxHealth + " is invalid. Enter a decimal " +
+                    "value greater than 0");
+        }
+
+        if (minDamage >= 0) {
+            damage[0] = minDamage;
+        } else {
+            throw new InvalidValueException("Value " + minDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
+
+        if (maxDamage >= 0) {
+            damage[1] = maxDamage;
+        } else {
+            throw new InvalidValueException("Value " + maxDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
+
         this.inventory = Objects.requireNonNullElseGet(inventory, TreeMap::new);
         this.duplicateItemsInInventory = new TreeMap<>();
         this.feats = Objects.requireNonNullElseGet(feats, TreeMap::new);
@@ -38,21 +63,32 @@ public class Player implements Serializable {
         }
     }
 
-    public static Player create() {
-        return new Player(10, null, 10, 2, 5, null, 0);
+    public static Player create() throws InvalidValueException {
+        return new Player(10, 2, 5, null, 100, 10, null);
     }
 
-    public boolean isSpaceInInventory() {
+    public static Player create(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory) throws InvalidValueException {
+        return new Player(maxHealth, minDamage, maxDamage, feats, currencyAmount, inventorySlots, inventory);
+    }
+
+
+    private boolean isSpaceInInventory() {
         int inventorySize = inventory.size();
 
         return inventorySize < inventorySlots;
     }
+
     public int getInventorySlots() {
         return inventorySlots;
     }
 
-    public void setInventorySlots(int inventorySlots) {
-        this.inventorySlots = inventorySlots;
+    public void setInventorySlots(int inventorySlots) throws InvalidValueException {
+        if (inventorySlots >= 0) {
+            this.inventorySlots = inventorySlots;
+        } else {
+            throw new InvalidValueException("Value " + inventorySlots + " is invalid. Enter an integer " +
+                    "value greater than 0");
+        }
     }
 
     public TreeMap<String, Item> getInventory() {
@@ -244,16 +280,26 @@ public class Player implements Serializable {
         return maxHealth;
     }
 
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
+    public void setMaxHealth(int maxHealth) throws InvalidValueException {
+        if (maxHealth > 0) {
+            this.maxHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + maxHealth + " is invalid. Enter an integer " +
+                    "value greater than 0");
+        }
     }
 
     public double getCurrentHealth() {
         return currentHealth;
     }
 
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
+    public void setCurrentHealth(int currentHealth) throws InvalidValueException {
+        if (currentHealth >= 0) {
+            this.currentHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + currentHealth + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public double getMinDamage() {
@@ -280,26 +326,46 @@ public class Player implements Serializable {
         this.currencyAmount = currencyAmount;
     }
 
-    public void subtractFromCurrencyAmount(int i) {
-        currencyAmount -= i;
+    public void subtractFromCurrencyAmount(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currencyAmount -= i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
         if (currencyAmount < 0) {
             currencyAmount = 0;
         }
     }
 
-    public void addToCurrencyAmount(int i) {
-        currencyAmount += i;
+    public void addToCurrencyAmount(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currencyAmount += i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
-    public void subtractFromCurrentHealth(int i) {
-        currentHealth -= i;
+    public void subtractFromCurrentHealth(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currentHealth -= i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
         if (currentHealth < 0) {
             currentHealth = 0;
         }
     }
 
-    public void addToCurrentHealth(int i) {
-        currentHealth += i;
+    public void addToCurrentHealth(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currentHealth += i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
         if (currentHealth > maxHealth) {
             currentHealth = maxHealth;
         }
@@ -315,7 +381,32 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Current Health: " + (int) currentHealth + ", " +
+                "Maximum Health: " + (int) maxHealth + ", " +
+                "Minimum Damage: " + (int) damage[0] + ", " +
+                "Maximum Damage: " + (int) damage[1] + ", " +
+                "Currency Amount: " + (int)currencyAmount + ", " +
+                "Inventory Slots: " + inventorySlots);
+
+        if (!getInventory().isEmpty()) {
+            sb.append("\nInventory Table: ");
+            for (Map.Entry<String, Item> inventorySet : getInventory().entrySet()) {
+                Item item = inventorySet.getValue();
+                sb.append("\n\t" + item.toString());
+            }
+        }
+
+        if (!getFeats().isEmpty()) {
+            sb.append("\nFeat Table: ");
+            for (Map.Entry<String, Feat> featSet : getFeats().entrySet()) {
+                Feat feat = featSet.getValue();
+                sb.append("\n\t" + feat.toString());
+            }
+        }
+
+        return sb.toString();
     }
 
     public void save(String path) throws IOException {

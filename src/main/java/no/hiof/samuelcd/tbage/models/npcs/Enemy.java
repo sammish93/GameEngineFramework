@@ -1,9 +1,11 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
 
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -19,80 +21,128 @@ public class Enemy extends NonPlayableCharacter {
     private double meleeChancePerTurn;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, double currencyReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, double currencyReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) throws InvalidValueException {
         super(name, abilities, items);
 
-        this.maxHealth = maxHealth;
-        this.currentHealth = maxHealth;
-        this.damage[0] = minDamage;
-        this.damage[1] = maxDamage;
-        this.currencyReceivedOnDeath = currencyReceivedOnDeath;
+        if (maxHealth > 0) {
+            this.maxHealth = maxHealth;
+            this.currentHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + maxHealth + " is invalid. Enter a decimal " +
+                    "value greater than 0");
+        }
+
+        if (minDamage >= 0) {
+            damage[0] = minDamage;
+        } else {
+            throw new InvalidValueException("Value " + minDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
+
+        if (maxDamage >= 0) {
+            damage[1] = maxDamage;
+        } else {
+            throw new InvalidValueException("Value " + maxDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
+
+        if (currencyReceivedOnDeath >= 0) {
+            this.currencyReceivedOnDeath = currencyReceivedOnDeath;
+        } else {
+            throw new InvalidValueException("Value " + currencyReceivedOnDeath + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
+
         this.enemyType = enemyType;
         this.isMelee = isMelee;
-        this.meleeChancePerTurn = meleeChancePerTurn;
+
+        if (meleeChancePerTurn > 0 && meleeChancePerTurn <= 1) {
+            this.meleeChancePerTurn = meleeChancePerTurn;
+        } else if (meleeChancePerTurn == 0) {
+            this.isMelee = false;
+        } else {
+            throw new InvalidValueException("Value " + meleeChancePerTurn + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0 and less than or equal to 1");
+        }
     }
 
-    public static Enemy create() {
+    public static Enemy create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2, 0.0, null, null, null, true, 1);
     }
 
-    public static Enemy create(String name) {
+    public static Enemy create(String name) throws InvalidValueException {
         return new Enemy(name, 10, 1, 3, 0.0, null, null, null, true, 1);
     }
 
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, double goldReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) {
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, double goldReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) throws InvalidValueException {
         return new Enemy(name, health, minDamage, maxDamage, goldReceivedOnDeath, abilities, items, enemyType, isMelee, meleeChancePerTurn);
     }
 
-    @Override
-    public void processAbilities() {
-        // Iterates through abilityPool to find which events (onEncounterStart and onEncounterFinish) are TRUE.
-    }
-
-    @Override
-    public void processItems() {
-        // Determines which items have dropped from a defeated enemy.
-    }
 
     public double getMaxHealth() {
         return maxHealth;
     }
 
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
+    public void setMaxHealth(int maxHealth) throws InvalidValueException {
+        if (maxHealth > 0) {
+            this.maxHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + maxHealth + " is invalid. Enter a decimal " +
+                    "value greater than 0");
+        }
     }
 
     public double getMinDamage() {
         return damage[0];
     }
 
-    public void setMinDamage(int minDamage) {
-        this.damage[0] = minDamage;
+    public void setMinDamage(int minDamage) throws InvalidValueException {
+        if (minDamage >= 0) {
+            damage[0] = minDamage;
+        } else {
+            throw new InvalidValueException("Value " + minDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public double getMaxDamage() {
         return damage[1];
     }
 
-    public void setMaxDamage(int maxDamage) {
-        this.damage[1] = maxDamage;
+    public void setMaxDamage(int maxDamage) throws InvalidValueException {
+        if (maxDamage >= 0) {
+            damage[1] = maxDamage;
+        } else {
+            throw new InvalidValueException("Value " + maxDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public double getCurrentHealth() {
         return currentHealth;
     }
 
-    public void setCurrentHealth(int currentHealth) {
-        this.currentHealth = currentHealth;
+    public void setCurrentHealth(int currentHealth) throws InvalidValueException {
+        if (maxHealth >= 0) {
+            this.currentHealth = maxHealth;
+        } else {
+            throw new InvalidValueException("Value " + currentHealth + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public double getCurrencyReceivedOnDeath() {
         return currencyReceivedOnDeath;
     }
 
-    public void setCurrencyReceivedOnDeath(double currencyReceivedOnDeath) {
-        this.currencyReceivedOnDeath = currencyReceivedOnDeath;
+    public void setCurrencyReceivedOnDeath(double currencyReceivedOnDeath) throws InvalidValueException {
+        if (currencyReceivedOnDeath >= 0) {
+            this.currencyReceivedOnDeath = currencyReceivedOnDeath;
+        } else {
+            throw new InvalidValueException("Value " + currencyReceivedOnDeath + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public String getEnemyType() {
@@ -115,6 +165,17 @@ public class Enemy extends NonPlayableCharacter {
         return meleeChancePerTurn;
     }
 
+    public void setMeleeChancePerTurn(double meleeChancePerTurn) throws InvalidValueException {
+        if (meleeChancePerTurn > 0 && meleeChancePerTurn <= 1) {
+            this.meleeChancePerTurn = meleeChancePerTurn;
+        } else if (meleeChancePerTurn == 0) {
+            this.isMelee = false;
+        } else {
+            throw new InvalidValueException("Value " + meleeChancePerTurn + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0 and less than or equal to 1");
+        }
+    }
+
     public boolean isMeleeAttackThisTurn() {
         var random = new Random();
 
@@ -130,10 +191,6 @@ public class Enemy extends NonPlayableCharacter {
         return true;
     }
 
-    public void setMeleeChancePerTurn(double meleeChancePerTurn) {
-        this.meleeChancePerTurn = meleeChancePerTurn;
-    }
-
     public String getEnemyHealthStatus() {
         if (currentHealth == 0) {
             return "Dead";
@@ -147,25 +204,51 @@ public class Enemy extends NonPlayableCharacter {
             return "Close to Death";
         }
 
-        return "unknown";
+        return "Unknown";
     }
 
-    public void subtractFromCurrentHealth(int i) {
-        currentHealth -= i;
+    public void subtractFromCurrentHealth(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currentHealth -= i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
+
         if (currentHealth < 0) {
             currentHealth = 0;
         }
     }
 
-    public void addToCurrentHealth(int i) {
-        currentHealth += i;
+    public void addToCurrentHealth(int i) throws InvalidValueException {
+        if (i >= 0) {
+            currentHealth += i;
+        } else {
+            throw new InvalidValueException("Value " + i + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
         if (currentHealth > maxHealth) {
             currentHealth = maxHealth;
         }
     }
 
-    @Override
     public String toString() {
-        return super.toString();
+        double i = meleeChancePerTurn * 100;
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Enemy Name: '" + getName() + "', " +
+                "Enemy Type: " + enemyType + ", " +
+                "Is Melee: " + isMelee + ", " +
+                "Melee Chance Per Turn: " + (int) i + "%, " +
+                "Currency Dropped On Death: " + (int) currencyReceivedOnDeath + ", " +
+                "Current Health: " + (int) currentHealth + ", " +
+                "Maximum Health: " + (int) maxHealth + ", " +
+                "Minimum Damage: " + (int) damage[0] + ", " +
+                "Maximum Damage: " + (int) damage[1]);
+
+        printItemTableAndAbilityPool(sb);
+
+        return sb.toString();
     }
 }

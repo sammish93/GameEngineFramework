@@ -4,13 +4,17 @@ import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.items.Item;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
 public abstract class NonPlayableCharacter implements Serializable, Cloneable {
-    private String name = "defaultNpcName";
+    private String name;
     private TreeMap<String, Ability> NpcAbilityPool;
     private TreeMap<String, Item> NpcItemTable;
+    // ***********
+    // Data type not decided yet for imagePath.
+    // ***********
     private String imagePath;
 
 
@@ -23,9 +27,6 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
         NpcItemTable = Objects.requireNonNullElseGet(items, TreeMap::new);
     }
 
-    public abstract void processAbilities();
-
-    public abstract void processItems();
 
     public TreeMap<String, Ability> getNpcAbilityPool() {
         return NpcAbilityPool;
@@ -89,6 +90,24 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
 
     public void removeItemFromItemTable(String itemName) {
         NpcItemTable.remove(itemName);
+    }
+
+    protected void printItemTableAndAbilityPool(StringBuilder sb) {
+        if (!getNpcItemTable().isEmpty()) {
+            sb.append("\n\tItem Table: ");
+            for (Map.Entry<String, Item> itemSet : getNpcItemTable().entrySet()) {
+                Item item = itemSet.getValue();
+                sb.append("\n\t\t" + item.toString());
+            }
+        }
+
+        if (!getNpcAbilityPool().isEmpty()) {
+            sb.append("\n\tAbility Table: ");
+            for (Map.Entry<String, Ability> abilitySet : getNpcAbilityPool().entrySet()) {
+                Ability ability = abilitySet.getValue();
+                sb.append("\n\t\t" + ability.toString());
+            }
+        }
     }
 
     @Override

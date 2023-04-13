@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
-public abstract class Encounter implements Comparable<Encounter>, Serializable{
+public abstract class Encounter implements Serializable{
     private String name;
     private String imagePath;
     private String introductoryMessage;
@@ -33,7 +34,7 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
     private boolean isBacktracking = false;
 
 
-    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
+    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
         this.name = name;
         this.imagePath = imagePath;
 
@@ -49,11 +50,20 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
         addDefaultNavigationalVerbs();
     }
 
+
     public void onInitiation(GameEngine gameEngine) {
         if (onInitiationBehaviour != null) {
-            onInitiationBehaviour.onUse(gameEngine);
+            try {
+                onInitiationBehaviour.onUse(gameEngine);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-    };
+    }
+
+    public boolean isOnInitiationUseable() {
+        return (onInitiationBehaviour != null);
+    }
 
     public String getName() {
         return name;
@@ -180,36 +190,55 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
         return onInitiationBehaviour;
     }
 
-    public int compareTo(Encounter encounter) {
-        return name.compareTo(encounter.getName());
-    }
-
-    public void save(String path) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(path);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-        objectOutputStream.writeObject(this);
-    }
-
-    public static Encounter load(String path) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(path);
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-
-        return (Encounter)objectInputStream.readObject();
-    }
-
-    public abstract String run(GameEngine gameEngine) throws InventoryFullException;
-
     public TreeMap<String, String> getNavigationOptions() {
         return navigationOptions;
     }
 
-    public void setNavigationOptions(TreeMap<String, String> navigationOptions) {
+    protected void setNavigationOptions(TreeMap<String, String> navigationOptions) throws InvalidValueException {
+        for (Map.Entry<String, String> entry : navigationOptions.entrySet()) {
+            StringParser.addVerb(entry.getKey());
+        }
         this.navigationOptions = navigationOptions;
     }
 
-    public void setNavigationOption(String prompt, String encounterName) {
+    protected void setNavigationOption(String prompt, String encounterName) throws InvalidValueException {
+        StringParser.addVerb(prompt);
         this.navigationOptions.put(prompt, encounterName);
+    }
+
+    public ArrayList<String> getNavigationalVerbs() {
+        return navigationalVerbs;
+    }
+
+    public void setNavigationalVerbs(ArrayList<String> navigationalVerbs) throws InvalidValueException {
+        for (String navVerb : navigationalVerbs) {
+            StringParser.addVerb(navVerb);
+        }
+        this.navigationalVerbs = navigationalVerbs;
+    }
+
+    public void removeNavigationalVerb(String verb) {
+        navigationalVerbs.remove(verb);
+    }
+
+    public void removeDefaultNavigationalVerbs() {
+        navigationalVerbs.clear();
+    }
+
+    public void addNavigationalVerb(String verb) throws InvalidValueException {
+        StringParser.addVerb(verb);
+        navigationalVerbs.add(verb);
+    }
+
+    public void addNavigationalNoun(String noun) throws InvalidValueException {
+        StringParser.addNoun(noun);
+        navigationOptions.put(noun, "defeated");
+    }
+
+    private void addDefaultNavigationalVerbs() throws InvalidValueException {
+        addNavigationalVerb("go");
+        addNavigationalVerb("travel");
+        addNavigationalVerb("move");
     }
 
     public String getEncounterFromPrompt(String prompt) {
@@ -238,41 +267,6 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
 
     public void setBacktracking(boolean backtracking) {
         isBacktracking = backtracking;
-    }
-
-    public ArrayList<String> getNavigationalVerbs() {
-        return navigationalVerbs;
-    }
-
-    public void setNavigationalVerbs(ArrayList<String> navigationalVerbs) {
-        for (String navVerb : navigationalVerbs) {
-            StringParser.addVerb(navVerb);
-        }
-        this.navigationalVerbs = navigationalVerbs;
-    }
-
-    public void removeNavigationalVerb(String verb) {
-        navigationalVerbs.remove(verb);
-    }
-
-    public void removeDefaultNavigationalVerbs() {
-        navigationalVerbs.clear();
-    }
-
-    public void addNavigationalVerb(String verb) {
-        navigationalVerbs.add(verb);
-        StringParser.addVerb(verb);
-    }
-
-    public void addNavigationalNoun(String noun) {
-        navigationOptions.put(noun, "defeated");
-        StringParser.addNoun(noun);
-    }
-
-    private void addDefaultNavigationalVerbs() {
-        addNavigationalVerb("go");
-        addNavigationalVerb("travel");
-        addNavigationalVerb("move");
     }
 
     protected void printInventory(GameEngine gameEngine) {
@@ -310,5 +304,71 @@ public abstract class Encounter implements Comparable<Encounter>, Serializable{
         gameEngine.printMessageFormatted("%-15s %s\n", "Investigate", "Investigates your immediate surroundings.");
         gameEngine.printMessageFormatted("%-15s %s\n", "Back", "Exits the current activity when possible.");
         gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>", "Navigates to another encounter when possible (e.g. 'north').");
+    }
+
+    public abstract String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException;
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Encounter Name: " + getName() + ", " +
+                "Is Defeated: " + isDefeated() + ", " +
+                "Is Introduction Printed: " + isIntroductionPrinted() + ", " +
+                "Is Backtracking: " + isBacktracking() + ", " +
+                "Introductory Message: \n\t'" + getIntroductoryMessage() + "'" +
+                "\nHint: \n\t'" + getHint() + "'" +
+                "\nOn Defeated Message: \n\t'" + getOnDefeatedMessage() + "'");
+
+        if (!getNavigationOptions().isEmpty()) {
+            sb.append("\nNavigational Options: ");
+            for (Map.Entry<String, String> navigationalOptionsSet : getNavigationOptions().entrySet()) {
+                if (navigationalOptionsSet.getValue().equalsIgnoreCase("defeated")) {
+                    sb.append("\n\t'" + navigationalOptionsSet.getKey() + "' leads to the next encounter");
+                } else {
+                    sb.append("\n\t'" + navigationalOptionsSet.getKey() + "' leads to '" +
+                            navigationalOptionsSet.getValue() + "'");
+                }
+            }
+        }
+
+        if (!getNavigationalVerbs().isEmpty()) {
+            sb.append("\nNavigational Verbs: ");
+            for (String verb : getNavigationalVerbs()) {
+                sb.append("\n\t'" + verb + "'");
+            }
+        }
+
+        if (!getFeatChecks().isEmpty()) {
+            sb.append("\nFeat Check Table: ");
+            for (Map.Entry<String, Feat> featSet : getFeatChecks().entrySet()) {
+                Feat feat = featSet.getValue();
+                sb.append("\n\t" + feat.toString());
+            }
+        }
+
+        if (!getFeatRewards().isEmpty()) {
+            sb.append("\nFeat Check Table: ");
+            for (Map.Entry<String, Feat> featSet : getFeatRewards().entrySet()) {
+                Feat feat = featSet.getValue();
+                sb.append("\n\t" + feat.toString());
+            }
+        }
+
+        return sb.toString();
+    }
+
+    public void save(String path) throws IOException {
+        FileOutputStream fileOutputStream = new FileOutputStream(path);
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+        objectOutputStream.writeObject(this);
+    }
+
+    public static Encounter load(String path) throws IOException, ClassNotFoundException {
+        FileInputStream fileInputStream = new FileInputStream(path);
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+        return (Encounter)objectInputStream.readObject();
     }
 }

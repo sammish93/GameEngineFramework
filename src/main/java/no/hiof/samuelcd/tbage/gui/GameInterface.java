@@ -14,6 +14,7 @@ public abstract class GameInterface {
     GameEngine gameEngine;
     EncounterTraversalController encounterTraversalController;
 
+
     GameInterface(GameEngine gameEngine) {
         gameSettings = gameEngine.getGameSettings();
         player = gameEngine.getPlayer();
@@ -22,6 +23,7 @@ public abstract class GameInterface {
 
         encounterTraversalController = new EncounterTraversalController(encounters);
     }
+
 
     public EncounterTraversalController getEncounterController() {
         return encounterTraversalController;

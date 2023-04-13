@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.tools;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
@@ -31,7 +32,7 @@ public class EncounterController {
         this.encounter = encounter;
     }
 
-    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) throws InventoryFullException {
+    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) throws InventoryFullException, InvalidValueException {
         var player = gameEngine.getPlayer();
         boolean isEnemyChosen = false;
         Enemy enemyChosen = null;
@@ -81,7 +82,7 @@ public class EncounterController {
                 answer = scanner.nextLine();
 
                 if (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes")) {
-                    EncounterController.useItem(gameEngine, encounter);
+                    EncounterController.useItem(gameEngine);
                 } else if (answer.equalsIgnoreCase("n") || answer.equalsIgnoreCase("no")) {
                     break;
                 } else {
@@ -94,7 +95,7 @@ public class EncounterController {
         }
     }
 
-    public static void useItem(GameEngine gameEngine, Encounter encounter) throws InventoryFullException {
+    public static void useItem(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         var player = gameEngine.getPlayer();
         boolean isItemChosen = false;
         Item itemChosen = null;
@@ -359,7 +360,7 @@ public class EncounterController {
         return null;
     }
 
-    private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) {
+    private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) throws InvalidValueException {
         for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
             var enemy = entry.getValue();
 
@@ -379,7 +380,7 @@ public class EncounterController {
                 }
                 if (enemy.isMelee()) {
                     if (enemy.isMeleeAttackThisTurn()) {
-                        int enemyDamage = damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
+                        int enemyDamage = ProbabilityCalculator.damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
                         player.subtractFromCurrentHealth(enemyDamage);
                         gameEngine.printMessage(enemy.getName() + " did " + enemyDamage + " damage to you.");
 
@@ -395,8 +396,8 @@ public class EncounterController {
         }
     }
 
-    private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen) {
-        int playerDamage = damageCalculator((int) player.getMinDamage(), (int) player.getMaxDamage());
+    private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen) throws InvalidValueException {
+        int playerDamage = ProbabilityCalculator.damageCalculator((int) player.getMinDamage(), (int) player.getMaxDamage());
         enemyChosen.subtractFromCurrentHealth(playerDamage);
 
         gameEngine.printMessage("You did " + playerDamage + " damage to " + enemyChosen.getName() + ".");
@@ -475,14 +476,9 @@ public class EncounterController {
         return itemsWithIndex;
     }
 
-    private static int damageCalculator(int minDamage, int maxDamage) {
 
-        var random = new Random();
 
-        return random.nextInt(maxDamage - minDamage) + minDamage;
-    }
-
-    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InventoryFullException {
+    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InventoryFullException, InvalidValueException {
 
         var random = new Random();
 

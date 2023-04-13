@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.items;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
@@ -8,44 +9,74 @@ import java.util.UUID;
 
 public class Item implements Useable, Serializable, Cloneable {
 
-    private String name = "defaultItemName";
+    private String name;
     private int value;
     private double dropChance;
+    // ***********
+    // Data type not decided yet for imagePath.
+    // ***********
     private String imagePath;
     private Useable useable;
     private int numberOfUses;
 
 
-    private Item(String name, int value, double dropChance, int numberOfUses) {
+    private Item(String name, int value, double dropChance, int numberOfUses) throws InvalidValueException {
         this.name = name;
-        this.value = value;
-        this.dropChance = dropChance;
-        this.numberOfUses = numberOfUses;
+
+        if (value >= 0) {
+            this.value = value;
+        } else {
+            throw new InvalidValueException("Value " + value + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
+
+        if (dropChance <= 1.00 && dropChance > 0) {
+            this.dropChance = dropChance;
+        } else {
+            throw new InvalidValueException("Value " + dropChance + " is invalid. Enter a decimal " +
+                    "value greater than 0 and less than or equal to 1.");
+        }
+
+        if (numberOfUses >= 0) {
+            this.numberOfUses = numberOfUses;
+        } else {
+            throw new InvalidValueException("Value " + numberOfUses + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
-    public static Item create() {
+
+    public static Item create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new Item(randomlyGeneratedId.toString(), 0, 0, 0);
+        return new Item(randomlyGeneratedId.toString(), 0, 0.5, 0);
     }
 
-    public static Item create(String name) {
-        return new Item(name, 0, 0, 0);
+    public static Item create(String name) throws InvalidValueException {
+        return new Item(name, 0, 0.5, 0);
     }
 
-    public static Item create(String name, int value) {
-        return new Item(name, value, 0, 0);
+    public static Item create(String name, int value) throws InvalidValueException {
+        return new Item(name, value, 0.5, 0);
     }
 
-    public static Item create(String name, int value, double dropChance) {
-        return new Item(name, value, dropChance, 1);
+    public static Item create(String name, int value, double dropChance) throws InvalidValueException {
+        return new Item(name, value, dropChance, 0);
     }
-    public static Item create(String name, int value, double dropChance, int numberOfUses) {
+    public static Item create(String name, int value, double dropChance, int numberOfUses) throws InvalidValueException {
         return new Item(name, value, dropChance, numberOfUses);
     }
 
+
     public void onUse(GameEngine gameEngine) {
-        // Item does this when it is used.
-        useable.onUse(gameEngine);
+        try {
+            useable.onUse(gameEngine);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public boolean isUseable() {
+        return (useable != null);
     }
 
     public void setOnUseBehaviour(Useable useable) {
@@ -54,10 +85,6 @@ public class Item implements Useable, Serializable, Cloneable {
 
     public Useable getOnUseBehaviour() {
         return useable;
-    }
-
-    public void onReceive() {
-        // Behaviour for when the player receives the item.
     }
 
     public String getName() {
@@ -72,16 +99,26 @@ public class Item implements Useable, Serializable, Cloneable {
         return value;
     }
 
-    public void setValue(int value) {
-        this.value = value;
+    public void setValue(int value) throws InvalidValueException {
+        if (value >= 0) {
+            this.value = value;
+        } else {
+            throw new InvalidValueException("Value " + value + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
     public double getDropChance() {
         return dropChance;
     }
 
-    public void setDropChance(double dropChance) {
-        this.dropChance = dropChance;
+    public void setDropChance(double dropChance) throws InvalidValueException {
+        if (dropChance <= 1.00 && dropChance > 0) {
+            this.dropChance = dropChance;
+        } else {
+            throw new InvalidValueException("Value " + dropChance + " is invalid. Enter a decimal " +
+                    "value greater than 0 and less than or equal to 1.");
+        }
     }
 
     public String getImagePath() {
@@ -96,8 +133,13 @@ public class Item implements Useable, Serializable, Cloneable {
         return numberOfUses;
     }
 
-    public void setNumberOfUses(int numberOfUses) {
-        this.numberOfUses = numberOfUses;
+    public void setNumberOfUses(int numberOfUses) throws InvalidValueException {
+        if (numberOfUses >= 0) {
+            this.numberOfUses = numberOfUses;
+        } else {
+            throw new InvalidValueException("Value " + numberOfUses + " is invalid. Enter an integer " +
+                    "value greater than or equal to 0");
+        }
     }
 
     @Override
@@ -108,6 +150,10 @@ public class Item implements Useable, Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return super.toString();
+        double i = dropChance * 100;
+        return "Item Name: '" + name + "', " +
+                "Value: " + value + ", " +
+                "Drop Chance: " + (int) i + "%, " +
+                "Is Useable: " + isUseable();
     }
 }

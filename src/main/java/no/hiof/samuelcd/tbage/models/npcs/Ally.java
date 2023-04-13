@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.npcs;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
@@ -14,10 +15,11 @@ import java.util.UUID;
 
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
-public class Ally extends NonPlayableCharacter implements Useable {
+public class Ally extends NonPlayableCharacter {
 
     private Useable onInteractionBehaviour;
     private boolean isInteracted;
+
 
     private Ally(String name, TreeMap<String, Ability> abilities, TreeMap<String, Item> items) {
         super(name, abilities, items);
@@ -39,32 +41,6 @@ public class Ally extends NonPlayableCharacter implements Useable {
         return new Ally(name, abilities, items);
     }
 
-    @Override
-    public void processAbilities() {
-        // Iterates through abilityPool to find which events (onEncounterStart and onEncounterFinish) are TRUE.
-    }
-
-    @Override
-    public void processItems() {
-        // Determines if items are available from a specific Ally.
-    }
-
-    public void onUse(GameEngine gameEngine) {
-        if (!isInteracted) {
-            if (getOnInteractionBehaviour() != null) {
-                onInteractionBehaviour.onUse(gameEngine);
-                trade(gameEngine);
-                isInteracted = true;
-            } else {
-                gameEngine.printMessage("Interacting with this being does nothing.");
-                isInteracted = true;
-            }
-        } else {
-            gameEngine.printMessage("You have already interacted with this being.");
-
-            trade(gameEngine);
-        }
-    }
 
     private void trade(GameEngine gameEngine) {
         if (!getNpcItemTable().isEmpty()) {
@@ -89,6 +65,8 @@ public class Ally extends NonPlayableCharacter implements Useable {
 
                         } catch (InventoryFullException ex) {
                             gameEngine.printMessage(ex.getMessage());
+                        } catch (InvalidValueException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -107,8 +85,30 @@ public class Ally extends NonPlayableCharacter implements Useable {
 
     public void onInteraction(GameEngine gameEngine) {
         if (onInteractionBehaviour != null) {
-            onUse(gameEngine);
+            if (!isInteracted) {
+                if (getOnInteractionBehaviour() != null) {
+                    try {
+                        onInteractionBehaviour.onUse(gameEngine);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    trade(gameEngine);
+                    isInteracted = true;
+                } else {
+                    gameEngine.printMessage("Interacting with this being does nothing.");
+                    isInteracted = true;
+                }
+            } else {
+                gameEngine.printMessage("You have already interacted with this being.");
+
+                trade(gameEngine);
+            }
         }
+    }
+
+    public boolean InteractionIsUseable() {
+        return (onInteractionBehaviour != null);
     }
 
     public void setOnInteractionBehaviour(Useable onInteractionBehaviour) {
@@ -129,6 +129,14 @@ public class Ally extends NonPlayableCharacter implements Useable {
 
     @Override
     public String toString() {
-        return super.toString();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Ally Name: '" + getName() + "', " +
+                "Has Custom Interaction: " + InteractionIsUseable() + ", " +
+                "Is Interacted With: " + isInteracted);
+
+        printItemTableAndAbilityPool(sb);
+
+        return sb.toString();
     }
 }

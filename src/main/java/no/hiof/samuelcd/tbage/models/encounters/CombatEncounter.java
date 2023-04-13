@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
@@ -18,31 +19,30 @@ import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
 public class CombatEncounter extends Encounter {
 
-    private int enemyCount;
     private TreeMap<String, Enemy> enemies;
     private TreeMap<String, Integer> duplicateEnemiesInEnemies;
-    private int turnCount = 1;
 
 
-    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
+    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
         super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
         enemies = new TreeMap<>();
         duplicateEnemiesInEnemies = new TreeMap<>();
     }
 
-    public static CombatEncounter create() {
+    public static CombatEncounter create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null, null);
     }
 
-    public static CombatEncounter create(String name) {
+    public static CombatEncounter create(String name) throws InvalidValueException {
         return new CombatEncounter(name,null, null, null, null, null);
     }
 
-    public void onTurn() {
-        // Behaviour for each turn in the encounter.
+    public static CombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+        return new CombatEncounter(name,imagePath, featChecks, featRewards, navigationOptions, props);
     }
+
 
     public TreeMap<String, Enemy> getEnemies() {
         return enemies;
@@ -96,13 +96,45 @@ public class CombatEncounter extends Encounter {
         enemies.remove(enemyName);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+    private void combatEncounterIntroduction(GameEngine gameEngine) {
+        if (!getIntroductoryMessage().isEmpty()) {
+            gameEngine.printMessage(getIntroductoryMessage());
+        }
+
+        onInitiation(gameEngine);
+
+        int enemyCount = enemies.size();
+
+        if (enemyCount > 1) {
+            gameEngine.printMessage("You face " + enemyCount + " enemies!");
+        } else if (enemyCount == 1) {
+            gameEngine.printMessage("You face an enemy!");
+        }
+    }
+
+    private void printEnemies(GameEngine gameEngine) {
+        int enemyIteration = 1;
+        var player = gameEngine.getPlayer();
+
+        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
+        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
+            var enemy = entry.getValue();
+            gameEngine.printMessage("Enemy " + enemyIteration++ + ": " + enemy.getName() + ", Status: " + enemy.getEnemyHealthStatus());
+        }
+    }
+
+    private boolean allEnemiesDead() {
+        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
+            var enemy = entry.getValue();
+            if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
-    public String run(GameEngine gameEngine) throws InventoryFullException {
+    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         String input = "";
         TreeMap<String, String> inputMap = new TreeMap<>();
         int turnNumber = 1;
@@ -190,7 +222,7 @@ public class CombatEncounter extends Encounter {
                         printInventory(gameEngine);
                     } else if (value.equalsIgnoreCase("use")) {
                         if (!gameEngine.getPlayer().getInventory().isEmpty()) {
-                            EncounterController.useItem(gameEngine, this);
+                            EncounterController.useItem(gameEngine);
 
                             if (allEnemiesDead()) {
                                 setDefeated(true);
@@ -250,43 +282,21 @@ public class CombatEncounter extends Encounter {
         return "defeated";
     }
 
-    private void combatEncounterIntroduction(GameEngine gameEngine) {
-        if (!getIntroductoryMessage().isEmpty()) {
-            gameEngine.printMessage(getIntroductoryMessage());
-        }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
 
-        onInitiation(gameEngine);
+        sb.append("Encounter Type: Combat, ");
+        sb.append(super.toString());
 
-        int enemyCount = enemies.size();
-
-        if (enemyCount > 1) {
-            gameEngine.printMessage("You face " + enemyCount + " enemies!");
-        } else if (enemyCount == 1) {
-            gameEngine.printMessage("You face an enemy!");
-        }
-    }
-
-    private void printEnemies(GameEngine gameEngine) {
-        int enemyIteration = 1;
-        var player = gameEngine.getPlayer();
-
-        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
-        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
-            var enemy = entry.getValue();
-            gameEngine.printMessage("Enemy " + enemyIteration++ + ": " + enemy.getName() + ", Status: " + enemy.getEnemyHealthStatus());
-        }
-    }
-
-
-
-    private boolean allEnemiesDead() {
-        for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
-            var enemy = entry.getValue();
-            if (!enemy.getEnemyHealthStatus().equalsIgnoreCase("dead")) {
-                return false;
+        if (!getEnemies().isEmpty()) {
+            sb.append("\nEnemy Table: ");
+            for (Map.Entry<String, Enemy> enemySet : getEnemies().entrySet()) {
+                Enemy enemy = enemySet.getValue();
+                sb.append("\n\t" + enemy.toString());
             }
         }
-        return true;
-    }
 
+        return sb.toString();
+    }
 }

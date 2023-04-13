@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.abilities;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.Serializable;
@@ -9,35 +10,45 @@ import java.util.UUID;
 public class Ability implements Useable, Serializable {
 
     private String name;
-    private boolean onEncounterStart;
-    private boolean onEncounterFinish;
     private double abilityProbabilityPerTurn;
     private Useable useable;
 
 
-    private Ability(String name, boolean onEncounterStart, boolean onEncounterFinish, double abilityProbabilityPerTurn) {
+    private Ability(String name, double abilityProbabilityPerTurn) throws InvalidValueException {
         this.name = name;
-        this.onEncounterStart = onEncounterStart;
-        this.onEncounterFinish = onEncounterFinish;
-        this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
+        if (abilityProbabilityPerTurn <= 1.00 && abilityProbabilityPerTurn > 0) {
+            this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
+        } else {
+            throw new InvalidValueException("Value " + abilityProbabilityPerTurn + " is invalid. Enter a decimal " +
+                    "value greater than 0 and less than or equal to 1.");
+        }
     }
 
-    public static Ability create() {
+
+    public static Ability create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new Ability(randomlyGeneratedId.toString(), false, false, 0);
+        return new Ability(randomlyGeneratedId.toString(), 0.5);
     }
 
-    public static Ability create(String name) {
-        return new Ability(name, false, false, 0.2);
+    public static Ability create(String name) throws InvalidValueException {
+        return new Ability(name,  0.5);
     }
 
-    public static Ability create(String name, boolean onEncounterStart, boolean onEncounterFinish, double abilityProbabilityPerTurn) {
-        return new Ability(name, onEncounterStart, onEncounterFinish, abilityProbabilityPerTurn);
+    public static Ability create(String name, double abilityProbabilityPerTurn) throws InvalidValueException {
+        return new Ability(name, abilityProbabilityPerTurn);
     }
+
 
     public void onUse(GameEngine gameEngine) {
-        // Item does this when it is used.
-        useable.onUse(gameEngine);
+        try {
+            useable.onUse(gameEngine);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public boolean isUseable() {
+        return (useable != null);
     }
 
     public void setOnUseBehaviour(Useable useable) {
@@ -56,32 +67,23 @@ public class Ability implements Useable, Serializable {
         this.name = name;
     }
 
-    public boolean isOnEncounterStart() {
-        return onEncounterStart;
-    }
-
-    public void setOnEncounterStart(boolean onEncounterStart) {
-        this.onEncounterStart = onEncounterStart;
-    }
-
-    public boolean isOnEncounterFinish() {
-        return onEncounterFinish;
-    }
-
-    public void setOnEncounterFinish(boolean onEncounterFinish) {
-        this.onEncounterFinish = onEncounterFinish;
-    }
-
     public double getAbilityProbabilityPerTurn() {
         return abilityProbabilityPerTurn;
     }
 
-    public void setAbilityProbabilityPerTurn(double abilityProbabilityPerTurn) {
-        this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
+    public void setAbilityProbabilityPerTurn(double abilityProbabilityPerTurn) throws InvalidValueException {
+        if (abilityProbabilityPerTurn <= 1.00 && abilityProbabilityPerTurn > 0) {
+            this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
+        } else {
+            throw new InvalidValueException("Value " + abilityProbabilityPerTurn + " is invalid. Enter a decimal " +
+                    "value greater than 0 and less than or equal to 1.");
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString();
+        double i = abilityProbabilityPerTurn * 100;
+        return "Ability Name: '" + name + "', " +
+                "Probability Per Turn: " + (int) i + "%";
     }
 }

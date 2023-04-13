@@ -79,10 +79,16 @@ public class ProbabilityCalculator<T> {
         }
     }
 
-    public static boolean isDropped(Random random, int chanceUpToOneHundred) {
+    protected static boolean isDropped(Random random, int chanceUpToOneHundred) {
         int chance = random.nextInt(100);
 
         return chance <= chanceUpToOneHundred;
     }
 
+    public static int damageCalculator(int minDamage, int maxDamage) {
+
+        var random = new Random();
+
+        return random.nextInt(maxDamage - minDamage) + minDamage;
+    }
 }

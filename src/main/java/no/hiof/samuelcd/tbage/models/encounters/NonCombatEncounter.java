@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage.models.encounters;
 
 import no.hiof.samuelcd.tbage.GameEngine;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
@@ -19,25 +20,29 @@ import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
 public class NonCombatEncounter extends Encounter {
 
-    private int allyCount;
     private TreeMap<String, Ally> allies;
 
 
-    private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) {
+    private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
         super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
         this.allies = Objects.requireNonNullElseGet(allies, TreeMap::new);
 
     }
 
-    public static NonCombatEncounter create() {
+    public static NonCombatEncounter create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new NonCombatEncounter(randomlyGeneratedId.toString(), null, null, null, null, null, null);
     }
 
-    public static NonCombatEncounter create(String name) {
+    public static NonCombatEncounter create(String name) throws InvalidValueException {
         return new NonCombatEncounter(name, null, null, null, null, null, null);
     }
+
+    public static NonCombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+        return new NonCombatEncounter(name, imagePath, featChecks, featRewards, allies, navigationOptions, props);
+    }
+
 
     public TreeMap<String, Ally> getAllies() {
         return allies;
@@ -63,13 +68,27 @@ public class NonCombatEncounter extends Encounter {
         allies.remove(allyName);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
+    private void nonCombatEncounterIntroduction(GameEngine gameEngine) {
+        if (!getIntroductoryMessage().isEmpty()) {
+            gameEngine.printMessage(getIntroductoryMessage());
+        }
+
+        onInitiation(gameEngine);
+    }
+
+    private void printAllies(GameEngine gameEngine) {
+        int allyIteration = 1;
+        var player = gameEngine.getPlayer();
+
+        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
+        for (Map.Entry<String, Ally> entry : allies.entrySet()) {
+            var ally = entry.getValue();
+            gameEngine.printMessage("Ally " + allyIteration++ + ": " + ally.getName());
+        }
     }
 
     @Override
-    public String run(GameEngine gameEngine) throws InventoryFullException {
+    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         String input = "";
         TreeMap<String, String> inputMap = new TreeMap<>();
         setBacktracking(isDefeated());
@@ -146,7 +165,7 @@ public class NonCombatEncounter extends Encounter {
                         }
                     } else if (value.equalsIgnoreCase("use")) {
                         if (!gameEngine.getPlayer().getInventory().isEmpty()) {
-                            EncounterController.useItem(gameEngine, this);
+                            EncounterController.useItem(gameEngine);
                         } else {
                             gameEngine.printMessage("You have no items in your inventory.");
                         }
@@ -193,22 +212,21 @@ public class NonCombatEncounter extends Encounter {
         return "defeated";
     }
 
-    private void nonCombatEncounterIntroduction(GameEngine gameEngine) {
-        if (!getIntroductoryMessage().isEmpty()) {
-            gameEngine.printMessage(getIntroductoryMessage());
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Encounter Type: Non-Combat, ");
+        sb.append(super.toString());
+
+        if (!getAllies().isEmpty()) {
+            sb.append("\nAlly Table: ");
+            for (Map.Entry<String, Ally> allySet : getAllies().entrySet()) {
+                Ally ally = allySet.getValue();
+                sb.append("\n\t" + ally.toString());
+            }
         }
 
-        onInitiation(gameEngine);
-    }
-
-    private void printAllies(GameEngine gameEngine) {
-        int allyIteration = 1;
-        var player = gameEngine.getPlayer();
-
-        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
-        for (Map.Entry<String, Ally> entry : allies.entrySet()) {
-            var ally = entry.getValue();
-            gameEngine.printMessage("Ally " + allyIteration++ + ": " + ally.getName());
-        }
+        return sb.toString();
     }
 }
