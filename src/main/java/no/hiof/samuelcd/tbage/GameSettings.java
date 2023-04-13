@@ -27,10 +27,10 @@ public class GameSettings implements Serializable {
         return encounterPattern;
     }
 
-    public void setEncounterPatternToFixed() {
+    protected void setEncounterPatternToFixed() {
         this.encounterPattern = EncounterPattern.FIXED;
     }
-    public void setEncounterPatternToRandom() {
+    protected void setEncounterPatternToRandom() {
         this.encounterPattern = EncounterPattern.RANDOM;
     }
 

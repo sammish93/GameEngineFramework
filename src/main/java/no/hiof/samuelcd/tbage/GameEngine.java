@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.GamePlatform;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.gui.GameInterface;
 import no.hiof.samuelcd.tbage.gui.Swing;
@@ -25,12 +26,21 @@ public class GameEngine implements Serializable {
     public static Scanner scanner  = new Scanner(System.in);
 
 
-    private GameEngine(GameSettings gameSettings, Player player, Encounters encounters) {
+    private GameEngine(GameSettings gameSettings, Player player, Encounters encounters) throws InvalidValueException {
         this.gameSettings = Objects.requireNonNullElseGet(gameSettings, GameSettings::create);
-        this.player = Objects.requireNonNullElseGet(player, Player::create);
+        if (player != null) {
+            this.player = player;
+        } else {
+            this.player = Player.create();
+        }
 
         if (encounters instanceof FixedEncounters || encounters instanceof RandomEncounters) {
             this.encounters = encounters;
+            if (encounters instanceof FixedEncounters) {
+                this.gameSettings.setEncounterPatternToFixed();
+            } else {
+                this.gameSettings.setEncounterPatternToRandom();
+            }
         } else {
             // Temporary - will have a default pool of encounters.
             this.encounters = null;
@@ -39,42 +49,46 @@ public class GameEngine implements Serializable {
         addDefaultParserParameters();
     }
 
-    public static GameEngine create() {
+    public static GameEngine create() throws InvalidValueException {
         return new GameEngine(null, null, null);
     }
 
-    public static GameEngine create(GameSettings gameSettings) {
+    public static GameEngine create(GameSettings gameSettings) throws InvalidValueException {
         return new GameEngine(gameSettings, null, null);
     }
 
-    public static GameEngine create(GameSettings gameSettings, Encounters encounters) {
+    public static GameEngine create(GameSettings gameSettings, Encounters encounters) throws InvalidValueException {
         return new GameEngine(gameSettings, null, encounters);
     }
 
-    public static GameEngine create(GameSettings gameSettings, Player player) {
+    public static GameEngine create(GameSettings gameSettings, Player player) throws InvalidValueException {
         return new GameEngine(gameSettings, player, null);
     }
-    public static GameEngine create(Player player) {
+    public static GameEngine create(Player player) throws InvalidValueException {
         return new GameEngine(null, player, null);
     }
 
-    public static GameEngine create(Encounters encounters) {
+    public static GameEngine create(Encounters encounters) throws InvalidValueException {
         return new GameEngine(null, null, encounters);
     }
 
-    public static GameEngine create(Player player, Encounters encounters) {
+    public static GameEngine create(Player player, Encounters encounters) throws InvalidValueException {
         return new GameEngine(null, player, encounters);
     }
-    public static GameEngine create(GameSettings gameSettings, Player player, Encounters encounters) {
+    public static GameEngine create(GameSettings gameSettings, Player player, Encounters encounters) throws InvalidValueException {
         return new GameEngine(gameSettings, player, encounters);
     }
 
 
     public GameInterface run() throws InventoryFullException {
-        if (platform.equals(GamePlatform.TERMINAL)) {
-            return new Terminal(this);
-        } else if (platform.equals(GamePlatform.SWING)) {
-            return new Swing(this);
+        try {
+            if (platform.equals(GamePlatform.TERMINAL)) {
+                return new Terminal(this);
+            } else if (platform.equals(GamePlatform.SWING)) {
+                return new Swing(this);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
         return null;
@@ -146,7 +160,7 @@ public class GameEngine implements Serializable {
         System.out.printf(s, args);
     }
 
-    private static void addDefaultParserParameters() {
+    private static void addDefaultParserParameters() throws InvalidValueException {
         ArrayList<String> defaultCommands = new ArrayList<String>();
         defaultCommands.add("exit");
         defaultCommands.add("options");
@@ -174,7 +188,7 @@ public class GameEngine implements Serializable {
         StringParser.setCommands(defaultCommands);
     }
 
-    public void removeAllDefaultParsingParameters() {
+    public void removeAllDefaultParsingParameters() throws InvalidValueException {
         StringParser.setCommands(new ArrayList<>());
         StringParser.setNouns(new ArrayList<>());
         StringParser.setVerbs(new ArrayList<>());
