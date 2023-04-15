@@ -1,6 +1,7 @@
 package no.hiof.samuelcd.tbage;
 
 import no.hiof.samuelcd.tbage.enums.EncounterPattern;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 
 import java.io.*;
 import java.nio.file.InvalidPathException;
@@ -12,7 +13,6 @@ public class GameSettings implements Serializable {
 
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
     private int encounterModifier = 0;
-    private int encounterLength = 10;
     private int fontSize = 12;
     private String message = "I will run in a terminal window until user types 'exit'.";
     private String buttonMessage = "I will run in a Swing window until user presses ESC.";
@@ -34,9 +34,16 @@ public class GameSettings implements Serializable {
         return encounterPattern;
     }
 
+    /**
+     * Used by the GameEngine class to control how encounter traversal is handled.
+     */
     protected void setEncounterPatternToFixed() {
         this.encounterPattern = EncounterPattern.FIXED;
     }
+
+    /**
+     * Used by the GameEngine class to control how encounter traversal is handled.
+     */
     protected void setEncounterPatternToRandom() {
         this.encounterPattern = EncounterPattern.RANDOM;
     }
@@ -55,14 +62,6 @@ public class GameSettings implements Serializable {
 
     public void setButtonMessage(String buttonMessage) {
         this.buttonMessage = buttonMessage;
-    }
-
-    public int getEncounterLength() {
-        return encounterLength;
-    }
-
-    public void setEncounterLength(int encounterLength) {
-        this.encounterLength = encounterLength;
     }
 
     public int getEncounterModifier() {
