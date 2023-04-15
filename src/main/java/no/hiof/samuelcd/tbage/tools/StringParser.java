@@ -87,6 +87,19 @@ public class StringParser {
         }
     }
 
+    public static void removeCommand(String command) throws InvalidValueException {
+
+        commands.remove(command);
+    }
+
+    public static void removeNoun(String noun) throws InvalidValueException {
+        nouns.remove(noun);
+    }
+
+    public static void removeVerb(String verb) throws InvalidValueException {
+        verbs.remove(verb);
+    }
+
     public static ArrayList<String> getVerbs() {
         return verbs;
     }

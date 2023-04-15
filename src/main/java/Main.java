@@ -245,10 +245,6 @@ public class Main {
 
         var game = GameEngine.create(settings, player, encounters);
 
-        encounter.save("src/encounter");
-
-        CombatEncounter encounterthingy = (CombatEncounter) Encounter.load("src/encounter");
-
         game.run();
     }
 }
