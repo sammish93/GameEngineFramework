@@ -3,7 +3,11 @@ package no.hiof.samuelcd.tbage;
 import no.hiof.samuelcd.tbage.enums.EncounterPattern;
 
 import java.io.*;
+import java.nio.file.InvalidPathException;
 
+/**
+ * A class intended to hold preferences and settings stipulating how the game renders.
+ */
 public class GameSettings implements Serializable {
 
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
@@ -15,9 +19,12 @@ public class GameSettings implements Serializable {
 
 
     private GameSettings() {
-
     }
 
+    /**
+     *
+     * @return Returns a new instance of GameSettings.
+     */
     public static GameSettings create() {
         return new GameSettings();
     }
@@ -74,15 +81,75 @@ public class GameSettings implements Serializable {
         this.fontSize = fontSize;
     }
 
+    /**
+     * Serialises to a local path. The file type extension is '.ser'.
+     * @param path The location that the .ser file will be saved to, along with the file name.
+     *             Example:
+     *             gameSettings.save("src/fileName");
+     * @throws IOException Arises if the file path cannot be serialised to.
+     * @throws InvalidPathException Arises if the path contains characters other than the English alphabet,
+     * underscores, and forward slashes.
+     */
     public void save(String path) throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(path);
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        boolean isOnlyAlphaNumericAndUnderscores = path.matches("^[a-zA-Z0-9_/]*$");
 
-        objectOutputStream.writeObject(this);
+        if (isOnlyAlphaNumericAndUnderscores) {
+            FileOutputStream fileOutputStream = new FileOutputStream(path + ".ser");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(this);
+        } else {
+            throw new InvalidPathException(path, "The path isn't recognised as a valid file path.");
+        }
+
     }
 
+    /**
+     * Serialises to a local path. The file type extension is decided by the developer.
+     * @param path The location that the .ser file will be saved to, along with the file name.
+     *             Example:
+     *             gameSettings.save("src/fileName", "sav");
+     * @param fileExtension The file type extension the developer wishes to save the file as.
+     * @throws IOException Arises if the file path cannot be serialised to.
+     * @throws InvalidPathException Arises if the path contains characters other than the English alphabet,
+     * underscores, and forward slashes.
+     */
+    public void save(String path, String fileExtension) throws IOException {
+        boolean isOnlyAlphaNumericAndUnderscores = path.matches("^[a-zA-Z0-9_/]*$");
+
+        if (isOnlyAlphaNumericAndUnderscores) {
+            FileOutputStream fileOutputStream = new FileOutputStream(path + "." + fileExtension);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
+            objectOutputStream.writeObject(this);
+        } else {
+            throw new InvalidPathException(path, "The path isn't recognised as a valid file path.");
+        }
+
+    }
+
+    /**
+     * Serialises to a local path. The file type extension is only required when the extension is something other
+     * than '.ser'.
+     * @param path The location that the file is located at. This can either be with or without the file extension.
+     *             Examples:
+     *             var gameSettings = GameSettings.save("src/fileNameWithSavExtension.sav");
+     *             or
+     *             var gameSettings = GameSettings.save("src/fileNameWithSerExtension");
+     * @throws IOException Arises if the file path cannot be serialised to.
+     * @throws ClassNotFoundException Arises if the file cannot be deserialised to this class.
+     * underscores, and forward slashes.
+     */
     public static GameSettings load(String path) throws IOException, ClassNotFoundException {
-        FileInputStream fileInputStream = new FileInputStream(path);
+        String[] splitPath = path.trim().split("\\.");
+        String mergedPath = "";
+        if (splitPath.length == 2) {
+            mergedPath = splitPath[0] + "." + splitPath[1];
+        } else {
+            mergedPath = splitPath[0] + ".ser";
+        }
+
+        FileInputStream fileInputStream = new FileInputStream(mergedPath);
         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
         return (GameSettings) objectInputStream.readObject();

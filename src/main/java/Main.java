@@ -4,10 +4,7 @@ import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
-import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
-import no.hiof.samuelcd.tbage.models.encounters.FixedEncounters;
-import no.hiof.samuelcd.tbage.models.encounters.NonCombatEncounter;
-import no.hiof.samuelcd.tbage.models.encounters.RandomEncounters;
+import no.hiof.samuelcd.tbage.models.encounters.*;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
@@ -247,6 +244,10 @@ public class Main {
 
 
         var game = GameEngine.create(settings, player, encounters);
+
+        encounter.save("src/encounter");
+
+        CombatEncounter encounterthingy = (CombatEncounter) Encounter.load("src/encounter");
 
         game.run();
     }
