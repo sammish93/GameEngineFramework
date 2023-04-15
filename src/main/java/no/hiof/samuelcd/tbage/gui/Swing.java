@@ -7,6 +7,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+/**
+ * An class intended to be used to render the game in a Java Swing window.
+ */
 public class Swing extends GameInterface implements Closeable<JFrame> {
 
     JFrame exampleFrame;
@@ -17,7 +20,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
         exampleFrame = new JFrame();
 
-        JTextArea exampleTextArea = new JTextArea(this.gameSettings.getButtonMessage());
+        JTextArea exampleTextArea = new JTextArea(getGameSettings().getButtonMessage());
 
         exampleFrame.add(exampleTextArea);
         exampleFrame.pack();
@@ -30,6 +33,10 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
     }
 
 
+    /**
+     * Closes the main Java Swing application window.
+     * @param jFrameToClose The main jFrame element that is the base of the application window.
+     */
     public void close(JFrame jFrameToClose) {
         jFrameToClose.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
                 KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel");
