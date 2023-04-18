@@ -3,6 +3,7 @@ package no.hiof.samuelcd.tbage.tools;
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
+import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
@@ -15,23 +16,43 @@ import no.hiof.samuelcd.tbage.models.player.Player;
 import no.hiof.samuelcd.tbage.models.props.Prop;
 
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
 
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
+/**
+ * A class intended to be used to control how the framework responds to certain player behaviours, interactions,
+ * and input.
+ */
 public class EncounterController {
     // This class is used to determine behaviour for a single combat turn.
     private Player player;
     private Encounter encounter;
     private GameEngine gameEngine;
 
+    /**
+     *
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param encounter Required to determine exactly which Encounter object is to be interacted with.
+     */
     public EncounterController(GameEngine gameEngine, Encounter encounter) {
         this.gameEngine = gameEngine;
         this.player = gameEngine.getPlayer();
         this.encounter = encounter;
     }
 
+    /**
+     * A method designed to handle how a CombatEncounter behaves, and to simulate turn-based combat.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param encounter Required to determine exactly which Encounter object is to be interacted with.
+     * @param turnNumber Required to display the current turn number of the turn-based combat.
+     *                   Has no bearing on anything else.
+     * @throws InventoryFullException Thrown in the event that an enemy drops an item, but the player cannot
+     * receive the item because their inventory is full.
+     * @throws InvalidValueException Thrown in the event of an invalid value being provided. See specific methods
+     * for more information on what constitutes a valid value.
+     * @see CombatEncounter
+     */
     public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) throws InventoryFullException, InvalidValueException {
         var player = gameEngine.getPlayer();
         boolean isEnemyChosen = false;
@@ -95,6 +116,16 @@ public class EncounterController {
         }
     }
 
+    /**
+     * A method intended to handle behaviour when a player chooses to use an item. Further behaviour can be
+     * given via a generic Useable interface being provided.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @throws InventoryFullException Thrown in the event that an item removed from a player's inventory could
+     * result in an inventory being full.
+     * @throws InvalidValueException Thrown in the event of an invalid value being provided. See specific methods
+     * for more information on what constitutes a valid value.
+     * @see Item#setOnUseBehaviour(Useable)
+     */
     public static void useItem(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         var player = gameEngine.getPlayer();
         boolean isItemChosen = false;
@@ -151,6 +182,16 @@ public class EncounterController {
         }
     }
 
+    /**
+     * A method intended to be used to choose a specific NonPlayableCharacter object. This can also be used by a
+     * generic Useable interface provided to, for example, an Item object.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param encounter Required to determine exactly which Encounter object is to be interacted with.
+     * @return Returns a NonPlayableCharacter object after a player has selected one via input prompts in the
+     * game interface.
+     * @see Item#setOnUseBehaviour(Useable)
+     * @see NonPlayableCharacter
+     */
     public static NonPlayableCharacter chooseNpc(GameEngine gameEngine, Encounter encounter) {
         boolean isTargetChosen = false;
         NonPlayableCharacter targetChosen = null;
@@ -240,6 +281,14 @@ public class EncounterController {
         return null;
     }
 
+    /**
+     * A method intended to be used to choose a specific Prop object.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param encounter Required to determine exactly which Encounter object is to be interacted with.
+     * @return Returns a NonPlayableCharacter object after a player has selected one via input prompts in the
+     * game interface.
+     * @see Prop
+     */
     public static Prop chooseProp(GameEngine gameEngine, Encounter encounter) {
         boolean isTargetChosen = false;
         Prop targetChosen = null;
@@ -292,6 +341,15 @@ public class EncounterController {
         return null;
     }
 
+    /**
+     * A method intended to be used to choose a specific Item object when interacting (trading) with an Ally.
+     * Once an item is chosen, its cost is deducted from the player's currency amount, and it is added to a
+     * player's inventory. In the case of the inventory being full, or the player not having enough gold, a
+     * message is shown in the game interface.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param ally Required to determine exactly which Ally object is to be interacted with.
+     * @return Returns an Item object after a player has selected one via input prompts in the game interface.
+     */
     public static Item chooseItem(GameEngine gameEngine, Ally ally) {
         boolean isTargetChosen = false;
         Item targetChosen = null;
@@ -476,11 +534,17 @@ public class EncounterController {
         return itemsWithIndex;
     }
 
-
-
-    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InventoryFullException, InvalidValueException {
-
-        var random = new Random();
+    /**
+     * A class intended to calculate which items are dropped from a specific encounter. The items in question
+     * depend on the Encounter in question, and the items (together with drop percentage) that each Enemy
+     * object has. Once the items have been dropped on the encounter being defeated then they will be added to
+     * a player's inventory.
+     * @param gameEngine Required to communicate with other dependencies such as the game interface.
+     * @param encounter Required to determine exactly which Encounter object is to be interacted with.
+     * @throws InvalidValueException Thrown in the event of an invalid value being provided. See specific methods
+     * for more information on what constitutes a valid value.
+     */
+    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InvalidValueException {
 
         Player player = gameEngine.getPlayer();
 
@@ -498,7 +562,7 @@ public class EncounterController {
                         Item item = itemEntry.getValue();
 
                         if ((item.getDropChance() * 100) == 0 ||
-                                ProbabilityCalculator.isDropped(random, (int)(item.getDropChance() * 100))) {
+                                ProbabilityCalculator.isDropped((int)(item.getDropChance() * 100))) {
 
                             try {
                                 player.addItemToInventory(item);

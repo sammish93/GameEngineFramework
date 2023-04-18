@@ -118,7 +118,7 @@ public class RandomEncounters extends Encounters{
         }
 
         for (int i = 0; i < nrOfEncounters; i++) {
-            String chosenEncounter = probabilityCalculator.nextRandomEncounter();
+            String chosenEncounter = probabilityCalculator.nextThenRemoveReturnedItemFromPool();
 
             if (chosenEncounter == null) {
                 break;
