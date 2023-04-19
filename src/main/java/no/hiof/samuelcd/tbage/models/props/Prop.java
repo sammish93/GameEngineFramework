@@ -2,13 +2,19 @@ package no.hiof.samuelcd.tbage.models.props;
 
 import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.GameSettings;
+import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 
 import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.UUID;
 
+/**
+ * This class is used to add props that can be interacted with (using the 'investigate' command) during runtime
+ * in an Encounter.
+ */
 public class Prop implements Serializable, Cloneable, Useable {
+
     private String name;
     private Useable onUseBehaviour;
     private boolean isUsed;
@@ -22,18 +28,34 @@ public class Prop implements Serializable, Cloneable, Useable {
         isUsed = false;
     }
 
+    /**
+     *
+     * @return Returns an initialised Prop object with a default UUID value as a name.
+     */
     public static Prop create() {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new Prop(randomlyGeneratedId.toString());
     }
 
+    /**
+     *
+     * @param name A string that is used as an identifier for this prop.
+     * @return Returns an initialised Prop object.
+     */
     public static Prop create(String name) {
         return new Prop(name);
     }
 
 
+    /**
+     * If a prop has no onUse behaviour set then it can still be interacted with, but a message will be displyed
+     * to the player informing them that nothing happens. A prop's onUse() method can also only be called once.
+     * The intention behind this is so that a prop can't be exploited (e.g. a player opens a chest prop, and
+     * receives loot once and only once).
+     * @param gameEngine The current instance of the GameEngine is required so that the lambda used can reference
+     *                   other dependencies of the GameEngine class such as the player or current encounter.
+     */
     public void onUse(GameEngine gameEngine) {
-        // Item does this when it is used.
         if (!isUsed) {
             if (getOnUseBehaviour() != null) {
                 try {
@@ -52,40 +74,89 @@ public class Prop implements Serializable, Cloneable, Useable {
 
     }
 
+    /**
+     *
+     * @return Returns true in the event that there is an on-use behavior set that can execute when the onUse()
+     * method is called.
+     */
     public boolean isUseable() {
         return (onUseBehaviour != null);
     }
 
+    /**
+     *
+     * @param useable Intended to use a lambda to allow developers to create custom behaviours when a specific
+     *                ability is used.
+     *                Example of a lambda created using the generic Useable interface:
+     *                Useable onUseSwitch = (gameEngine) -> {
+     *                  gameEngine.printMessage("A door unlocks in the distance..");
+     *                  var encounter = EncounterTraversalController.getCurrentEncounter();
+     *                  encounter.setDefeated(true);
+     *                };
+     */
     public void setOnUseBehaviour(Useable useable) {
         this.onUseBehaviour = useable;
     }
 
+    /**
+     *
+     * @return Returns the generic Useable interface if it exists.
+     */
     public Useable getOnUseBehaviour() {
         return onUseBehaviour;
     }
 
+    /**
+     *
+     * @return Returns a string representing the name of this object. If no name is set then an UUID converted
+     * to a string will be returned.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name Sets the name of this object to a new string value.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return Returns a boolean value whether or not this prop has already been used (interacted/investigated
+     * with) by a player.
+     */
     public boolean isUsed() {
         return isUsed;
     }
 
+    /**
+     *
+     * @param used Sets whether or not this object has been used.
+     */
     public void setUsed(boolean used) {
         isUsed = used;
     }
 
+    /**
+     * This method is intended to be abe to provide functionality so that a single Encounter instance can include
+     * duplicate props, but which can all be interacted with individually.
+     * @return Returns a Prop object that is cloned from this specific object instance.
+     * @throws CloneNotSupportedException
+     */
     @Override
     public Object clone() throws CloneNotSupportedException
     {
         return super.clone();
     }
 
+    /**
+     *
+     * @return Returns a string representation of this object. Note that this method is overridden, and not the same
+     * as the default implementation.
+     */
     @Override
     public String toString() {
         return "Prop Name: '" + name + "', " +

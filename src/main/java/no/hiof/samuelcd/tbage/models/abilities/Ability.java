@@ -9,6 +9,11 @@ import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.UUID;
 
+/**
+ * This class is used as means of giving an Enemy object an alternative option other than a melee attack.
+ * An enemy can have multiple abilities in its pool, and an algorithm will run, based on weighted value
+ * percentages, and the enemy's isMelee boolean value, along with its melee chance per turn.
+ */
 public class Ability implements Useable, Serializable {
 
     private String name;
@@ -27,20 +32,51 @@ public class Ability implements Useable, Serializable {
     }
 
 
+    /**
+     *
+     * @return Returns an initialised Ability object with a default UUID value as a name, and a 50% probability
+     * chance for the ability to be chosen on an enemy's turn (weighted probability).
+     * @throws InvalidValueException Is thrown if the ability probability is less than or equal to 0, or greater
+     * than 1.
+     */
     public static Ability create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new Ability(randomlyGeneratedId.toString(), 0.5);
     }
 
+    /**
+     *
+     * @param name A string that is used as an identifier for this ability.
+     * @return Returns an initialised Ability object with a 50% probability chance for the ability to be
+     * chosen on an enemy's turn (weighted probability).
+     * @throws InvalidValueException Is thrown if the ability probability is less than or equal to 0, or greater
+     * than 1.
+     */
     public static Ability create(String name) throws InvalidValueException {
         return new Ability(name,  0.5);
     }
 
+    /**
+     *
+     * @param name A string that is used as an identifier for this ability.
+     * @param abilityProbabilityPerTurn A double value greater than 0, and less than or equal to 1. The value
+     *                                  0.5 is equivalent to 50%, while 1 is equivalent to 100%. This probability
+     *                                  chance is weighted, and is calculated via the StringParser class.
+     * @return Returns an initialised Ability object based on the parameters provided.
+     * @throws InvalidValueException Is thrown if the ability probability is less than or equal to 0, or greater
+     * than 1.
+     * @see no.hiof.samuelcd.tbage.tools.StringParser
+     */
     public static Ability create(String name, double abilityProbabilityPerTurn) throws InvalidValueException {
         return new Ability(name, abilityProbabilityPerTurn);
     }
 
 
+    /**
+     *
+     * @param gameEngine The current instance of the GameEngine is required so that the lambda used can reference
+     *                   other dependencies of the GameEngine class such as the player or current encounter.
+     */
     public void onUse(GameEngine gameEngine) {
         try {
             useable.onUse(gameEngine);
@@ -49,30 +85,75 @@ public class Ability implements Useable, Serializable {
         }
     }
 
+    /**
+     *
+     * @return Returns true in the event that there is an on-use behavior set that can execute when the onUse()
+     * method is called.
+     */
     public boolean isUseable() {
         return (useable != null);
     }
 
+    /**
+     *
+     * @param useable Intended to use a lambda to allow developers to create custom behaviours when a specific
+     *                ability is used.
+     *                Example of a lambda created using the generic Useable interface:
+     *                Useable fireballAbility = (gameEngine) -> {
+     *                  var player = gameEngine.getPlayer();
+     *                  player.subtractFromCurrentHealth(5);
+     *                  gameEngine.printMessage("You have taken 5 damage from a fireball!");
+     *                };
+     */
     public void setOnUseBehaviour(Useable useable) {
         this.useable = useable;
     }
 
+    /**
+     *
+     * @return Returns the generic Useable interface if it exists.
+     */
     public Useable getOnUseBehaviour() {
         return useable;
     }
 
+    /**
+     *
+     * @return Returns a string representing the name of this object. If no name is set then an UUID converted
+     * to a string will be returned.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name Sets the name of this object to a new string value.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return Returns a decimal value representing the probability chance of an ability being chosen to be
+     * executed during an enemy's turn. This probability chance is weighted, and is calculated via the
+     * StringParser class.
+     */
     public double getAbilityProbabilityPerTurn() {
         return abilityProbabilityPerTurn;
     }
 
+    /**
+     *
+     * @param abilityProbabilityPerTurn A decimal value representing the probability chance of an ability being
+     *                                  chosen to be executed during an enemy's turn. The value must be greater
+     *                                  than 0, and less than or equal to 1. The value 0.5 is equivalent to 50%,
+     *                                  while 1 is equivalent to 100%. This probability chance is weighted, and
+     *                                  is calculated via the StringParser class.
+     * @throws InvalidValueException Is thrown if the ability probability is less than or equal to 0, or greater
+     * than 1.
+     */
     public void setAbilityProbabilityPerTurn(double abilityProbabilityPerTurn) throws InvalidValueException {
         if (abilityProbabilityPerTurn <= 1.00 && abilityProbabilityPerTurn > 0) {
             this.abilityProbabilityPerTurn = abilityProbabilityPerTurn;
@@ -82,6 +163,11 @@ public class Ability implements Useable, Serializable {
         }
     }
 
+    /**
+     *
+     * @return Returns a string representation of this object. Note that this method is overridden, and not the same
+     * as the default implementation.
+     */
     @Override
     public String toString() {
         double i = abilityProbabilityPerTurn * 100;

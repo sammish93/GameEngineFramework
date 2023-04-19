@@ -14,6 +14,20 @@ import java.util.UUID;
  * the generic Useable interface lambda provided to the setOnInitiationBehaviour() to check to see if a specific
  * feat is present in the encounter's feat check TreeMap, and then to check whether a player has obtained that
  * feat, and thereafter alter the behavior based on this.
+ *
+ * Example:
+ * Useable onUseInitiation = (gameEngine) -> {
+ *   var player = gameEngine.getPlayer();
+ *   if (player.getFeatFromFeats("TAKES_DAMAGE_FROM_RUSTY_NAIL_UPON_COMBAT_ENCOUNTER_ENTRY") == null) {
+ *     player.subtractFromCurrentHealth(6);
+ *     gameEngine.printMessage("On entering the encounter you suffered 6 damage from a rusty doornail!");
+ *   } else {
+ *     gameEngine.printMessage("Thanks to your heightened agility from your mead-drinking antics, you manage " +
+ *       "to skip past a precarious rusty doornail. That could have been deadly!");
+ *   }
+ * };
+ *
+ * encounter.setOnInitiationBehaviour(onUseInitiation);
  * @see no.hiof.samuelcd.tbage.models.encounters.Encounter#setOnInitiationBehaviour(Useable)
  */
 public class Feat implements Serializable {
