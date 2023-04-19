@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 public abstract class NonPlayableCharacter implements Serializable, Cloneable {
+
     private String name;
     private TreeMap<String, Ability> NpcAbilityPool;
     private TreeMap<String, Item> NpcItemTable;
@@ -20,7 +21,7 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
     private String imagePath;
 
 
-    public NonPlayableCharacter(String name, TreeMap<String, Ability> abilities, TreeMap<String, Item> items) {
+    protected NonPlayableCharacter(String name, TreeMap<String, Ability> abilities, TreeMap<String, Item> items) {
         if (name != null) {
             this.setName(name);
         }
@@ -29,35 +30,67 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
         NpcItemTable = Objects.requireNonNullElseGet(items, TreeMap::new);
     }
 
-
+    /**
+     *
+     * @return Returns a TreeMap of Abilities that a NonPlayerCharacter has.
+     */
     public TreeMap<String, Ability> getNpcAbilityPool() {
         return NpcAbilityPool;
     }
 
+    /**
+     *
+     * @param npcAbilityPool An existing TreeMap that replaces the Abilities of a NonPlayerCharacter.
+     */
     public void setNpcAbilityPool(TreeMap<String, Ability> npcAbilityPool) {
         this.NpcAbilityPool = npcAbilityPool;
     }
 
+    /**
+     *
+     * @param abilityName A string representing the name of an instantiated Ability object.
+     * @return Returns an instantiated Ability object.
+     */
     public Ability getAbilityFromAbilityPool(String abilityName) {
         return NpcAbilityPool.get(abilityName);
     }
 
+    /**
+     * Adds an ability to an already existing collection of abilities.
+     * @param ability An instantiated Ability object.
+     */
     public void addAbilityToAbilityPool(Ability ability) {
         NpcAbilityPool.put(ability.getName(), ability);
     }
 
+    /**
+     * Removes an ability from an already existing collection of abilities.
+     * @param ability An instantiated Ability object.
+     */
     public void removeAbilityFromAbilityPool(Ability ability) {
         NpcAbilityPool.remove(ability.getName());
     }
 
+    /**
+     * Removes an ability from an already existing collection of abilities.
+     * @param abilityName A string representing the name of an instantiated Ability object.
+     */
     public void removeAbilityFromAbilityPool(String abilityName) {
         NpcAbilityPool.remove(abilityName);
     }
 
+    /**
+     *
+     * @return Returns a string representing the name of a NonPlayableCharacter.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param name A string representing the name of an existing instantiated NonPlayableCharacter.
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -70,30 +103,61 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
         this.imagePath = imagePath;
     }
 
+    /**
+     *
+     * @return Returns a TreeMap of Items that a NonPlayerCharacter has.
+     */
     public TreeMap<String, Item> getNpcItemTable() {
         return NpcItemTable;
     }
 
+    /**
+     *
+     * @param npcItemTable An existing TreeMap that replaces the Items of a NonPlayerCharacter.
+     */
     public void setNpcItemTable(TreeMap<String, Item> npcItemTable) {
         NpcItemTable = npcItemTable;
     }
 
+    /**
+     *
+     * @param itemName A string representing the name of an instantiated Item object.
+     * @return Returns an instantiated Item object.
+     */
     public Item getItemFromItemTable(String itemName) {
         return NpcItemTable.get(itemName);
     }
 
+    /**
+     * Adds an item to an already existing collection of items.
+     * @param item An instantiated Item object.
+     */
     public void addItemToItemTable(Item item) {
         NpcItemTable.put(item.getName(), item);
     }
 
+    /**
+     * Removes an item from an already existing collection of items.
+     * @param item An instantiated Item object.
+     */
     public void removeItemFromItemTable(Item item) {
         NpcItemTable.remove(item.getName());
     }
 
+    /**
+     * Removes an item from an already existing collection of items.
+     * @param itemName A string representing the name of an instantiated Item object.
+     */
     public void removeItemFromItemTable(String itemName) {
         NpcItemTable.remove(itemName);
     }
 
+    /**
+     * A method intended to be used to append to the toString() method of subclasses.
+     * @param sb An instance of a StringBuilder class.
+     * @see Ally#toString()
+     * @see Enemy#toString()
+     */
     protected void printItemTableAndAbilityPool(StringBuilder sb) {
         if (!getNpcItemTable().isEmpty()) {
             sb.append("\n\tItem Table: ");
@@ -112,6 +176,12 @@ public abstract class NonPlayableCharacter implements Serializable, Cloneable {
         }
     }
 
+    /**
+     * This method is intended to be abe to provide functionality so that an Encounter can include
+     * duplicate NonPlayableCharacters, but which can all behave individually.
+     * @return Returns an NonPlayableCharacter object that is cloned from this specific object instance.
+     * @throws CloneNotSupportedException
+     */
     @Override
     public Object clone() throws CloneNotSupportedException
     {

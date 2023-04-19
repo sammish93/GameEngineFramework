@@ -33,7 +33,7 @@ public class Main {
         var ability = Ability.create("Heal");
         var item = Item.create("Potion of Poison");
         enemy.addItemToItemTable(item);
-        enemy.setMeleeChancePerTurn(0);
+        enemy.setMeleeChancePerTurn(0.2);
 
         Useable onUse = (gameEngine) -> {
             var playerthing = gameEngine.getPlayer();
@@ -68,7 +68,7 @@ public class Main {
             gameEngine.printMessage("You have taken 5 damage!");
         };
         ability.setOnUseBehaviour(onUse3);
-        ability.setAbilityProbabilityPerTurn(0.8);
+        ability.setAbilityProbabilityPerTurn(0.2);
 
 
 
