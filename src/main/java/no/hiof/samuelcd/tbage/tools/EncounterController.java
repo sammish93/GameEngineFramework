@@ -54,7 +54,8 @@ public class EncounterController {
      * for more information on what constitutes a valid value.
      * @see CombatEncounter
      */
-    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber) throws InventoryFullException, InvalidValueException {
+    public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber)
+            throws InventoryFullException, InvalidValueException {
         var player = gameEngine.getPlayer();
         boolean isEnemyChosen = false;
         Enemy enemyChosen = null;
@@ -81,7 +82,8 @@ public class EncounterController {
             try {
                 outputInt = Integer.parseInt(output);
             } catch (Exception ex) {
-                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                        "number from 1 to " + enemyCount + ".");
             }
 
             if (enemiesWithIndex.containsKey(outputInt)) {
@@ -89,7 +91,8 @@ public class EncounterController {
                 enemyChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
                 isEnemyChosen = true;
             } else {
-                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                        "number from 1 to " + enemyCount + ".");
             }
         }
 
@@ -113,7 +116,8 @@ public class EncounterController {
             }
 
             enemyTurn(gameEngine, (CombatEncounter) encounter, player);
-            gameEngine.printMessage("Your current health is " + (int) player.getCurrentHealth() + "/" + (int) player.getMaxHealth());
+            gameEngine.printMessage("Your current health is " + (int) player.getCurrentHealth() + "/" +
+                    (int) player.getMaxHealth());
         }
     }
 
@@ -153,7 +157,8 @@ public class EncounterController {
             try {
                 outputInt = Integer.parseInt(output);
             } catch (Exception ex) {
-                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number " +
+                        "from 1 to " + itemCount + ".");
                 output = scanner.nextLine();
             }
 
@@ -162,7 +167,8 @@ public class EncounterController {
                 itemChosen = player.getItemFromInventory(itemName);
                 isItemChosen = true;
             } else {
-                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number " +
+                        "from 1 to " + itemCount + ".");
             }
         }
 
@@ -173,7 +179,8 @@ public class EncounterController {
             if (numberOfUsesRemaining != 0) {
                 itemChosen.setNumberOfUses(numberOfUsesRemaining-- - 1);
                 if (itemChosen.getNumberOfUses() != 0) {
-                    gameEngine.printMessage("You now have " + numberOfUsesRemaining + " use(s) remaining of the item '" + itemChosen.getName() + "'");
+                    gameEngine.printMessage("You now have " + numberOfUsesRemaining + " use(s) remaining " +
+                            "of the item '" + itemChosen.getName() + "'");
                 } else {
                     gameEngine.printMessage("You have depleted " + itemChosen.getName() + "'s uses.");
                     gameEngine.getPlayer().removeItemFromInventory(itemChosen);
@@ -224,7 +231,8 @@ public class EncounterController {
                     try {
                         outputInt = Integer.parseInt(output);
                     } catch (Exception ex) {
-                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                                "number from 1 to " + enemyCount + ".");
                         output = scanner.nextLine();
                     }
 
@@ -233,7 +241,8 @@ public class EncounterController {
                         targetChosen = ((CombatEncounter) encounter).getEnemyFromEnemies(enemyName);
                         isTargetChosen = true;
                     } else {
-                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + enemyCount + ".");
+                        gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                                "number from 1 to " + enemyCount + ".");
                     }
                 }
             }
@@ -261,7 +270,8 @@ public class EncounterController {
                 try {
                     outputInt = Integer.parseInt(output);
                 } catch (Exception ex) {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + allyCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + allyCount + ".");
                     output = scanner.nextLine();
                 }
 
@@ -270,7 +280,8 @@ public class EncounterController {
                     targetChosen = ((NonCombatEncounter) encounter).getAllyFromAllies(allyName);
                     isTargetChosen = true;
                 } else {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + allyCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + allyCount + ".");
                 }
             }
 
@@ -321,7 +332,8 @@ public class EncounterController {
                 try {
                     outputInt = Integer.parseInt(output);
                 } catch (Exception ex) {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + propCount + ".");
                     output = scanner.nextLine();
                 }
 
@@ -330,7 +342,8 @@ public class EncounterController {
                     targetChosen = encounter.getPropFromProps(propName);
                     isTargetChosen = true;
                 } else {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + propCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + propCount + ".");
                 }
             }
         }
@@ -363,12 +376,14 @@ public class EncounterController {
             gameEngine.printMessage("There are currently no items to purchase.");
             return null;
         } else {
-            gameEngine.printMessage("Choose an item to purchase (" + (int)gameEngine.getPlayer().getCurrencyAmount()
+            gameEngine.printMessage("Choose an item to purchase (" + (int)gameEngine.getPlayer()
+                    .getCurrencyAmount()
                     + " gold):");
 
             for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
                 Item itemFromTable = ally.getItemFromItemTable(entry.getValue());
-                gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " + itemFromTable.getValue(), entry.getValue());
+                gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " +
+                        itemFromTable.getValue(), entry.getValue());
             }
 
             while (!isTargetChosen) {
@@ -383,7 +398,8 @@ public class EncounterController {
                 try {
                     outputInt = Integer.parseInt(output);
                 } catch (Exception ex) {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + itemCount + ".");
                     output = scanner.nextLine();
                 }
 
@@ -396,7 +412,8 @@ public class EncounterController {
                     if (itemValue > currentGold) {
                         gameEngine.printMessage("You do not have enough gold to purchase this item.");
                     } else {
-                        gameEngine.printMessage("Would you like to purchase this item for " + targetChosen.getValue() + " gold?");
+                        gameEngine.printMessage("Would you like to purchase this item for " +
+                                targetChosen.getValue() + " gold?");
 
                         String answer;
 
@@ -407,7 +424,8 @@ public class EncounterController {
                         }
                     }
                 } else {
-                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a number from 1 to " + itemCount + ".");
+                    gameEngine.printMessage("'" + output + "' is not a valid choice. Please enter a " +
+                            "number from 1 to " + itemCount + ".");
                 }
             }
 
@@ -419,7 +437,8 @@ public class EncounterController {
         return null;
     }
 
-    private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player) throws InvalidValueException {
+    private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player)
+            throws InvalidValueException {
         for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
             var enemy = entry.getValue();
 
@@ -439,7 +458,8 @@ public class EncounterController {
                 }
                 if (enemy.isMelee()) {
                     if (enemy.isMeleeAttackThisTurn()) {
-                        int enemyDamage = ProbabilityCalculator.damageCalculator((int)enemy.getMinDamage(), (int)enemy.getMaxDamage());
+                        int enemyDamage = ProbabilityCalculator.damageCalculator((int)enemy.getMinDamage(),
+                                (int)enemy.getMaxDamage());
                         player.subtractFromCurrentHealth(enemyDamage);
                         gameEngine.printMessage(enemy.getName() + " did " + enemyDamage + " damage to you.");
 
@@ -455,8 +475,10 @@ public class EncounterController {
         }
     }
 
-    private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen) throws InvalidValueException {
-        int playerDamage = ProbabilityCalculator.damageCalculator((int) player.getMinDamage(), (int) player.getMaxDamage());
+    private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen)
+            throws InvalidValueException {
+        int playerDamage = ProbabilityCalculator.damageCalculator((int) player.getMinDamage(),
+                (int) player.getMaxDamage());
         enemyChosen.subtractFromCurrentHealth(playerDamage);
 
         gameEngine.printMessage("You did " + playerDamage + " damage to " + enemyChosen.getName() + ".");
@@ -567,7 +589,8 @@ public class EncounterController {
 
                             try {
                                 player.addItemToInventory(item);
-                                gameEngine.printMessage("You received " + item.getName() + " from " + enemy.getName() + ".");
+                                gameEngine.printMessage("You received " + item.getName() + " from " +
+                                        enemy.getName() + ".");
                             } catch (InventoryFullException ex) {
                                 gameEngine.printMessage(ex.getMessage());
                             }

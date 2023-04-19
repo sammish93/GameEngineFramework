@@ -31,7 +31,9 @@ public class Player implements Serializable {
     private double currencyAmount;
 
 
-    private Player(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory) throws InvalidValueException {
+    private Player(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats,
+                   double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory)
+            throws InvalidValueException {
         if (inventorySlots >= 0) {
             this.inventorySlots = inventorySlots;
         } else {
@@ -85,7 +87,8 @@ public class Player implements Serializable {
      * or equal to 0, or the minimum or maximum damage values are set to a negative integer value.
      */
     public static Player create() throws InvalidValueException {
-        return new Player(10, 2, 5, null, 100, 10, null);
+        return new Player(10, 2, 5, null, 100, 10,
+                null);
     }
 
     /**
@@ -106,7 +109,9 @@ public class Player implements Serializable {
      * or equal to 0, or the minimum or maximum damage values are set to a negative integer value.
      * @see InventoryFullException
      */
-    public static Player create(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats, double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory) throws InvalidValueException {
+    public static Player create(int maxHealth, int minDamage, int maxDamage, TreeMap<String, Feat> feats,
+                                double currencyAmount, int inventorySlots, TreeMap<String, Item> inventory)
+            throws InvalidValueException {
         return new Player(maxHealth, minDamage, maxDamage, feats, currencyAmount, inventorySlots, inventory);
     }
 

@@ -87,8 +87,8 @@ public class ProbabilityCalculator<T> {
      * If no objects with a guaranteed chance are present, then the weighted probability algorithm chooses one
      * based on their combined probability.
      *
-     * See the nextThenRemoveReturnedItemFromPool() method for an application where the object is then removed from the pool of
-     * objects that can be chosen from, never to be chosen again.
+     * See the nextThenRemoveReturnedItemFromPool() method for an application where the object is then removed from
+     * the pool of objects that can be chosen from, never to be chosen again.
      *
      * @see ProbabilityCalculator#nextThenRemoveReturnedItemFromPool()
      */

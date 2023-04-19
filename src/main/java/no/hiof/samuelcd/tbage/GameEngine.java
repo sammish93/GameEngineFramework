@@ -43,7 +43,8 @@ public class GameEngine implements Serializable {
     public static Scanner scanner  = new Scanner(System.in);
 
 
-    private GameEngine(GameSettings gameSettings, Player player, Encounters encounters) throws InvalidValueException {
+    private GameEngine(GameSettings gameSettings, Player player, Encounters encounters)
+            throws InvalidValueException {
         this.gameSettings = Objects.requireNonNullElseGet(gameSettings, GameSettings::create);
         if (player != null) {
             this.player = player;
@@ -154,7 +155,8 @@ public class GameEngine implements Serializable {
      * @return Returns a new instance of a GameEngine class.
      * @throws InvalidValueException
      */
-    public static GameEngine create(GameSettings gameSettings, Player player, Encounters encounters) throws InvalidValueException {
+    public static GameEngine create(GameSettings gameSettings, Player player, Encounters encounters)
+            throws InvalidValueException {
         return new GameEngine(gameSettings, player, encounters);
     }
 

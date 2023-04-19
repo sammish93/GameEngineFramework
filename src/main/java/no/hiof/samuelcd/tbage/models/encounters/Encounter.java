@@ -34,7 +34,9 @@ public abstract class Encounter implements Serializable {
     private boolean isBacktracking = false;
 
 
-    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+    protected Encounter(String name, String imagePath, TreeMap<String, Feat> featChecks,
+                        TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions,
+                        TreeMap<String, Prop> props) throws InvalidValueException {
         this.name = name;
         this.imagePath = imagePath;
 
@@ -521,19 +523,28 @@ public abstract class Encounter implements Serializable {
      */
     protected void printOptions(GameEngine gameEngine) {
         gameEngine.printMessage("Type one of the following commands: ");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Help", "Prints a list of commands that the player can enter.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Exit", "Exits the game.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Inventory", "Lists the items and gold a player currently has in their inventory.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Status", "Lists the player's health points, as well as the condition of all enemies in an encounter.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Help",
+                "Prints a list of commands that the player can enter.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Exit",
+                "Exits the game.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Inventory",
+                "Lists the items and gold a player currently has in their inventory.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Status",
+                "Lists the player's health points, as well as the condition of all enemies in an encounter.");
         if (this instanceof CombatEncounter) {
-            gameEngine.printMessageFormatted("%-15s %s\n", "Attack", "Starts a new round of combat.");
+            gameEngine.printMessageFormatted("%-15s %s\n", "Attack",
+                    "Starts a new round of combat.");
         }
         if (this instanceof NonCombatEncounter) {
-            gameEngine.printMessageFormatted("%-15s %s\n", "Interact", "Interact with non-hostile beings.");
+            gameEngine.printMessageFormatted("%-15s %s\n", "Interact",
+                    "Interact with non-hostile beings.");
         }
-        gameEngine.printMessageFormatted("%-15s %s\n", "Investigate", "Investigates your immediate surroundings.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "Back", "Exits the current activity when possible.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>", "Navigates to another encounter when possible (e.g. 'north').");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Investigate",
+                "Investigates your immediate surroundings.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "Back",
+                "Exits the current activity when possible.");
+        gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>",
+                "Navigates to another encounter when possible (e.g. 'north').");
     }
 
     public abstract String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException;

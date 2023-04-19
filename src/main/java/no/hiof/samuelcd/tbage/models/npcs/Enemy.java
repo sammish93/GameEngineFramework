@@ -27,7 +27,9 @@ public class Enemy extends NonPlayableCharacter {
     private double meleeChancePerTurn;
 
 
-    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, double currencyReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, double meleeChancePerTurn) throws InvalidValueException {
+    private Enemy(String name, int maxHealth, int minDamage, int maxDamage, double currencyReceivedOnDeath,
+                  TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType,
+                  double meleeChancePerTurn) throws InvalidValueException {
         super(name, abilities, items);
 
         if (maxHealth > 0) {
@@ -84,7 +86,8 @@ public class Enemy extends NonPlayableCharacter {
      */
     public static Enemy create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2, 0.0, null, null, null, 1);
+        return new Enemy(randomlyGeneratedId.toString(), 10, 1, 2,
+                0.0, null, null, null, 1);
     }
 
     /**
@@ -98,7 +101,8 @@ public class Enemy extends NonPlayableCharacter {
      * than 0 or greater than 1 is set for melee chance per turn.
      */
     public static Enemy create(String name) throws InvalidValueException {
-        return new Enemy(name, 10, 1, 3, 0.0, null, null, null, 1);
+        return new Enemy(name, 10, 1, 3, 0.0, null,
+                null, null, 1);
     }
 
     /**
@@ -127,8 +131,11 @@ public class Enemy extends NonPlayableCharacter {
      * value is set for minimum damage, maximum damage, or currency received on death, or a decimal value less
      * than 0 or greater than 1 is set for melee chance per turn.
      */
-    public static Enemy create(String name, int health, int minDamage, int maxDamage, double goldReceivedOnDeath, TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType, boolean isMelee, double meleeChancePerTurn) throws InvalidValueException {
-        return new Enemy(name, health, minDamage, maxDamage, goldReceivedOnDeath, abilities, items, enemyType, meleeChancePerTurn);
+    public static Enemy create(String name, int health, int minDamage, int maxDamage, double goldReceivedOnDeath,
+                               TreeMap<String, Ability> abilities, TreeMap<String, Item> items, String enemyType,
+                               boolean isMelee, double meleeChancePerTurn) throws InvalidValueException {
+        return new Enemy(name, health, minDamage, maxDamage, goldReceivedOnDeath, abilities, items, enemyType,
+                meleeChancePerTurn);
     }
 
 
@@ -320,7 +327,8 @@ public class Enemy extends NonPlayableCharacter {
 
         int randomChance = 100 - ((int) (meleeChancePerTurn * 100));
         if (randomChance != 0) {
-            int randomInt = random.nextInt(100 - ((int) meleeChancePerTurn * 100)) + ((int) meleeChancePerTurn * 100);
+            int randomInt = random.nextInt(100 - ((int) meleeChancePerTurn * 100)) +
+                    ((int) meleeChancePerTurn * 100);
 
             if (randomInt < ((int) (meleeChancePerTurn * 100))) {
                 return false;

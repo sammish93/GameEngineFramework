@@ -50,8 +50,10 @@ public class Terminal extends GameInterface implements Closeable<String> {
         }
 
         if (encounters == null ||
-                (encounters instanceof FixedEncounters) && ((FixedEncounters)encounters).getEncounters().isEmpty() ||
-                (encounters instanceof RandomEncounters) && ((RandomEncounters) encounters).getEncounterOrder().isEmpty()) {
+                (encounters instanceof FixedEncounters) && ((FixedEncounters)encounters)
+                        .getEncounters().isEmpty() ||
+                (encounters instanceof RandomEncounters) && ((RandomEncounters) encounters)
+                        .getEncounterOrder().isEmpty()) {
             gameEngine.printMessage("There are no encounters present.");
         }
 

@@ -23,7 +23,10 @@ public class CombatEncounter extends Encounter {
     private TreeMap<String, Integer> duplicateEnemiesInEnemies;
 
 
-    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks,
+                            TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies,
+                            TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props)
+            throws InvalidValueException {
         super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
         this.enemies = Objects.requireNonNullElseGet(enemies, TreeMap::new);
@@ -37,7 +40,8 @@ public class CombatEncounter extends Encounter {
      */
     public static CombatEncounter create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null, null, null);
+        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null,
+                null, null, null, null);
     }
 
     /**
@@ -47,7 +51,8 @@ public class CombatEncounter extends Encounter {
      * @throws InvalidValueException
      */
     public static CombatEncounter create(String name) throws InvalidValueException {
-        return new CombatEncounter(name,null, null, null, null, null, null);
+        return new CombatEncounter(name,null, null, null, null,
+                null, null);
     }
 
     /**
@@ -63,7 +68,10 @@ public class CombatEncounter extends Encounter {
      * @return Returns an instantiated CombatEncounter object.
      * @throws InvalidValueException
      */
-    public static CombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+    public static CombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks,
+                                         TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies,
+                                         TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props)
+            throws InvalidValueException {
         return new CombatEncounter(name,imagePath, featChecks, featRewards, enemies, navigationOptions, props);
     }
 
@@ -168,10 +176,12 @@ public class CombatEncounter extends Encounter {
         int enemyIteration = 1;
         var player = gameEngine.getPlayer();
 
-        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" + (int)player.getMaxHealth());
+        gameEngine.printMessage("Your current health is " + (int)player.getCurrentHealth() + "/" +
+                (int)player.getMaxHealth());
         for (Map.Entry<String, Enemy> entry : enemies.entrySet()) {
             var enemy = entry.getValue();
-            gameEngine.printMessage("Enemy " + enemyIteration++ + ": " + enemy.getName() + ", Status: " + enemy.getEnemyHealthStatus());
+            gameEngine.printMessage("Enemy " + enemyIteration++ + ": " + enemy.getName() + ", Status: " +
+                    enemy.getEnemyHealthStatus());
         }
     }
 
@@ -196,7 +206,8 @@ public class CombatEncounter extends Encounter {
         setBacktracking(isDefeated());
 
         if (isBacktracking()) {
-            gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational command or 'progress' to return to where you came from.");
+            gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational " +
+                    "command or 'progress' to return to where you came from.");
         }
 
         if (!isIntroductionPrinted()) {
@@ -228,10 +239,12 @@ public class CombatEncounter extends Encounter {
 
                     if (value.equalsIgnoreCase("exit")) {
                         return "exit";
-                    } else if (value.equalsIgnoreCase("options") || value.equalsIgnoreCase("help")) {
+                    } else if (value.equalsIgnoreCase("options") ||
+                            value.equalsIgnoreCase("help")) {
                         printOptions(gameEngine);
                     } else if (value.equalsIgnoreCase("back")) {
-                        gameEngine.printMessage("Invalid command. Did you want to navigate to the previous enconter? Try a directional command like 'go south'.");
+                        gameEngine.printMessage("Invalid command. Did you want to navigate to the " +
+                                "previous encounter? Try a directional command like 'go south'.");
                     } else if (value.equalsIgnoreCase("defeated")) {
                         gameEngine.printMessage("You haven't defeated this encounter yet!");
                     } else if (value.equalsIgnoreCase("playerdeath")) {
@@ -323,7 +336,8 @@ public class CombatEncounter extends Encounter {
                     if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
                         break;
                     } else {
-                        gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to another encounter.");
+                        gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to " +
+                                "another encounter.");
                         setBacktracking(true);
                     }
                 } else {

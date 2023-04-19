@@ -62,7 +62,8 @@ public class FixedEncounters extends Encounters {
      * @see FixedEncounters#addEncounter(Encounter, Encounter)
      * @see Encounter#addNavigationalVerb(String)
      */
-    public void addEncounter(Encounter encounterFrom, Encounter encounterTo, String event) throws InvalidValueException {
+    public void addEncounter(Encounter encounterFrom, Encounter encounterTo, String event)
+            throws InvalidValueException {
         encounterFrom.setNavigationOption(event, encounterTo.getName());
         encounters.put(encounterTo.getName(), encounterTo);
         StringParser.addNoun(event);

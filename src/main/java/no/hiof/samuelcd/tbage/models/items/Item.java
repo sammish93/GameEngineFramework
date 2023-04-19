@@ -78,7 +78,8 @@ public class Item implements Useable, Serializable, Cloneable {
 
     /**
      *
-     * @return Returns an initialised Item object with a 50% probability chance for the item to be dropped on an Enemy being defeated, and an infinite number of uses.
+     * @return Returns an initialised Item object with a 50% probability chance for the item to be dropped on an Enemy
+     * being defeated, and an infinite number of uses.
      * @param name A string that is used as an identifier for this item.
      * @param value A positive integer value determining the currency value of this item. Used during interaction
      *              (trading) with an Ally.
@@ -120,7 +121,8 @@ public class Item implements Useable, Serializable, Cloneable {
      * @throws InvalidValueException Is thrown if the item drop chance is less than or equal to 0, or greater
      * than 1, or if the currency value or number of uses is a negative integer value.
      */
-    public static Item create(String name, int value, double dropChance, int numberOfUses) throws InvalidValueException {
+    public static Item create(String name, int value, double dropChance, int numberOfUses)
+            throws InvalidValueException {
         return new Item(name, value, dropChance, numberOfUses);
     }
 
