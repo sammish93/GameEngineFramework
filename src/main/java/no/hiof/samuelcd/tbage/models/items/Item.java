@@ -9,6 +9,10 @@ import java.io.*;
 import java.nio.file.InvalidPathException;
 import java.util.UUID;
 
+/**
+ * A class used to model items that can be stored in a player's inventory, dropped by an enemy, or sold by an ally.
+ * Items can be used by a player.
+ */
 public class Item implements Useable, Serializable, Cloneable {
 
     private String name;

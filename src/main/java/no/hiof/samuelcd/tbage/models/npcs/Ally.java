@@ -13,6 +13,11 @@ import java.util.UUID;
 
 import static no.hiof.samuelcd.tbage.GameEngine.scanner;
 
+
+/**
+ * A class to be used in a NonCombatEncounter. An ally can be interacted with, and also traded with to supply the
+ * player with items.
+ */
 public class Ally extends NonPlayableCharacter {
 
     private Useable onInteractionBehaviour;
@@ -133,7 +138,7 @@ public class Ally extends NonPlayableCharacter {
      * @return Returns true in the event that there is an on-use behavior set that can execute when the onUse()
      * method is called.
      */
-    public boolean InteractionIsUseable() {
+    public boolean isInteractionIsUseable() {
         return (onInteractionBehaviour != null);
     }
 
@@ -190,7 +195,7 @@ public class Ally extends NonPlayableCharacter {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Ally Name: '" + getName() + "', " +
-                "Has Custom Interaction: " + InteractionIsUseable() + ", " +
+                "Has Custom Interaction: " + isInteractionIsUseable() + ", " +
                 "Is Interacted With: " + isInteracted);
 
         printItemTableAndAbilityPool(sb);

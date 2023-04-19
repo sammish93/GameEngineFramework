@@ -168,7 +168,7 @@ public class Player implements Serializable {
     /**
      * This class is used to add an item to an inventory. It is also used in the event that duplicate items
      * exist in the inventory at the same time, in which an index value is added to the suffix of an item's name.
-     * (e.g. 'Health Potion' is a player's inventory. The player loots another 'Health Potion', and the first item
+     * (e.g. 'Health Potion' is in a player's inventory. The player loots another 'Health Potion', and the first item
      * is renamed to 'Health Potion 1', while the second is renamed to 'Health Potion 2'. Once one of these items
      * is consumed, the other item wil be renamed back to 'Health Potion' without the suffix.
      * @param item An instantiated Item object.
@@ -229,7 +229,7 @@ public class Player implements Serializable {
     /**
      * This class is used to remove an item to an inventory. It is also used in the event that duplicate items
      * exist in the inventory at the same time, in which an index value is added to the suffix of an item's name.
-     * (e.g. 'Health Potion' is a player's inventory. The player loots another 'Health Potion', and the first item
+     * (e.g. 'Health Potion' is in a player's inventory. The player loots another 'Health Potion', and the first item
      * is renamed to 'Health Potion 1', while the second is renamed to 'Health Potion 2'. Once one of these items
      * is consumed, the other item wil be renamed back to 'Health Potion' without the suffix.
      * @param item An instantiated Item object.

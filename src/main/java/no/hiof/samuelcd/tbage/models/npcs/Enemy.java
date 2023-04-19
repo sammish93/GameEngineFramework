@@ -12,6 +12,10 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.UUID;
 
+/**
+ * A class intended to be used in a CombatEncounter. Enemies can take part in combat with the player, cast
+ * abilities, and drop currency and loot on being defeated.
+ */
 public class Enemy extends NonPlayableCharacter {
 
     private double maxHealth;

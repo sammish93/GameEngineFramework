@@ -4,12 +4,14 @@ import no.hiof.samuelcd.tbage.GameEngine;
 import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
+import no.hiof.samuelcd.tbage.models.npcs.Ally;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.StringParser;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -21,39 +23,83 @@ public class CombatEncounter extends Encounter {
     private TreeMap<String, Integer> duplicateEnemiesInEnemies;
 
 
-    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+    private CombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
         super(name, imagePath, featChecks, featRewards, navigationOptions, props);
 
-        enemies = new TreeMap<>();
+        this.enemies = Objects.requireNonNullElseGet(enemies, TreeMap::new);
         duplicateEnemiesInEnemies = new TreeMap<>();
     }
 
+    /**
+     *
+     * @return Returns an instantiated CombatEncounter object with a default UUID set as a name.
+     * @throws InvalidValueException
+     */
     public static CombatEncounter create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
-        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null, null);
+        return new CombatEncounter(randomlyGeneratedId.toString(),  null, null, null, null, null, null);
     }
 
+    /**
+     *
+     * @param name A string that represents a CombatEncounter object's name.
+     * @return Returns an instantiated CombatEncounter object.
+     * @throws InvalidValueException
+     */
     public static CombatEncounter create(String name) throws InvalidValueException {
-        return new CombatEncounter(name,null, null, null, null, null);
+        return new CombatEncounter(name,null, null, null, null, null, null);
     }
 
-    public static CombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
-        return new CombatEncounter(name,imagePath, featChecks, featRewards, navigationOptions, props);
+    /**
+     *
+     * @param name A string that represents a CombatEncounter object's name.
+     * @param imagePath
+     * @param featChecks An existing TreeMap that includes feats to be checked on traversing to an encounter.
+     * @param featRewards An existing TreeMap that includes feats to be rewarded on defeating an encounter.
+     * @param enemies An existing TreeMap that includes enemies to be included in an encounter.
+     * @param navigationOptions An existing TreeMap that includes navigation options (nouns) valid in said
+     *                          encounter.
+     * @param props An existing TreeMap that includes props to be included in an encounter.
+     * @return Returns an instantiated CombatEncounter object.
+     * @throws InvalidValueException
+     */
+    public static CombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards, TreeMap<String, Enemy> enemies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
+        return new CombatEncounter(name,imagePath, featChecks, featRewards, enemies, navigationOptions, props);
     }
 
 
+    /**
+     *
+     * @return Returns a TreeMap of all enemies in the encounter.
+     */
     public TreeMap<String, Enemy> getEnemies() {
         return enemies;
     }
 
+    /**
+     *
+     * @param enemies Sets enemies in an encounter to an existing TreeMap.
+     */
     public void setEnemies(TreeMap<String, Enemy> enemies) {
         this.enemies = enemies;
     }
 
+    /**
+     *
+     * @param enemyName A string representing an instantiated Enemy object.
+     * @return Returns an Enemy object if said enemy exists in the current encounter.
+     */
     public Enemy getEnemyFromEnemies(String enemyName) {
         return enemies.get(enemyName);
     }
 
+    /**
+     * This class is used to add an enemy to an encounter. It is also used in the event that duplicate enemies
+     * exist in the encounter at the same time, in which an index value is added to the suffix of an item's name.
+     * (e.g. 'Skeleton' is an encounter. The developer adds another 'Skeleton' to the same encounter, and the
+     * first enemy is renamed to 'Skeleton 1', while the second is renamed to 'Skeleton 2'.
+     * @param enemy An existing Enemy object.
+     */
     public void addEnemyToEnemies(Enemy enemy) {
         try {
             int iteration = 1;
@@ -86,10 +132,18 @@ public class CombatEncounter extends Encounter {
         }
     }
 
+    /**
+     * Removes a single enemy from an encounter.
+     * @param enemy An instantiated Enemy object.
+     */
     public void removeEnemyFromEnemies(Enemy enemy) {
         enemies.remove(enemy.getName());
     }
 
+    /**
+     * Removes a single enemy from an encounter.
+     * @param enemyName A string representing an instantiated Enemy object.
+     */
     public void removeEnemyFromEnemies(String enemyName) {
         enemies.remove(enemyName);
     }
@@ -131,6 +185,9 @@ public class CombatEncounter extends Encounter {
         return true;
     }
 
+    /**
+     * This method is used by the game's chosen interface.
+     */
     @Override
     public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         String input = "";
@@ -280,6 +337,11 @@ public class CombatEncounter extends Encounter {
         return "defeated";
     }
 
+    /**
+     *
+     * @return Returns a string representation of this object. Note that this method is overridden, and not the same
+     * as the default implementation.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

@@ -5,6 +5,7 @@ import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
 import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
+import no.hiof.samuelcd.tbage.models.npcs.Enemy;
 import no.hiof.samuelcd.tbage.models.props.Prop;
 import no.hiof.samuelcd.tbage.tools.EncounterController;
 import no.hiof.samuelcd.tbage.tools.StringParser;
@@ -28,40 +29,91 @@ public class NonCombatEncounter extends Encounter {
 
     }
 
+    /**
+     *
+     * @return Returns an instantiated NonCombatEncounter object with a default UUID set as a name.
+     * @throws InvalidValueException
+     */
     public static NonCombatEncounter create() throws InvalidValueException {
         UUID randomlyGeneratedId = UUID.randomUUID();
         return new NonCombatEncounter(randomlyGeneratedId.toString(), null, null, null, null, null, null);
     }
 
+    /**
+     *
+     * @param name A string that represents a NonCombatEncounter object's name.
+     * @return Returns an instantiated NonCombatEncounter object.
+     * @throws InvalidValueException
+     */
     public static NonCombatEncounter create(String name) throws InvalidValueException {
         return new NonCombatEncounter(name, null, null, null, null, null, null);
     }
 
+    /**
+     *
+     * @param name A string that represents a NonCombatEncounter object's name.
+     * @param imagePath
+     * @param featChecks An existing TreeMap that includes feats to be checked on traversing to an encounter.
+     * @param featRewards An existing TreeMap that includes feats to be rewarded on defeating an encounter.
+     * @param allies An existing TreeMap that includes allies to be included in an encounter.
+     * @param navigationOptions An existing TreeMap that includes navigation options (nouns) valid in said
+     *                          encounter.
+     * @param props An existing TreeMap that includes props to be included in an encounter.
+     * @return Returns an instantiated NonCombatEncounter object.
+     * @throws InvalidValueException
+     */
     public static NonCombatEncounter create(String name, String imagePath, TreeMap<String, Feat> featChecks, TreeMap<String, Feat> featRewards,  TreeMap<String, Ally> allies, TreeMap<String, String> navigationOptions, TreeMap<String, Prop> props) throws InvalidValueException {
         return new NonCombatEncounter(name, imagePath, featChecks, featRewards, allies, navigationOptions, props);
     }
 
 
+    /**
+     *
+     * @return Returns a TreeMap of all allies in the encounter.
+     */
     public TreeMap<String, Ally> getAllies() {
         return allies;
     }
 
+    /**
+     *
+     * @param allies Sets allies in an encounter to an existing TreeMap.
+     */
     public void setAllies(TreeMap<String, Ally> allies) {
         this.allies = allies;
     }
 
+    /**
+     *
+     * @param allyName A string representing an instantiated Ally object.
+     * @return Returns an Ally object if said ally exists in the current encounter.
+     */
     public Ally getAllyFromAllies(String allyName) {
         return allies.get(allyName);
     }
 
+    /**
+     * This class is used to add an ally to an encounter. Unlike the Enemy sibling class, an Ally cannot be
+     * added twice to a single encounter.
+     * @param ally An existing Ally object.
+     * @see CombatEncounter#addEnemyToEnemies(Enemy)
+     */
     public void addAllyToAllies(Ally ally) {
         allies.put(ally.getName(), ally);
     }
 
+    /**
+     * Removes a single ally from an encounter.
+     * @param ally An instantiated Ally object.
+     */
     public void removeAllyFromAllies(Ally ally) {
         allies.remove(ally.getName());
     }
 
+    /**
+     * Removes a single ally from an encounter.
+     * @param allyName A string representing an instantiated Ally object.
+     */
     public void removeAllyFromAllies(String allyName) {
         allies.remove(allyName);
     }
@@ -85,6 +137,9 @@ public class NonCombatEncounter extends Encounter {
         }
     }
 
+    /**
+     * This method is used by the game's chosen interface.
+     */
     @Override
     public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
         String input = "";
@@ -213,6 +268,11 @@ public class NonCombatEncounter extends Encounter {
         return "defeated";
     }
 
+    /**
+     *
+     * @return Returns a string representation of this object. Note that this method is overridden, and not the same
+     * as the default implementation.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
