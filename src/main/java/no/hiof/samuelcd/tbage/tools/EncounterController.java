@@ -8,6 +8,7 @@ import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.CombatEncounter;
 import no.hiof.samuelcd.tbage.models.encounters.Encounter;
 import no.hiof.samuelcd.tbage.models.encounters.NonCombatEncounter;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
@@ -578,6 +579,22 @@ public class EncounterController {
             if (totalCurrencyReceived > 0) {
                 gameEngine.printMessage("You received " + (int)totalCurrencyReceived + " gold.");
                 player.addToCurrencyAmount((int)totalCurrencyReceived);
+            }
+
+            getFeatRewards(gameEngine, encounter);
+        }
+    }
+
+    public static void getFeatRewards(GameEngine gameEngine, Encounter encounter) {
+        var player = gameEngine.getPlayer();
+
+        if (!encounter.getFeatRewards().isEmpty()) {
+            for (Map.Entry<String, Feat> featEntry: encounter.getFeatRewards().entrySet()) {
+                Feat feat = featEntry.getValue();
+                player.addFeatToFeats(feat);
+                if (!feat.isSecret()) {
+                    gameEngine.printMessage("You received the feat '" + feat.getName() + "'.");
+                }
             }
         }
     }

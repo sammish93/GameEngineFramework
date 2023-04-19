@@ -5,6 +5,7 @@ import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
 import no.hiof.samuelcd.tbage.interfaces.Useable;
 import no.hiof.samuelcd.tbage.models.abilities.Ability;
 import no.hiof.samuelcd.tbage.models.encounters.*;
+import no.hiof.samuelcd.tbage.models.feats.Feat;
 import no.hiof.samuelcd.tbage.models.items.Item;
 import no.hiof.samuelcd.tbage.models.npcs.Ally;
 import no.hiof.samuelcd.tbage.models.npcs.Enemy;
@@ -95,8 +96,13 @@ public class Main {
 
         Useable onUseInitiation = (gameEngine) -> {
             var playerthing = gameEngine.getPlayer();
-            playerthing.subtractFromCurrentHealth(6);
-            gameEngine.printMessage("On entering the encounter you suffered 6 damage from a rusty doornail!");
+            if (playerthing.getFeatFromFeats("TAKES_DAMAGE_FROM_RUSTY_NAIL_UPON_COMBAT_ENCOUNTER_ENTRY") == null) {
+                playerthing.subtractFromCurrentHealth(6);
+                gameEngine.printMessage("On entering the encounter you suffered 6 damage from a rusty doornail!");
+            } else {
+                gameEngine.printMessage("Thanks to your heightened agility from your mead-drinking antics, you manage " +
+                        "to skip past a precarious rusty doornail. That could have been deadly!");
+            }
         };
 
         encounter.setOnInitiationBehaviour(onUseInitiation);
@@ -241,6 +247,11 @@ public class Main {
         player.setCurrencyAmount(1000.0);
          */
 
+        Feat featNotSecret = Feat.create("Mead King");
+        Feat featSecret = Feat.create("TAKES_DAMAGE_FROM_RUSTY_NAIL_UPON_COMBAT_ENCOUNTER_ENTRY", true);
+
+        nCoEncounter.addFeatToFeatRewards(featNotSecret);
+        nCoEncounter.addFeatToFeatRewards(featSecret);
 
 
         var game = GameEngine.create(settings, player, encounters);

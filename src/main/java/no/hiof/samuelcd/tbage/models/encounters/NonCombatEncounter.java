@@ -184,6 +184,7 @@ public class NonCombatEncounter extends Encounter {
                         gameEngine.printMessage("Try another means of traversal.");
                     } else if (getNavigationOptions().containsKey(noun) && getNavigationalVerbs().contains(verb)) {
                         setDefeated(true);
+                        EncounterController.getFeatRewards(gameEngine, this);
                         return noun;
                     } else {
                         gameEngine.printMessage("Try something else.");
@@ -193,6 +194,8 @@ public class NonCombatEncounter extends Encounter {
 
 
             if (isDefeated() && !isBacktracking()) {
+                EncounterController.getFeatRewards(gameEngine, this);
+
                 String answer;
 
                 gameEngine.printMessage("Would you like to progress to the next encounter?");
