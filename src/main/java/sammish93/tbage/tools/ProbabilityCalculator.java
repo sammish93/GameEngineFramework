@@ -128,6 +128,12 @@ public class ProbabilityCalculator<T> {
             Map.Entry<Double, T> entry = mapOfGuaranteedValues.higherEntry(value);
             if (entry != null) {
                 mapOfGuaranteedValues.remove(entry.getKey(), entry.getValue());
+                totalGuaranteedValues -= entry.getKey();
+
+                if (mapOfGuaranteedValues.isEmpty()) {
+                    isGuaranteedValuePresent = false;
+                }
+
                 return entry.getValue();
             }
             return null;
@@ -137,6 +143,7 @@ public class ProbabilityCalculator<T> {
             Map.Entry<Double, T> entry = mapOfNonGuaranteedValues.higherEntry(value);
             if (entry != null) {
                 mapOfNonGuaranteedValues.remove(entry.getKey(), entry.getValue());
+                totalNonGuaranteedValues -= entry.getKey();
                 return entry.getValue();
             }
             return null;
@@ -187,6 +194,6 @@ public class ProbabilityCalculator<T> {
             return minDamage;
         }
 
-        return random.nextInt(maxDamage - minDamage) + minDamage;
+        return random.nextInt(maxDamage - minDamage + 1) + minDamage;
     }
 }
