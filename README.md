@@ -30,7 +30,7 @@ In IntelliJ you can do this by:
 ### Usage
 
 How to start your first game:
-1. Navigate to a main() method in your desired java project and import the project using `import no.hiof.samuelcd.tbage.GameEngine;`
+1. Navigate to a main() method in your desired java project and import the project using `import GameEngine;`
 2. Create a GameEngine variable using `var game = GameEngine.create();`
 3. Run the game by using `game.run();`
 

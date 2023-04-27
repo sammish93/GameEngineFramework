@@ -1,23 +1,13 @@
-import no.hiof.samuelcd.tbage.GameEngine;
-import no.hiof.samuelcd.tbage.GameSettings;
-import no.hiof.samuelcd.tbage.exceptions.InvalidValueException;
-import no.hiof.samuelcd.tbage.exceptions.InventoryFullException;
-import no.hiof.samuelcd.tbage.interfaces.Useable;
-import no.hiof.samuelcd.tbage.models.abilities.Ability;
-import no.hiof.samuelcd.tbage.models.encounters.*;
-import no.hiof.samuelcd.tbage.models.feats.Feat;
-import no.hiof.samuelcd.tbage.models.items.Item;
-import no.hiof.samuelcd.tbage.models.npcs.Ally;
-import no.hiof.samuelcd.tbage.models.npcs.Enemy;
-import no.hiof.samuelcd.tbage.models.player.Player;
-import no.hiof.samuelcd.tbage.models.props.Prop;
-import no.hiof.samuelcd.tbage.tools.EncounterController;
-import no.hiof.samuelcd.tbage.tools.EncounterTraversalController;
-import no.hiof.samuelcd.tbage.tools.StringParser;
+import sammish93.tbage.GameEngine;
+import sammish93.tbage.GameSettings;
+import sammish93.tbage.exceptions.InvalidValueException;
+import sammish93.tbage.exceptions.InventoryFullException;
+import sammish93.tbage.interfaces.Useable;
+import sammish93.tbage.models.*;
+import sammish93.tbage.tools.EncounterController;
+import sammish93.tbage.tools.EncounterTraversalController;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.TreeMap;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InventoryFullException, InvalidValueException {
