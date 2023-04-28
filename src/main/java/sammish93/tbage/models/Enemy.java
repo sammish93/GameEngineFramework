@@ -171,7 +171,7 @@ public class Enemy extends NonPlayableCharacter {
      * @throws InvalidValueException Thrown when a value less than or equal to 0 is provided.
      */
     public void setCurrentHealth(int currentHealth) throws InvalidValueException {
-        if (maxHealth >= 0) {
+        if (currentHealth >= 0) {
             this.currentHealth = maxHealth;
         } else {
             throw new InvalidValueException("Value " + currentHealth + " is invalid. Enter a decimal " +
