@@ -134,6 +134,10 @@ public class Item implements Useable, Serializable, Cloneable {
     public void onUse(GameEngine gameEngine) {
         try {
             useable.onUse(gameEngine);
+
+            if (numberOfUses > 0) {
+                numberOfUses--;
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -177,7 +177,6 @@ public class EncounterController {
             itemChosen.onUse(gameEngine);
 
             if (numberOfUsesRemaining != 0) {
-                itemChosen.setNumberOfUses(numberOfUsesRemaining-- - 1);
                 if (itemChosen.getNumberOfUses() != 0) {
                     gameEngine.printMessage("You now have " + numberOfUsesRemaining + " use(s) remaining " +
                             "of the item '" + itemChosen.getName() + "'");
