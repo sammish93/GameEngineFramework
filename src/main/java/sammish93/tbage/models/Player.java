@@ -317,9 +317,9 @@ public class Player implements Serializable {
      * doesn't have enough inventory space.
      * @see Player#removeItemFromInventory(Item)
      */
-    public void removeItemFromInventory(String itemName) {
-        inventory.remove(itemName);
-        inventorySlots--;
+    public void removeItemFromInventory(String itemName) throws InventoryFullException {
+
+        removeItemFromInventory(inventory.get(itemName));
     }
 
     private String getStringWithoutIteration(String itemName) {
@@ -456,8 +456,13 @@ public class Player implements Serializable {
      * Sets the minimum amount of damage a player can inflict to an Enemy during combat.
      * @param minDamage An integer value greater than or equal to 0.
      */
-    public void setMinDamage(int minDamage) {
-        this.damage[0] = minDamage;
+    public void setMinDamage(int minDamage) throws InvalidValueException {
+        if (minDamage >= 0) {
+            damage[0] = minDamage;
+        } else {
+            throw new InvalidValueException("Value " + minDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
     }
 
     /**
@@ -473,8 +478,13 @@ public class Player implements Serializable {
      * Sets the maximum amount of damage a player can inflict to an Enemy during combat.
      * @param maxDamage An integer value greater than or equal to 0.
      */
-    public void setMaxDamage(int maxDamage) {
-        this.damage[1] = maxDamage;
+    public void setMaxDamage(int maxDamage) throws InvalidValueException {
+        if (maxDamage >= 0) {
+            damage[1] = maxDamage;
+        } else {
+            throw new InvalidValueException("Value " + maxDamage + " is invalid. Enter a decimal " +
+                    "value greater than or equal to 0");
+        }
     }
 
     /**

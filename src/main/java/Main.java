@@ -188,7 +188,7 @@ public class Main {
 
 
 
-
+/*
         // FIXED TRAVERSAL
 
         var encounters = FixedEncounters.create();
@@ -210,11 +210,11 @@ public class Main {
         //traversal.add("climb");
         //encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
 
+*/
 
 
 
 
-        /*
         // RANDOM TRAVERSAL
 
         var encounters = RandomEncounters.create();
@@ -235,7 +235,7 @@ public class Main {
         player.addItemToInventory(item2);
         player.addItemToInventory(hintItem);
         player.setCurrencyAmount(1000.0);
-         */
+
 
         Feat featNotSecret = Feat.create("Mead King");
         Feat featSecret = Feat.create("TAKES_DAMAGE_FROM_RUSTY_NAIL_UPON_COMBAT_ENCOUNTER_ENTRY", true);
@@ -245,6 +245,9 @@ public class Main {
 
 
         var game = GameEngine.create(settings, player, encounters);
+
+        System.out.println(encounters.getEncounterOrder());
+        System.out.println(encounters.getEncounterOrder().size());
 
         game.run();
     }
