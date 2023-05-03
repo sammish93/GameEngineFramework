@@ -543,7 +543,7 @@ public abstract class Encounter implements Serializable {
                 "Navigates to another encounter when possible (e.g. 'north').");
     }
 
-    public abstract String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException;
+    public abstract String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException;
 
     /**
      *

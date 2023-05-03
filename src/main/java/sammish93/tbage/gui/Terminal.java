@@ -22,7 +22,7 @@ public class Terminal extends GameInterface implements Closeable<String> {
      * @param gameEngine A specific GameEngine instance is required to be able to retrieve other dependencies
      *                   such as Player, Encounter, GameSettings, etc.
      */
-    public Terminal(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
+    public Terminal(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException {
         super(gameEngine);
 
         run();
@@ -38,7 +38,7 @@ public class Terminal extends GameInterface implements Closeable<String> {
         }
     }
 
-    private void run() throws InventoryFullException, InvalidValueException {
+    private void run() throws InventoryFullException, InvalidValueException, InterruptedException {
         var controller = getEncounterController();
         var gameEngine = getGameEngine();
         var encounters = getEncounters();

@@ -1,6 +1,7 @@
 package sammish93.tbage.models;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.tools.EncounterController;
@@ -16,6 +17,7 @@ import static sammish93.tbage.GameEngine.scanner;
 public class NonCombatEncounter extends Encounter {
 
     private TreeMap<String, Ally> allies;
+    volatile public String input = "";
 
 
     private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks,
@@ -146,10 +148,11 @@ public class NonCombatEncounter extends Encounter {
      * This method is used by the game's chosen interface.
      */
     @Override
-    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
-        String input = "";
+    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException {
+
         TreeMap<String, String> inputMap = new TreeMap<>();
         setBacktracking(isDefeated());
+        String newInput = input;
 
         if (isBacktracking()) {
             gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational " +
@@ -164,8 +167,18 @@ public class NonCombatEncounter extends Encounter {
 
         while (!isDefeated() || isBacktracking()) {
 
-            input = scanner.nextLine();
+            if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                Thread.sleep(100);
+                if (input.equals(newInput)) {
+                    continue;
+                }
+            } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                input = scanner.nextLine();
+            }
+
             inputMap = StringParser.read(gameEngine, input);
+
+            newInput = input = "";
 
             if (!gameEngine.getPlayer().isAlive()) {
                 while (true) {

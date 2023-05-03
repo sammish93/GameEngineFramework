@@ -5,6 +5,7 @@ import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Closeable;
 import sammish93.tbage.models.FixedEncounters;
+import sammish93.tbage.models.NonCombatEncounter;
 import sammish93.tbage.models.RandomEncounters;
 import sammish93.tbage.tools.EncounterTraversalController;
 
@@ -27,13 +28,13 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
 
 
-    public Swing(GameEngine gameEngine) throws InvalidValueException, InventoryFullException {
+    public Swing(GameEngine gameEngine) throws InvalidValueException, InventoryFullException, InterruptedException {
         super(gameEngine);
 
         run();
     }
 
-    private void run() throws InventoryFullException, InvalidValueException {
+    private void run() throws InventoryFullException, InvalidValueException, InterruptedException {
         JFrame baseFrame;
 
         baseFrame = new JFrame(getGameSettings().getWindowTitle());
@@ -128,9 +129,11 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
             {
                     //getGameEngine().printMessage(message);
                     //scanner.close(); //Don't forget to close your scanner before you reassign it
-                    String data = textField.getText();
+                    var enc = EncounterTraversalController.getCurrentEncounter();
+                ((NonCombatEncounter) enc).input = textField.getText();
                     //Just to illustrate the results I added a println here
-                    getGameEngine().printMessage(scanner.nextLine());
+                    getGameEngine().printMessage(textField.getText());
+                    textField.setText("");
 
             }
         });
