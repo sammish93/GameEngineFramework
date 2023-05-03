@@ -9,8 +9,6 @@ import static org.mockito.Mockito.mock;
 
 class EncounterTest {
 
-    GameEngine gameEngine = mock(GameEngine.class);
-
     @Test
     void assertsNonCombatEncounterCanOnlyHaveOneInstanceOfSingleAlly() throws InvalidValueException {
         var encounter = NonCombatEncounter.create();

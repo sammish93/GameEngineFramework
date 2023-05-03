@@ -188,7 +188,7 @@ public class Main {
 
 
 
-/*
+
         // FIXED TRAVERSAL
 
         var encounters = FixedEncounters.create();
@@ -210,9 +210,10 @@ public class Main {
         //traversal.add("climb");
         //encounters.getEncounter(encounter3.getName()).setNavigationalVerbs(traversal);
 
-*/
 
 
+
+        /*
 
 
         // RANDOM TRAVERSAL
@@ -228,6 +229,8 @@ public class Main {
         encounters.addEncounter(nCoEncounter2);
         encounters.addEncounter(encounter);
 
+
+         */
 
 
         player.addItemToInventory(item);
@@ -246,9 +249,7 @@ public class Main {
 
         var game = GameEngine.create(settings, player, encounters);
 
-        System.out.println(encounters.getEncounterOrder());
-        System.out.println(encounters.getEncounterOrder().size());
-
+        game.setPlatformToSwing();
         game.run();
     }
 }

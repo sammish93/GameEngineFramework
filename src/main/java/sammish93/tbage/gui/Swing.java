@@ -1,36 +1,106 @@
 package sammish93.tbage.gui;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.exceptions.InvalidValueException;
+import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Closeable;
+import sammish93.tbage.models.FixedEncounters;
+import sammish93.tbage.models.RandomEncounters;
+import sammish93.tbage.tools.EncounterTraversalController;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
+
+import static sammish93.tbage.GameEngine.scanner;
 
 /**
  * An class intended to be used to render the game in a Java Swing window.
  */
 public class Swing extends GameInterface implements Closeable<JFrame> {
 
-    JFrame exampleFrame;
 
 
-    public Swing(GameEngine gameEngine) {
+
+    public Swing(GameEngine gameEngine) throws InvalidValueException, InventoryFullException {
         super(gameEngine);
 
-        exampleFrame = new JFrame();
-
-        JTextArea exampleTextArea = new JTextArea(getGameSettings().getButtonMessage());
-
-        exampleFrame.add(exampleTextArea);
-        exampleFrame.pack();
-
-        exampleFrame.setSize(800,600);
-        exampleFrame.setLayout(null);
-        exampleFrame.setVisible(true);
-
-        close(exampleFrame);
+        run();
     }
+
+    private void run() throws InventoryFullException, InvalidValueException {
+        JFrame baseFrame;
+
+        baseFrame = new JFrame(getGameSettings().getWindowTitle());
+
+        JTextArea gameOutput = new JTextArea (5, 20);
+        JTextField userInput = new JTextField();
+
+        gameOutput.setEditable(false);
+
+        Container contentPane = baseFrame.getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(new JScrollPane(gameOutput,
+                                         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
+                                         BorderLayout.CENTER);
+        contentPane.add(userInput, BorderLayout.SOUTH);
+
+        PrintStream printStream = new PrintStream(new SwingOutputStream(gameOutput));
+        System.setOut(printStream);
+
+        baseFrame.pack();
+
+        int[] resolution = getGameSettings().getWindowResolution();
+        baseFrame.setSize(resolution[0],resolution[1]);
+        baseFrame.setVisible(true);
+
+        close(baseFrame);
+
+        send(userInput);
+
+
+        var controller = getEncounterController();
+        var gameEngine = getGameEngine();
+        var encounters = getEncounters();
+
+        if (!controller.checkEncounterPaths(gameEngine)) {
+            baseFrame.dispose();
+        }
+
+        if (encounters == null ||
+                (encounters instanceof FixedEncounters) && ((FixedEncounters)encounters)
+                        .getEncounters().isEmpty() ||
+                (encounters instanceof RandomEncounters) && ((RandomEncounters) encounters)
+                        .getEncounterOrder().isEmpty()) {
+            gameEngine.printMessage("There are no encounters present.");
+        }
+
+        // Closes current Terminal process on user entering 'exit'.
+        while (true) {
+            String output;
+
+            if (EncounterTraversalController.getCurrentEncounter() != null) {
+                output = EncounterTraversalController.getCurrentEncounter().run(gameEngine);
+            } else {
+                gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                output = scanner.nextLine();
+            }
+
+            //close(output);
+
+            if (controller.getCurrentEncounter() != null) {
+                controller.progressToNextEncounter(output);
+            }
+
+        }
+    }
+
 
 
     /**
@@ -39,17 +109,32 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
      */
     public void close(JFrame jFrameToClose) {
         jFrameToClose.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "Cancel");
-        jFrameToClose.getRootPane().getActionMap().put("Cancel", new AbstractAction()
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "CloseBaseFrame");
+        jFrameToClose.getRootPane().getActionMap().put("CloseBaseFrame", new AbstractAction()
         {
             public void actionPerformed(ActionEvent e)
             {
                 jFrameToClose.dispose();
-
-                // Less elegant solution.
-                //System.exit(0);
             }
         });
+    }
+
+    private void send(JTextField textField) {
+        textField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "sendInput");
+        textField.getActionMap().put("sendInput", new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                    //getGameEngine().printMessage(message);
+                    //scanner.close(); //Don't forget to close your scanner before you reassign it
+                    String data = textField.getText();
+                    //Just to illustrate the results I added a println here
+                    getGameEngine().printMessage(scanner.nextLine());
+
+            }
+        });
+
     }
 }
 

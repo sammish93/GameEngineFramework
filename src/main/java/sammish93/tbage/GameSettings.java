@@ -13,11 +13,17 @@ public class GameSettings implements Serializable {
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
     private int encounterModifier = 0;
     private int fontSize = 12;
+    private int windowWidth;
+    private int windowHeight;
+    private String windowTitle;
     private String message = "I will run in a terminal window until user types 'exit'.";
     private String buttonMessage = "I will run in a Swing window until user presses ESC.";
 
 
     private GameSettings() {
+        windowHeight = 600;
+        windowWidth = 800;
+        windowTitle = "TBAGE - Text-Based Adventure Game Engine";
     }
 
     /**
@@ -77,6 +83,46 @@ public class GameSettings implements Serializable {
 
     public void setFontSize(int fontSize) {
         this.fontSize = fontSize;
+    }
+
+    /**
+     *
+     * @return Returns an int array with 2 values. The value at index 0 is the width, and the value at index 1
+     * is the height.
+     */
+    public int[] getWindowResolution() {
+        int[] resolution = new int[2];
+        resolution[0] = windowWidth;
+        resolution[1] = windowHeight;
+        return resolution;
+    }
+
+    /**
+     *
+     * @param windowWidth A positive integer used to provide the Java Swing interface with a width (in pixels).
+     * @param windowHeight A positive integer used to provide the Java Swing interface with a height (in pixels).
+     */
+    public void setWindowResolution(int windowWidth, int windowHeight) {
+        this.windowWidth = windowWidth;
+        this.windowHeight = windowHeight;
+    }
+
+    /**
+     *
+     * @return Returns a string of the title of the game. The title will appear on the top of the window if the
+     * game is run in a Java Swing window.
+     */
+    public String getWindowTitle() {
+        return windowTitle;
+    }
+
+    /**
+     *
+     * @param windowTitle Sets a string for the title of the game. The title will appear on the top of the window
+     *                    if the game is run in a Java Swing window.
+     */
+    public void setWindowTitle(String windowTitle) {
+        this.windowTitle = windowTitle;
     }
 
     /**

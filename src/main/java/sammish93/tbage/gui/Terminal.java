@@ -43,8 +43,6 @@ public class Terminal extends GameInterface implements Closeable<String> {
         var gameEngine = getGameEngine();
         var encounters = getEncounters();
 
-        gameEngine.printMessage("I will run in a terminal window until user types 'exit'.");
-
         if (!controller.checkEncounterPaths(gameEngine)) {
             close("exit");
         }
