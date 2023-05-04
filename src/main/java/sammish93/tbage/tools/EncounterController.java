@@ -1,6 +1,7 @@
 package sammish93.tbage.tools;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Useable;
@@ -30,6 +31,7 @@ public class EncounterController {
     private Player player;
     private Encounter encounter;
     private GameEngine gameEngine;
+    private static String input = "";
 
     /**
      *
@@ -55,13 +57,14 @@ public class EncounterController {
      * @see CombatEncounter
      */
     public static void turn(GameEngine gameEngine, Encounter encounter, int turnNumber)
-            throws InventoryFullException, InvalidValueException {
+            throws InventoryFullException, InvalidValueException, InterruptedException {
         var player = gameEngine.getPlayer();
         boolean isEnemyChosen = false;
         Enemy enemyChosen = null;
         int enemyCount = ((CombatEncounter)encounter).getEnemies().size();
 
-        String output = "";
+
+        String inputComparison = input;
         var enemiesWithIndex = getEnemiesWithIndex(encounter);
 
         gameEngine.printMessage("Turn " + turnNumber);
@@ -71,7 +74,20 @@ public class EncounterController {
         }
 
         while (!isEnemyChosen) {
-            output = scanner.nextLine();
+
+            if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                Thread.sleep(100);
+                if (input.equals(inputComparison)) {
+                    continue;
+                }
+            } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                input = scanner.nextLine();
+            }
+
+            String output = EncounterController.input;
+
+            inputComparison = EncounterController.input = "";
+
             int outputInt = 0;
 
             if (output.equalsIgnoreCase("back")) {
@@ -99,19 +115,31 @@ public class EncounterController {
         if (isEnemyChosen) {
             playerTurn(gameEngine, player, enemyChosen);
 
-            String answer;
+            gameEngine.printMessage("Would you like to use an item?");
+            boolean isAnswered = false;
 
-            while(true) {
-                gameEngine.printMessage("Would you like to use an item?");
+            while(!isAnswered) {
+                if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                    Thread.sleep(100);
+                    if (EncounterController.input.equals(inputComparison)) {
+                        continue;
+                    }
+                } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    EncounterController.input = scanner.nextLine();
+                }
 
-                answer = scanner.nextLine();
+                String output = EncounterController.input;
+                isAnswered = true;
 
-                if (answer.equalsIgnoreCase("y") || answer.equalsIgnoreCase("yes")) {
+                inputComparison = EncounterController.input = "";
+
+                if (output.equalsIgnoreCase("y") || output.equalsIgnoreCase("yes")) {
                     EncounterController.useItem(gameEngine);
-                } else if (answer.equalsIgnoreCase("n") || answer.equalsIgnoreCase("no")) {
+                } else if (output.equalsIgnoreCase("n") || output.equalsIgnoreCase("no")) {
                     break;
                 } else {
                     gameEngine.printMessage("I'm sorry, I didn't understand.");
+                    gameEngine.printMessage("Would you like to use an item?");
                 }
             }
 
@@ -131,13 +159,13 @@ public class EncounterController {
      * for more information on what constitutes a valid value.
      * @see Item#setOnUseBehaviour(Useable)
      */
-    public static void useItem(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
+    public static void useItem(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException {
         var player = gameEngine.getPlayer();
         boolean isItemChosen = false;
         Item itemChosen = null;
         int itemCount = player.getInventory().size();
 
-        String output = "";
+        String inputComparison = input;
         var itemsWithIndex = getInventoryItemsWithIndex(gameEngine);
 
         gameEngine.printMessage("Choose an item to use:");
@@ -146,7 +174,19 @@ public class EncounterController {
         }
 
         while (!isItemChosen) {
-            output = scanner.nextLine();
+            if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                Thread.sleep(100);
+                if (input.equals(inputComparison)) {
+                    continue;
+                }
+            } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                input = scanner.nextLine();
+            }
+
+            String output = EncounterController.input;
+
+            inputComparison = EncounterController.input = "";
+
             int outputInt = 0;
 
             if (output.equalsIgnoreCase("back")) {
@@ -199,10 +239,10 @@ public class EncounterController {
      * @see Item#setOnUseBehaviour(Useable)
      * @see NonPlayableCharacter
      */
-    public static NonPlayableCharacter chooseNpc(GameEngine gameEngine, Encounter encounter) {
+    public static NonPlayableCharacter chooseNpc(GameEngine gameEngine, Encounter encounter) throws InterruptedException {
         boolean isTargetChosen = false;
         NonPlayableCharacter targetChosen = null;
-        String output = "";
+        String inputComparison = input;
 
         if (encounter instanceof CombatEncounter) {
             int enemyCount = ((CombatEncounter)encounter).getEnemies().size();
@@ -219,7 +259,19 @@ public class EncounterController {
                 }
 
                 while (!isTargetChosen) {
-                    output = scanner.nextLine();
+                    if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                        Thread.sleep(100);
+                        if (input.equals(inputComparison)) {
+                            continue;
+                        }
+                    } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                        input = scanner.nextLine();
+                    }
+
+                    String output = EncounterController.input;
+
+                    inputComparison = EncounterController.input = "";
+
                     int outputInt = 0;
 
                     if (output.equalsIgnoreCase("back")) {
@@ -258,7 +310,18 @@ public class EncounterController {
             }
 
             while (!isTargetChosen) {
-                output = scanner.nextLine();
+                if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                    Thread.sleep(100);
+                    if (input.equals(inputComparison)) {
+                        continue;
+                    }
+                } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    input = scanner.nextLine();
+                }
+
+                String output = EncounterController.input;
+
+                inputComparison = EncounterController.input = "";
                 int outputInt = 0;
 
                 if (output.equalsIgnoreCase("back")) {
@@ -300,10 +363,10 @@ public class EncounterController {
      * game interface.
      * @see Prop
      */
-    public static Prop chooseProp(GameEngine gameEngine, Encounter encounter) {
+    public static Prop chooseProp(GameEngine gameEngine, Encounter encounter) throws InterruptedException {
         boolean isTargetChosen = false;
         Prop targetChosen = null;
-        String output = "";
+        String inputComparison = input;
 
 
         int propCount = encounter.getProps().size();
@@ -320,7 +383,19 @@ public class EncounterController {
             }
 
             while (!isTargetChosen) {
-                output = scanner.nextLine();
+                if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                    Thread.sleep(100);
+                    if (input.equals(inputComparison)) {
+                        continue;
+                    }
+                } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    input = scanner.nextLine();
+                }
+
+                String output = EncounterController.input;
+
+                inputComparison = EncounterController.input = "";
+
                 int outputInt = 0;
 
                 if (output.equalsIgnoreCase("back")) {
@@ -363,10 +438,10 @@ public class EncounterController {
      * @param ally Required to determine exactly which Ally object is to be interacted with.
      * @return Returns an Item object after a player has selected one via input prompts in the game interface.
      */
-    public static Item chooseItem(GameEngine gameEngine, Ally ally) {
+    public static Item chooseItem(GameEngine gameEngine, Ally ally) throws InterruptedException {
         boolean isTargetChosen = false;
         Item targetChosen = null;
-        String output = "";
+        String inputComparison = input;
 
         var itemsWithIndex = getAllyItemsWithIndex(ally);
         int itemCount = itemsWithIndex.size();
@@ -386,7 +461,19 @@ public class EncounterController {
             }
 
             while (!isTargetChosen) {
-                output = scanner.nextLine();
+                if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                    Thread.sleep(100);
+                    if (input.equals(inputComparison)) {
+                        continue;
+                    }
+                } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    input = scanner.nextLine();
+                }
+
+                String output = EncounterController.input;
+
+                inputComparison = EncounterController.input = "";
+
                 int outputInt = 0;
 
                 if (output.equalsIgnoreCase("back")) {
@@ -405,6 +492,7 @@ public class EncounterController {
                 if (itemsWithIndex.containsKey(outputInt)) {
                     var itemName = itemsWithIndex.get(outputInt);
                     targetChosen = ally.getItemFromItemTable(itemName);
+                    boolean isAnswered = false;
 
                     double currentGold = gameEngine.getPlayer().getCurrencyAmount();
                     int itemValue = targetChosen.getValue();
@@ -413,13 +501,40 @@ public class EncounterController {
                     } else {
                         gameEngine.printMessage("Would you like to purchase this item for " +
                                 targetChosen.getValue() + " gold?");
+                        while (!isAnswered) {
 
-                        String answer;
+                            inputComparison = EncounterController.input = "";
 
-                        answer = scanner.nextLine();
+                            if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                                Thread.sleep(100);
+                            if (input.equals(inputComparison)) {
+                                continue;
+                            }
+                            } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                                input = scanner.nextLine();
+                            }
 
-                        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                            output = EncounterController.input;
+                            isAnswered = true;
+
+                            inputComparison = EncounterController.input = "";
+
+                            if (output.equalsIgnoreCase("yes") || output.equalsIgnoreCase("y")) {
                             isTargetChosen = true;
+                            } else {
+                                gameEngine.printMessage("You choose to not purchase this item.");
+
+                                gameEngine.printMessage("Choose an item to purchase (" +
+                                        (int)gameEngine.getPlayer()
+                                        .getCurrencyAmount()
+                                        + " gold):");
+
+                                for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
+                                    Item itemFromTable = ally.getItemFromItemTable(entry.getValue());
+                                    gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() +
+                                            ".", "Gold: " + itemFromTable.getValue(), entry.getValue());
+                                }
+                            }
                         }
                     }
                 } else {
@@ -619,5 +734,13 @@ public class EncounterController {
                 }
             }
         }
+    }
+
+    public static String getInput() {
+        return input;
+    }
+
+    public static void setInput(String input) {
+        EncounterController.input = input;
     }
 }

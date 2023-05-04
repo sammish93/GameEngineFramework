@@ -1,6 +1,7 @@
 package sammish93.tbage.models;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Useable;
@@ -59,18 +60,30 @@ public class Ally extends NonPlayableCharacter {
     }
 
 
-    private void trade(GameEngine gameEngine) {
+    private void trade(GameEngine gameEngine) throws InterruptedException {
         if (!getNpcItemTable().isEmpty()) {
             gameEngine.printMessage("Do you wish to trade?");
 
             boolean isFinishedPurchasing = false;
 
-            String answer;
-
-            answer = scanner.nextLine();
+            String inputComparison = EncounterController.getInput();
 
             while (!isFinishedPurchasing) {
-                if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+                if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                    Thread.sleep(100);
+                    if (EncounterController.getInput().equals(inputComparison)) {
+                        continue;
+                    }
+                } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    EncounterController.setInput(scanner.nextLine());
+                }
+
+                String output = EncounterController.getInput();
+
+                inputComparison = "";
+                EncounterController.setInput("");
+
+                if (output.equalsIgnoreCase("yes") || output.equalsIgnoreCase("y")) {
                     Item item = EncounterController.chooseItem(gameEngine, this);
                     if (item != null) {
                         var player = gameEngine.getPlayer();
@@ -90,9 +103,26 @@ public class Ally extends NonPlayableCharacter {
                 }
 
                 gameEngine.printMessage("Would you like to purchase another item?");
-                answer = scanner.nextLine();
+                boolean isAnswered = false;
 
-                if (!(answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y"))) {
+                while (!isAnswered) {
+                    if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                        Thread.sleep(100);
+                        if (EncounterController.getInput().equals(inputComparison)) {
+                            continue;
+                        }
+                    } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                        EncounterController.setInput(scanner.nextLine());
+                    }
+
+                    output = EncounterController.getInput();
+                    isAnswered = true;
+
+                    inputComparison = "";
+                    EncounterController.setInput("");
+                }
+
+                if (!(output.equalsIgnoreCase("yes") || output.equalsIgnoreCase("y"))) {
                     isFinishedPurchasing = true;
                 }
             }
@@ -107,7 +137,7 @@ public class Ally extends NonPlayableCharacter {
      * @param gameEngine The current instance of the GameEngine is required so that dependencies such as the
      *                   current encounter and player can be referenced.
      */
-    public void onInteraction(GameEngine gameEngine) {
+    public void onInteraction(GameEngine gameEngine) throws InterruptedException {
         if (onInteractionBehaviour != null) {
             if (!isInteracted) {
                 if (getOnInteractionBehaviour() != null) {

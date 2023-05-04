@@ -7,6 +7,7 @@ import sammish93.tbage.interfaces.Closeable;
 import sammish93.tbage.models.FixedEncounters;
 import sammish93.tbage.models.NonCombatEncounter;
 import sammish93.tbage.models.RandomEncounters;
+import sammish93.tbage.tools.EncounterController;
 import sammish93.tbage.tools.EncounterTraversalController;
 
 import javax.swing.*;
@@ -64,6 +65,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         close(baseFrame);
 
         send(userInput);
+        userInput.requestFocus();
 
 
         var controller = getEncounterController();
@@ -127,14 +129,11 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         {
             public void actionPerformed(ActionEvent e)
             {
-                    //getGameEngine().printMessage(message);
-                    //scanner.close(); //Don't forget to close your scanner before you reassign it
-                    var enc = EncounterTraversalController.getCurrentEncounter();
-                ((NonCombatEncounter) enc).input = textField.getText();
-                    //Just to illustrate the results I added a println here
+                if (!textField.getText().isEmpty()) {
+                    EncounterController.setInput(textField.getText());
                     getGameEngine().printMessage(textField.getText());
-                    textField.setText("");
-
+                }
+                textField.setText("");
             }
         });
 

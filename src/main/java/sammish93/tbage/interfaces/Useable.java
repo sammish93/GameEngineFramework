@@ -27,5 +27,5 @@ public interface Useable extends Serializable {
      * @param gameEngine The current instance of the GameEngine is required so that the lambda used can reference
      *                   other dependencies of the GameEngine class such as the player or current encounter.
      */
-    void onUse(GameEngine gameEngine) throws InvalidValueException;
+    void onUse(GameEngine gameEngine) throws InvalidValueException, InterruptedException;
 }

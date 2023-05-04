@@ -17,7 +17,6 @@ import static sammish93.tbage.GameEngine.scanner;
 public class NonCombatEncounter extends Encounter {
 
     private TreeMap<String, Ally> allies;
-    volatile public String input = "";
 
 
     private NonCombatEncounter(String name, String imagePath, TreeMap<String, Feat> featChecks,
@@ -152,7 +151,7 @@ public class NonCombatEncounter extends Encounter {
 
         TreeMap<String, String> inputMap = new TreeMap<>();
         setBacktracking(isDefeated());
-        String newInput = input;
+        String inputComparison = EncounterController.getInput();
 
         if (isBacktracking()) {
             gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational " +
@@ -169,16 +168,17 @@ public class NonCombatEncounter extends Encounter {
 
             if (gameEngine.getPlatform() == GamePlatform.SWING) {
                 Thread.sleep(100);
-                if (input.equals(newInput)) {
+                if (EncounterController.getInput().equals(inputComparison)) {
                     continue;
                 }
             } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
-                input = scanner.nextLine();
+                EncounterController.setInput(scanner.nextLine()) ;
             }
 
-            inputMap = StringParser.read(gameEngine, input);
+            inputMap = StringParser.read(gameEngine, EncounterController.getInput());
 
-            newInput = input = "";
+            inputComparison = "";
+            EncounterController.setInput("");
 
             if (!gameEngine.getPlayer().isAlive()) {
                 while (true) {
@@ -247,7 +247,7 @@ public class NonCombatEncounter extends Encounter {
                         if (!gameEngine.getPlayer().isAlive()) {
                             gameEngine.printMessage("You have died!");
                         }
-                    } else if (input.equalsIgnoreCase("skip")) {
+                    } else if (EncounterController.getInput().equalsIgnoreCase("skip")) {
                         setDefeated(true);
                     }
                 } else if (inputMap.get("verb") != null && inputMap.get("noun") != null) {
@@ -274,17 +274,31 @@ public class NonCombatEncounter extends Encounter {
             if (isDefeated() && !isBacktracking()) {
                 EncounterController.getFeatRewards(gameEngine, this);
 
-                String answer;
-
                 gameEngine.printMessage("Would you like to progress to the next encounter?");
-                answer = scanner.nextLine();
+                boolean isAnswered = false;
 
-                if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
-                    break;
-                } else {
-                    gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to " +
-                            "another encounter.");
-                    setBacktracking(true);
+                while (!isAnswered) {
+                    if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                        Thread.sleep(100);
+                        if (EncounterController.getInput().equals(inputComparison)) {
+                            continue;
+                        }
+                    } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                        EncounterController.setInput(scanner.nextLine());
+                    }
+
+                    String output = EncounterController.getInput();
+                    isAnswered = true;
+
+                    inputComparison = "";
+                    EncounterController.setInput("");
+                    if (output.equalsIgnoreCase("yes") || output.equalsIgnoreCase("y")) {
+                        isAnswered = true;
+                    } else {
+                        gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to " +
+                                "another encounter.");
+                        setBacktracking(true);
+                    }
                 }
             }
         }

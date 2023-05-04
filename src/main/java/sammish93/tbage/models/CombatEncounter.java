@@ -1,6 +1,7 @@
 package sammish93.tbage.models;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.tools.EncounterController;
@@ -195,11 +196,11 @@ public class CombatEncounter extends Encounter {
      * This method is used by the game's chosen interface.
      */
     @Override
-    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException {
-        String input = "";
+    public String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException {
         TreeMap<String, String> inputMap = new TreeMap<>();
         int turnNumber = 1;
         setBacktracking(isDefeated());
+        String inputComparison = EncounterController.getInput();
 
         if (isBacktracking()) {
             gameEngine.printMessage("You return to encounter '" + getName() + "'. Enter a navigational " +
@@ -215,8 +216,19 @@ public class CombatEncounter extends Encounter {
 
         while (!isDefeated() || isBacktracking()) {
 
-            input = scanner.nextLine();
-            inputMap = StringParser.read(gameEngine, input);
+            if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                Thread.sleep(100);
+                if (EncounterController.getInput().equals(inputComparison)) {
+                    continue;
+                }
+            } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                EncounterController.setInput(scanner.nextLine());
+            }
+
+            inputMap = StringParser.read(gameEngine, EncounterController.getInput());
+
+            inputComparison = "";
+            EncounterController.setInput("");
 
             if (!gameEngine.getPlayer().isAlive()) {
                 while (true) {
@@ -301,7 +313,7 @@ public class CombatEncounter extends Encounter {
                             gameEngine.printMessage("You have no items in your inventory.");
                         }
 
-                    } else if (allEnemiesDead() || input.equalsIgnoreCase("skip")) {
+                    } else if (allEnemiesDead() || EncounterController.getInput().equalsIgnoreCase("skip")) {
                         setDefeated(true);
                         EncounterController.getEncounterDrops(gameEngine, this);
                     }
@@ -323,19 +335,36 @@ public class CombatEncounter extends Encounter {
 
 
             if (isDefeated() && !isBacktracking()) {
-                String answer;
-
                 if (getNavigationOptions().get("defeated") != null) {
                     gameEngine.printMessage("Would you like to progress to the next encounter?");
-                    answer = scanner.nextLine();
+                    boolean isAnswered = false;
 
-                    if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
-                        break;
-                    } else {
-                        gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to " +
-                                "another encounter.");
-                        setBacktracking(true);
+                    while (!isAnswered) {
+                        if (gameEngine.getPlatform() == GamePlatform.SWING) {
+                            Thread.sleep(100);
+                            if (EncounterController.getInput().equals(inputComparison)) {
+                                continue;
+                            }
+                        } else if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                            EncounterController.setInput(scanner.nextLine());
+                        }
+
+                        String output = EncounterController.getInput();
+                        isAnswered = true;
+
+                        inputComparison = "";
+                        EncounterController.setInput("");
+
+                        if (output.equalsIgnoreCase("yes") || output.equalsIgnoreCase("y")) {
+                            break;
+                        } else {
+                            gameEngine.printMessage("Enter a navigational command or 'progress' to traverse to " +
+                                    "another encounter.");
+                            setBacktracking(true);
+                        }
                     }
+
+
                 } else {
                     gameEngine.printMessage(getOnDefeatedMessage());
                     gameEngine.printMessage("Enter a navigational command to traverse to another encounter.");
