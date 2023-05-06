@@ -16,7 +16,7 @@ class EncounterTraversalControllerTest {
     GameEngine gameEngine = mock(GameEngine.class);
 
     @Test
-    void assertsEncountersWithOnlyValidPathsReturnsTrue() throws InvalidValueException {
+    void assertsEncountersWithOnlyValidPathsReturnsTrue() throws InvalidValueException, InterruptedException {
 
         var nCoEncounter = NonCombatEncounter.create("ENCOUNTER 1");
         var nCoEncounter2 = NonCombatEncounter.create("ENCOUNTER 2");
@@ -39,7 +39,7 @@ class EncounterTraversalControllerTest {
     }
 
     @Test
-    void assertsEncountersWithAnInvalidPathReturnsFalse() throws InvalidValueException {
+    void assertsEncountersWithAnInvalidPathReturnsFalse() throws InvalidValueException, InterruptedException {
 
         var nCoEncounter = NonCombatEncounter.create("ENCOUNTER 1");
         var nCoEncounter2 = NonCombatEncounter.create("ENCOUNTER 2");

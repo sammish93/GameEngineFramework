@@ -68,7 +68,7 @@ public class EncounterTraversalController {
      * @return Returns true if all prompts lead to instantiated Encounter objects. Returns false if not.
      * @see EncounterTraversalController#progressToNextEncounter(String)
      */
-    public boolean checkEncounterPaths(GameEngine gameEngine) {
+    public boolean checkEncounterPaths(GameEngine gameEngine) throws InterruptedException {
         if (encounters instanceof FixedEncounters) {
             Set<String> keys = ((FixedEncounters) encounters).getEncounters().keySet();;
 

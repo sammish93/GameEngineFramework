@@ -1,7 +1,9 @@
 package sammish93.tbage;
 
 import sammish93.tbage.enums.EncounterPattern;
+import sammish93.tbage.exceptions.InvalidValueException;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.InvalidPathException;
 
@@ -12,18 +14,27 @@ public class GameSettings implements Serializable {
 
     private EncounterPattern encounterPattern = EncounterPattern.RANDOM;
     private int encounterModifier = 0;
-    private int fontSize = 12;
+    private Font fontOutput;
+    private Font fontInput;
+    private Font fontGeneral;
+    private boolean isOutputSeparatedByNewLine;
+    private boolean isFontAnimated;
+    private int fontAnimationSpeed;
     private int windowWidth;
     private int windowHeight;
     private String windowTitle;
-    private String message = "I will run in a terminal window until user types 'exit'.";
-    private String buttonMessage = "I will run in a Swing window until user presses ESC.";
 
 
     private GameSettings() {
         windowHeight = 600;
         windowWidth = 800;
         windowTitle = "TBAGE - Text-Based Adventure Game Engine";
+        fontOutput = new Font("Century", Font.PLAIN, 14);
+        fontInput = new Font("Lucida Handwriting Italic", Font.PLAIN, 14);
+        fontGeneral = new Font("Century Gothic", Font.BOLD, 14);
+        isFontAnimated = true;
+        fontAnimationSpeed = 10;
+        isOutputSeparatedByNewLine = true;
     }
 
     /**
@@ -53,22 +64,6 @@ public class GameSettings implements Serializable {
         this.encounterPattern = EncounterPattern.RANDOM;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getButtonMessage() {
-        return buttonMessage;
-    }
-
-    public void setButtonMessage(String buttonMessage) {
-        this.buttonMessage = buttonMessage;
-    }
-
     public int getEncounterModifier() {
         return encounterModifier;
     }
@@ -77,12 +72,123 @@ public class GameSettings implements Serializable {
         this.encounterModifier = encounterModifier;
     }
 
-    public int getFontSize() {
-        return fontSize;
+    /**
+     *
+     * @return Returns a Font object representing the font size, style, and font face used by the output text area
+     * when the game is run using Java Swing.
+     */
+    public Font getFontOutput() {
+        return fontOutput;
     }
 
-    public void setFontSize(int fontSize) {
-        this.fontSize = fontSize;
+    /**
+     *
+     * @param font Sets a Font object to represent the font size, style, and font face used by the output
+     *                   text area when the game is run using Java Swing.
+     */
+    public void setFontOutput(Font font) {
+        this.fontOutput = font;
+    }
+
+    /**
+     *
+     * @return Returns a Font object representing the font size, style, and font face used by the input text field
+     * when the game is run using Java Swing.
+     */
+    public Font getFontInput() {
+        return fontInput;
+    }
+
+    /**
+     *
+     * @param font Sets a Font object to represent the font size, style, and font face used by the input text field
+     *             ame is run using Java Swing.
+     */
+    public void setFontInput(Font font) {
+        this.fontInput = font;
+    }
+
+    /**
+     *
+     * @return Returns a Font object representing the font size, style, and font face used by the interface
+     * buttons and labels when the game is run using Java Swing.
+     */
+    public Font getFontGeneral() {
+        return fontGeneral;
+    }
+
+    /**
+     *
+     * @param font Sets a Font object to represent the font size, style, and font face used by the interface
+     *             buttons and labels when the game is run using Java Swing.
+     */
+    public void setFontGeneral(Font font) {
+        this.fontGeneral = font;
+    }
+
+    /**
+     *
+     * @return Returns a boolean value representing if the font is printed to the output (either terminal
+     * window or Swing text area) with or without a delay after each character.
+     */
+    public boolean isFontAnimated() {
+        return isFontAnimated;
+    }
+
+    /**
+     *
+     * @param fontAnimated Sets the boolean value to represent if the font is printed to the output (either the
+     *                     terminal window or Swing text area) with or without a delay after each character.
+     */
+    public void setFontAnimated(boolean fontAnimated) {
+        isFontAnimated = fontAnimated;
+    }
+
+    /**
+     *
+     * @return Returns a positive integer value representing the pause (in milliseconds) between each character
+     * being printed to the output (either the terminal window or Swing text area).
+     */
+    public int getFontAnimationSpeed() {
+        return fontAnimationSpeed;
+    }
+
+    /**
+     *
+     * @param fontAnimationSpeed Sets a positive integer value to represent the pause (in milliseconds) between
+     *                           each character being printed to the output (either the terminal window or
+     *                           Swing text area).
+     *                           NOTE: In the case that a value of 0 is provided then font animation will be
+     *                           turned off.
+     * @throws InvalidValueException Thrown when a negative integer value is provided.
+     */
+    public void setFontAnimationSpeed(int fontAnimationSpeed) throws InvalidValueException {
+        if (fontAnimationSpeed > 0) {
+            this.fontAnimationSpeed = fontAnimationSpeed;
+        } else if (fontAnimationSpeed == 0) {
+            isFontAnimated = false;
+        } else {
+            throw new InvalidValueException("Value " + fontAnimationSpeed + " must be a positive integer value");
+        }
+
+    }
+
+    /**
+     *
+     * @return Returns a boolean value representing if each line printed to the output (either the terminal window
+     * or Swing text area) is separated by a new line or not.
+     */
+    public boolean isOutputSeparatedByNewLine() {
+        return isOutputSeparatedByNewLine;
+    }
+
+    /**
+     *
+     * @param outputSeparatedByNewLine Sets a boolean value to represent if each line printed to the output (either the terminal window
+     *      * or Swing text area) is separated by a new line or not.
+     */
+    public void setOutputSeparatedByNewLine(boolean outputSeparatedByNewLine) {
+        isOutputSeparatedByNewLine = outputSeparatedByNewLine;
     }
 
     /**

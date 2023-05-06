@@ -13,7 +13,7 @@ class PropTest {
     GameEngine gameEngine = mock(GameEngine.class);
 
     @Test
-    void assertsPropIsUsedBooleanIsSetToTrueWhenPropIsUsed() throws InvalidValueException {
+    void assertsPropIsUsedBooleanIsSetToTrueWhenPropIsUsed() throws InvalidValueException, InterruptedException {
         var prop = Prop.create();
 
         Useable onUse = (gameEngine) -> {

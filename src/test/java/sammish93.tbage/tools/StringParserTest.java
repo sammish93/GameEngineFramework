@@ -26,11 +26,13 @@ class StringParserTest {
 
             TreeMap<String, String> map = StringParser.read(gameEngine, input);
             assertEquals(input, map.get("command"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     @Test
-    void assertsValidVerbNounInput() {
+    void assertsValidVerbNounInput() throws InterruptedException {
         String input = "climb ladder";
         String[] splitString = input.split("\\s");
 

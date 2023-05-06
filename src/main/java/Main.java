@@ -137,7 +137,7 @@ public class Main {
         nCoEncounter.addPropToProps(prop1);
         nCoEncounter.addPropToProps(prop2);
         nCoEncounter.addPropToProps(prop3);
-        nCoEncounter.setIntroductoryMessage("You have entered what appears to be a makeshift tavern");
+        nCoEncounter.setIntroductoryMessage("You have entered what appears to be a makeshift tavern.");
 
         Ally ally1 = Ally.create("Friendly Wizard");
         Useable onUseWizard = (gameEngine) -> {

@@ -153,7 +153,7 @@ public class CombatEncounter extends Encounter {
         enemies.remove(enemyName);
     }
 
-    private void combatEncounterIntroduction(GameEngine gameEngine) {
+    private void combatEncounterIntroduction(GameEngine gameEngine) throws InterruptedException {
         if (!getIntroductoryMessage().isEmpty()) {
             gameEngine.printMessage(getIntroductoryMessage());
         }
@@ -169,7 +169,7 @@ public class CombatEncounter extends Encounter {
         }
     }
 
-    private void printEnemies(GameEngine gameEngine) {
+    private void printEnemies(GameEngine gameEngine) throws InterruptedException {
         int enemyIteration = 1;
         var player = gameEngine.getPlayer();
 

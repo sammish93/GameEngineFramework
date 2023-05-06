@@ -30,7 +30,7 @@ public class StringParser {
      * or 'noun') as the key, and the word as the value.
      * @see StringParser#parse(GameEngine, String[])
      */
-    public static TreeMap<String, String> read(GameEngine gameEngine, String input) {
+    public static TreeMap<String, String> read(GameEngine gameEngine, String input) throws InterruptedException {
         String[] splitString = input.trim().split("\\s+");
         TreeMap<String, String> map = new TreeMap<>();
         boolean isValid = false;

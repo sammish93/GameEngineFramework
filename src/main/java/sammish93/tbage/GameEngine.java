@@ -266,8 +266,22 @@ public class GameEngine implements Serializable {
      * @see PrintStream#println(String)
      * @param string The String to be printed.
      */
-    public void printMessage(String string) {
-        System.out.println(string);
+    public void printMessage(String string) throws InterruptedException {
+        if (gameSettings.isFontAnimated()) {
+            int delay = gameSettings.getFontAnimationSpeed();
+            for (char c : string.toCharArray()) {
+                System.out.print(c);
+                Thread.sleep(delay);
+            }
+            System.out.print("\n");
+        } else {
+            System.out.println(string);
+        }
+
+        if (gameSettings.isOutputSeparatedByNewLine()) {
+            System.out.println();
+        }
+
     }
 
     /**

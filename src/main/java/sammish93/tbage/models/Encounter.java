@@ -492,7 +492,7 @@ public abstract class Encounter implements Serializable {
      * calls the 'inventory' command.
      * @param gameEngine Required to communicate with other dependencies such as the game interface.
      */
-    protected void printInventory(GameEngine gameEngine) {
+    protected void printInventory(GameEngine gameEngine) throws InterruptedException {
         int itemIteration = 1;
         var player = gameEngine.getPlayer();
 
@@ -517,7 +517,7 @@ public abstract class Encounter implements Serializable {
      * calls the 'help' command.
      * @param gameEngine Required to communicate with other dependencies such as the game interface.
      */
-    protected void printOptions(GameEngine gameEngine) {
+    protected void printOptions(GameEngine gameEngine) throws InterruptedException {
         gameEngine.printMessage("Type one of the following commands: ");
         gameEngine.printMessageFormatted("%-15s %s\n", "Help",
                 "Prints a list of commands that the player can enter.");
@@ -539,8 +539,13 @@ public abstract class Encounter implements Serializable {
                 "Investigates your immediate surroundings.");
         gameEngine.printMessageFormatted("%-15s %s\n", "Back",
                 "Exits the current activity when possible.");
-        gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>",
-                "Navigates to another encounter when possible (e.g. 'north').");
+        if (gameEngine.getGameSettings().isOutputSeparatedByNewLine()) {
+            gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>",
+                    "Navigates to another encounter when possible (e.g. 'north').\n");
+        } else {
+            gameEngine.printMessageFormatted("%-15s %s\n", "<navigation>",
+                    "Navigates to another encounter when possible (e.g. 'north').");
+        }
     }
 
     public abstract String run(GameEngine gameEngine) throws InventoryFullException, InvalidValueException, InterruptedException;

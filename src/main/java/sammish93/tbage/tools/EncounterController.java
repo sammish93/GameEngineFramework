@@ -456,8 +456,13 @@ public class EncounterController {
 
             for (Map.Entry<Integer, String> entry : itemsWithIndex.entrySet()) {
                 Item itemFromTable = ally.getItemFromItemTable(entry.getValue());
-                gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " +
-                        itemFromTable.getValue(), entry.getValue());
+                if (gameEngine.getGameSettings().isOutputSeparatedByNewLine()) {
+                    gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " +
+                            itemFromTable.getValue(), entry.getValue() + "\n");
+                } else {
+                    gameEngine.printMessageFormatted("\t%s %-12s %s\n", entry.getKey() + ".", "Gold: " +
+                            itemFromTable.getValue(), entry.getValue());
+                }
             }
 
             while (!isTargetChosen) {
@@ -552,7 +557,7 @@ public class EncounterController {
     }
 
     private static void enemyTurn(GameEngine gameEngine, CombatEncounter encounter, Player player)
-            throws InvalidValueException {
+            throws InvalidValueException, InterruptedException {
         for (Map.Entry<String, Enemy> entry : encounter.getEnemies().entrySet()) {
             var enemy = entry.getValue();
 
@@ -590,7 +595,7 @@ public class EncounterController {
     }
 
     private static void playerTurn(GameEngine gameEngine, Player player, Enemy enemyChosen)
-            throws InvalidValueException {
+            throws InvalidValueException, InterruptedException {
         int playerDamage = ProbabilityCalculator.damageCalculator((int) player.getMinDamage(),
                 (int) player.getMaxDamage());
         enemyChosen.subtractFromCurrentHealth(playerDamage);
@@ -681,7 +686,7 @@ public class EncounterController {
      * @throws InvalidValueException Thrown in the event of an invalid value being provided. See specific methods
      * for more information on what constitutes a valid value.
      */
-    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InvalidValueException {
+    public static void getEncounterDrops(GameEngine gameEngine, Encounter encounter) throws InvalidValueException, InterruptedException {
 
         Player player = gameEngine.getPlayer();
 
@@ -707,6 +712,8 @@ public class EncounterController {
                                         enemy.getName() + ".");
                             } catch (InventoryFullException ex) {
                                 gameEngine.printMessage(ex.getMessage());
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -722,7 +729,7 @@ public class EncounterController {
         }
     }
 
-    public static void getFeatRewards(GameEngine gameEngine, Encounter encounter) {
+    public static void getFeatRewards(GameEngine gameEngine, Encounter encounter) throws InterruptedException {
         var player = gameEngine.getPlayer();
 
         if (!encounter.getFeatRewards().isEmpty()) {

@@ -53,7 +53,7 @@ public class Prop implements Serializable, Cloneable, Useable {
      * @param gameEngine The current instance of the GameEngine is required so that the lambda used can reference
      *                   other dependencies of the GameEngine class such as the player or current encounter.
      */
-    public void onUse(GameEngine gameEngine) {
+    public void onUse(GameEngine gameEngine) throws InterruptedException {
         if (!isUsed) {
             if (getOnUseBehaviour() != null) {
                 try {

@@ -11,8 +11,11 @@ import sammish93.tbage.tools.EncounterController;
 import sammish93.tbage.tools.EncounterTraversalController;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
@@ -36,25 +39,66 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
     }
 
     private void run() throws InventoryFullException, InvalidValueException, InterruptedException {
-        JFrame baseFrame;
+        JFrame baseFrame = new JFrame(getGameSettings().getWindowTitle());
 
-        baseFrame = new JFrame(getGameSettings().getWindowTitle());
-
-        JTextArea gameOutput = new JTextArea (5, 20);
+        JPanel mainFrame = new JPanel();
+        JTextArea gameOutput = new JTextArea();
         JTextField userInput = new JTextField();
+        JButton sendUserInputButton = new JButton();
 
-        gameOutput.setEditable(false);
+        baseFrame.add(mainFrame);
+        mainFrame.setLayout(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.5;
+        constraints.gridwidth = 2;
+        constraints.insets = new Insets(5, 5, 5, 5);
 
-        Container contentPane = baseFrame.getContentPane();
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(new JScrollPane(gameOutput,
-                                         JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                         JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),
-                                         BorderLayout.CENTER);
-        contentPane.add(userInput, BorderLayout.SOUTH);
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        JPanel panelExample = new JPanel();
+        panelExample.setBackground(Color.GREEN);
+        mainFrame.add(panelExample, constraints);
+
+        constraints.insets = new Insets(0, 5, 5, 5);
+        constraints.gridy = 1;
+        gameOutput.setWrapStyleWord(true);
+        gameOutput.setLineWrap(true);
+        gameOutput.setTabSize(2);
+        gameOutput.setFont(getGameSettings().getFontOutput());
+        gameOutput.setMargin(new Insets(5, 5, 5, 5));
+        mainFrame.add(new JScrollPane(gameOutput,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), constraints);
+
+        constraints.gridy = 2;
+        constraints.gridwidth = 1;
+        constraints.weighty = 0.0;
+        constraints.weightx = 0.9;
+        userInput.setFont(getGameSettings().getFontInput());
+        userInput.setMargin(new Insets(5, 5, 5, 5));
+        mainFrame.add(userInput, constraints);
+
+        constraints.gridx = 1;
+        constraints.weightx = 0.1;
+        sendUserInputButton.setText("Send");
+        sendUserInputButton.setFont(getGameSettings().getFontGeneral());
+        sendUserInputButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    sendMessageToGameOutput(userInput);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        mainFrame.add(sendUserInputButton, constraints);
 
         PrintStream printStream = new PrintStream(new SwingOutputStream(gameOutput));
         System.setOut(printStream);
+        gameOutput.setEditable(false);
 
         baseFrame.pack();
 
@@ -68,6 +112,10 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         userInput.requestFocus();
 
 
+        traverseEncounters(baseFrame);
+    }
+
+    private void traverseEncounters(JFrame baseFrame) throws InventoryFullException, InvalidValueException, InterruptedException {
         var controller = getEncounterController();
         var gameEngine = getGameEngine();
         var encounters = getEncounters();
@@ -105,7 +153,6 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
     }
 
 
-
     /**
      * Closes the main Java Swing application window.
      * @param jFrameToClose The main jFrame element that is the base of the application window.
@@ -129,14 +176,26 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         {
             public void actionPerformed(ActionEvent e)
             {
-                if (!textField.getText().isEmpty()) {
-                    EncounterController.setInput(textField.getText());
-                    getGameEngine().printMessage(textField.getText());
+                try {
+                    sendMessageToGameOutput(textField);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
                 }
-                textField.setText("");
             }
         });
 
+    }
+
+    private void sendMessageToGameOutput(JTextField textField) throws InterruptedException {
+        if (!textField.getText().isEmpty()) {
+            if (!getGameSettings().isOutputSeparatedByNewLine()) {
+                getGameEngine().printMessageFormatted("\n> " + textField.getText() + "\n\n");
+            } else {
+                getGameEngine().printMessageFormatted("> " + textField.getText() + "\n\n");
+            }
+            EncounterController.setInput(textField.getText());
+        }
+        textField.setText("");
     }
 }
 

@@ -123,7 +123,7 @@ public class NonCombatEncounter extends Encounter {
         allies.remove(allyName);
     }
 
-    private void nonCombatEncounterIntroduction(GameEngine gameEngine) {
+    private void nonCombatEncounterIntroduction(GameEngine gameEngine) throws InterruptedException {
         if (!getIntroductoryMessage().isEmpty()) {
             gameEngine.printMessage(getIntroductoryMessage());
         }
@@ -131,7 +131,7 @@ public class NonCombatEncounter extends Encounter {
         onInitiation(gameEngine);
     }
 
-    private void printAllies(GameEngine gameEngine) {
+    private void printAllies(GameEngine gameEngine) throws InterruptedException {
         int allyIteration = 1;
         var player = gameEngine.getPlayer();
 
