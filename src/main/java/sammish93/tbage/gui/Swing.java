@@ -1,16 +1,20 @@
 package sammish93.tbage.gui;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Closeable;
+import sammish93.tbage.models.Encounter;
 import sammish93.tbage.models.FixedEncounters;
 import sammish93.tbage.models.NonCombatEncounter;
 import sammish93.tbage.models.RandomEncounters;
 import sammish93.tbage.tools.EncounterController;
 import sammish93.tbage.tools.EncounterTraversalController;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
@@ -18,8 +22,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Random;
 import java.util.Scanner;
 
 import static sammish93.tbage.GameEngine.scanner;
@@ -51,18 +57,17 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.fill = GridBagConstraints.BOTH;
         constraints.weightx = 1.0;
-        constraints.weighty = 0.5;
         constraints.gridwidth = 2;
         constraints.insets = new Insets(5, 5, 5, 5);
 
         constraints.gridx = 0;
         constraints.gridy = 0;
-        JPanel panelExample = new JPanel();
-        panelExample.setBackground(Color.GREEN);
-        mainFrame.add(panelExample, constraints);
+        JLabel imageLabel = new JLabel();
+        mainFrame.add(imageLabel, constraints);
 
         constraints.insets = new Insets(0, 5, 5, 5);
         constraints.gridy = 1;
+        constraints.weighty = 0.9;
         gameOutput.setWrapStyleWord(true);
         gameOutput.setLineWrap(true);
         gameOutput.setTabSize(2);
@@ -100,11 +105,20 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         System.setOut(printStream);
         gameOutput.setEditable(false);
 
+        if (getGameSettings().isFullscreen()) {
+            baseFrame.setUndecorated(true);
+        }
+
         baseFrame.pack();
 
         int[] resolution = getGameSettings().getWindowResolution();
         baseFrame.setSize(resolution[0],resolution[1]);
         baseFrame.setVisible(true);
+        baseFrame.setResizable(false);
+
+        if (getGameSettings().isFullscreen()) {
+            baseFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        }
 
         close(baseFrame);
 
@@ -112,10 +126,10 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         userInput.requestFocus();
 
 
-        traverseEncounters(baseFrame);
+        traverseEncounters(baseFrame, imageLabel);
     }
 
-    private void traverseEncounters(JFrame baseFrame) throws InventoryFullException, InvalidValueException, InterruptedException {
+    private void traverseEncounters(JFrame baseFrame, JLabel label) throws InventoryFullException, InvalidValueException, InterruptedException {
         var controller = getEncounterController();
         var gameEngine = getGameEngine();
         var encounters = getEncounters();
@@ -137,9 +151,30 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
             String output;
 
             if (EncounterTraversalController.getCurrentEncounter() != null) {
+                try {
+                    String imgPath = EncounterTraversalController.getCurrentEncounter().getImagePath();
+                    if (imgPath != null) {
+                        BufferedImage image = ImageIO.read(new File(imgPath));
+                        Image imageScaled = image.getScaledInstance(baseFrame.getWidth(), baseFrame.getHeight()/3, Image.SCALE_DEFAULT);
+                        label.setIcon(new ImageIcon(imageScaled));
+                    } else {
+                        String chosenRandomImage = chooseDefaultImage(
+                                EncounterTraversalController.getCurrentEncounter());
+
+                        BufferedImage image = ImageIO.read(new File(chosenRandomImage));
+                        Image imageScaled = image.getScaledInstance(baseFrame.getWidth(), baseFrame.getHeight()/3, Image.SCALE_DEFAULT);
+                        label.setIcon(new ImageIcon(imageScaled));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 output = EncounterTraversalController.getCurrentEncounter().run(gameEngine);
             } else {
-                gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                } else {
+                    gameEngine.printMessage("Game has finished. Please press the 'Escape' key.");
+                }
                 output = scanner.nextLine();
             }
 
@@ -149,6 +184,34 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
                 controller.progressToNextEncounter(output);
             }
 
+        }
+    }
+
+    private String chooseDefaultImage(Encounter encounter) {
+        String[] defaultNonCombatEncounterImages = new String[] {
+                "src/main/java/sammish93/tbage/resources/non_combat_environment_1.png",
+                "src/main/java/sammish93/tbage/resources/non_combat_environment_2.png",
+                "src/main/java/sammish93/tbage/resources/non_combat_environment_3.png",
+                "src/main/java/sammish93/tbage/resources/non_combat_environment_4.png",
+                "src/main/java/sammish93/tbage/resources/non_combat_environment_5.png"
+        };
+
+        String[] defaultCombatEncounterImages = new String[] {
+                "src/main/java/sammish93/tbage/resources/combat_environment_1.png",
+                "src/main/java/sammish93/tbage/resources/combat_environment_2.png",
+                "src/main/java/sammish93/tbage/resources/combat_environment_3.png",
+                "src/main/java/sammish93/tbage/resources/combat_environment_4.png",
+                "src/main/java/sammish93/tbage/resources/combat_environment_5.png"
+        };
+
+        Random random = new Random();
+
+        if (encounter instanceof NonCombatEncounter) {
+            int selectedIndex = random.nextInt(defaultNonCombatEncounterImages.length);
+            return defaultNonCombatEncounterImages[selectedIndex];
+        } else {
+            int selectedIndex = random.nextInt(defaultCombatEncounterImages.length);
+            return defaultCombatEncounterImages[selectedIndex];
         }
     }
 
@@ -164,7 +227,15 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
         {
             public void actionPerformed(ActionEvent e)
             {
-                jFrameToClose.dispose();
+                int answer = JOptionPane.showConfirmDialog(
+                        jFrameToClose,
+                        "Do you wish to exit the game?",
+                        "Exit",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (answer == JOptionPane.YES_OPTION) {
+                    jFrameToClose.dispose();
+                }
             }
         });
     }

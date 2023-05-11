@@ -22,12 +22,14 @@ public class GameSettings implements Serializable {
     private int fontAnimationSpeed;
     private int windowWidth;
     private int windowHeight;
+    private boolean isFullscreen;
     private String windowTitle;
 
 
     private GameSettings() {
         windowHeight = 600;
         windowWidth = 800;
+        isFullscreen = false;
         windowTitle = "TBAGE - Text-Based Adventure Game Engine";
         fontOutput = new Font("Century", Font.PLAIN, 14);
         fontInput = new Font("Lucida Handwriting Italic", Font.PLAIN, 14);
@@ -211,6 +213,22 @@ public class GameSettings implements Serializable {
     public void setWindowResolution(int windowWidth, int windowHeight) {
         this.windowWidth = windowWidth;
         this.windowHeight = windowHeight;
+    }
+
+    /**
+     *
+     * @param isFullscreen A boolean value used set whether the Java Swing interface launches in full screen.
+     */
+    public void setFullscreen(boolean isFullscreen) {
+        this.isFullscreen = isFullscreen;
+    }
+
+    /**
+     *
+     * @return Returns a boolean value representing whether the Java Swing interface launches in full screen.
+     */
+    public boolean isFullscreen() {
+        return this.isFullscreen;
     }
 
     /**

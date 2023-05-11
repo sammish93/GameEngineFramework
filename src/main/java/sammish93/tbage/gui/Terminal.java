@@ -1,6 +1,7 @@
 package sammish93.tbage.gui;
 
 import sammish93.tbage.GameEngine;
+import sammish93.tbage.enums.GamePlatform;
 import sammish93.tbage.exceptions.InvalidValueException;
 import sammish93.tbage.exceptions.InventoryFullException;
 import sammish93.tbage.interfaces.Closeable;
@@ -62,7 +63,12 @@ public class Terminal extends GameInterface implements Closeable<String> {
             if (EncounterTraversalController.getCurrentEncounter() != null) {
                 output = EncounterTraversalController.getCurrentEncounter().run(gameEngine);
             } else {
-                gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                    gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                } else {
+                    gameEngine.printMessage("Game has finished. Please press the 'Escape' key.");
+                }
+
                 output = scanner.nextLine();
             }
 

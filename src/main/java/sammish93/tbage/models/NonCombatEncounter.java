@@ -182,7 +182,11 @@ public class NonCombatEncounter extends Encounter {
 
             if (!gameEngine.getPlayer().isAlive()) {
                 while (true) {
-                    gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                    if (gameEngine.getPlatform() == GamePlatform.TERMINAL) {
+                        gameEngine.printMessage("Game has finished. Please type 'exit'.");
+                    } else {
+                        gameEngine.printMessage("Game has finished. Please press the 'Escape' key.");
+                    }
 
                     if (scanner.nextLine().equalsIgnoreCase("exit")) {
                         return "exit";

@@ -163,6 +163,7 @@ public class Main {
         };
         nCoEncounter.setOnInitiationBehaviour(onUseInitiationFriendly);
 
+        nCoEncounter2.setImagePath("src/main/java/sammish93/tbage/resources/non_combat_environment_2.png");
         nCoEncounter2.removeDefaultNavigationalVerbs();
         nCoEncounter2.addNavigationalVerb("open");
         nCoEncounter2.setIntroductoryMessage("You enter a dark room. You hear mice crawling on the floor, and can make " +
@@ -250,6 +251,7 @@ public class Main {
         var game = GameEngine.create(settings, player, encounters);
 
         game.setPlatformToSwing();
+        //game.getGameSettings().setFullscreen(true);
         game.run();
     }
 }
