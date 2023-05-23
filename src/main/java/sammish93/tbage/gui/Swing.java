@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.util.Random;
 
 import static sammish93.tbage.GameEngine.scanner;
@@ -155,10 +156,13 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
                     } else {
                         String chosenRandomImage = chooseDefaultImage(
                                 EncounterTraversalController.getCurrentEncounter());
-
-                        BufferedImage image = ImageIO.read(new File(chosenRandomImage));
-                        Image imageScaled = image.getScaledInstance(baseFrame.getWidth(), baseFrame.getHeight()/3, Image.SCALE_DEFAULT);
-                        label.setIcon(new ImageIcon(imageScaled));
+                        URL resource = this.getClass().getClassLoader().getResource(chosenRandomImage);
+                        byte[] data;
+                        try (InputStream in = getClass().getResourceAsStream(chosenRandomImage)) {
+                            BufferedImage image = ImageIO.read(in);
+                            Image imageScaled = image.getScaledInstance(baseFrame.getWidth(), baseFrame.getHeight()/3, Image.SCALE_DEFAULT);
+                            label.setIcon(new ImageIcon(imageScaled));
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -183,19 +187,19 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
     private String chooseDefaultImage(Encounter encounter) {
         String[] defaultNonCombatEncounterImages = new String[] {
-                "src/main/java/sammish93/tbage/resources/non_combat_environment_1.png",
-                "src/main/java/sammish93/tbage/resources/non_combat_environment_2.png",
-                "src/main/java/sammish93/tbage/resources/non_combat_environment_3.png",
-                "src/main/java/sammish93/tbage/resources/non_combat_environment_4.png",
-                "src/main/java/sammish93/tbage/resources/non_combat_environment_5.png"
+                "/images/non_combat_environment_1.png",
+                "/images/non_combat_environment_2.png",
+                "/images/non_combat_environment_3.png",
+                "/images/non_combat_environment_4.png",
+                "/images/non_combat_environment_5.png"
         };
 
         String[] defaultCombatEncounterImages = new String[] {
-                "src/main/java/sammish93/tbage/resources/combat_environment_1.png",
-                "src/main/java/sammish93/tbage/resources/combat_environment_2.png",
-                "src/main/java/sammish93/tbage/resources/combat_environment_3.png",
-                "src/main/java/sammish93/tbage/resources/combat_environment_4.png",
-                "src/main/java/sammish93/tbage/resources/combat_environment_5.png"
+                "/images/combat_environment_1.png",
+                "/images/combat_environment_2.png",
+                "/images/combat_environment_3.png",
+                "/images/combat_environment_4.png",
+                "/images/combat_environment_5.png"
         };
 
         Random random = new Random();
