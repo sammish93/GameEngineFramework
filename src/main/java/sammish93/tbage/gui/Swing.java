@@ -14,19 +14,13 @@ import sammish93.tbage.tools.EncounterTraversalController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.Scanner;
 
 import static sammish93.tbage.GameEngine.scanner;
 
@@ -103,6 +97,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
         PrintStream printStream = new PrintStream(new SwingOutputStream(gameOutput));
         System.setOut(printStream);
+        baseFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameOutput.setEditable(false);
 
         if (getGameSettings().isFullscreen()) {
@@ -183,7 +178,6 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
             if (controller.getCurrentEncounter() != null) {
                 controller.progressToNextEncounter(output);
             }
-
         }
     }
 
@@ -218,6 +212,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
 
     /**
      * Closes the main Java Swing application window.
+     * Note: Uses System.exit() with exit code 0 as opposed to JFrame.dispose().
      * @param jFrameToClose The main jFrame element that is the base of the application window.
      */
     public void close(JFrame jFrameToClose) {
@@ -234,7 +229,7 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
                         JOptionPane.YES_NO_OPTION);
 
                 if (answer == JOptionPane.YES_OPTION) {
-                    jFrameToClose.dispose();
+                    System.exit(0);
                 }
             }
         });

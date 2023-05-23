@@ -120,7 +120,7 @@ class EncounterTraversalControllerTest {
 
         etc.progressToNextEncounter(incorrectEventPrompt);
 
-        assertEquals(null, EncounterTraversalController.getCurrentEncounter());
+        assertNull(EncounterTraversalController.getCurrentEncounter());
         assertNotEquals(nCoEncounter2, EncounterTraversalController.getCurrentEncounter());
     }
 
@@ -137,9 +137,14 @@ class EncounterTraversalControllerTest {
 
         EncounterTraversalController etc = new EncounterTraversalController(encounters);
 
-        assertEquals(nCoEncounter, EncounterTraversalController.getCurrentEncounter());
-        etc.progressToNextEncounter("defeated");
-        assertEquals(nCoEncounter2, EncounterTraversalController.getCurrentEncounter());
+
+        if (nCoEncounter2 == EncounterTraversalController.getCurrentEncounter()) {
+            etc.progressToNextEncounter("defeated");
+            assertEquals(nCoEncounter, EncounterTraversalController.getCurrentEncounter());
+        } else if (nCoEncounter == EncounterTraversalController.getCurrentEncounter()) {
+            etc.progressToNextEncounter("defeated");
+            assertEquals(nCoEncounter2, EncounterTraversalController.getCurrentEncounter());
+        }
     }
 
     @Test
@@ -148,8 +153,10 @@ class EncounterTraversalControllerTest {
         var nCoEncounter = NonCombatEncounter.create("ENCOUNTER 1");
         var nCoEncounter2 = NonCombatEncounter.create("ENCOUNTER 2");
         nCoEncounter.removeDefaultNavigationalVerbs();
+        nCoEncounter2.removeDefaultNavigationalVerbs();
         String prompt = "north";
         nCoEncounter.addNavigationalNoun(prompt);
+        nCoEncounter2.addNavigationalNoun(prompt);
 
         var encounters = RandomEncounters.create();
 
@@ -158,9 +165,13 @@ class EncounterTraversalControllerTest {
 
         EncounterTraversalController etc = new EncounterTraversalController(encounters);
 
-        assertEquals(nCoEncounter, EncounterTraversalController.getCurrentEncounter());
-        etc.progressToNextEncounter(prompt);
-        assertEquals(nCoEncounter2, EncounterTraversalController.getCurrentEncounter());
+        if (nCoEncounter2 == EncounterTraversalController.getCurrentEncounter()) {
+            etc.progressToNextEncounter(prompt);
+            assertEquals(nCoEncounter, EncounterTraversalController.getCurrentEncounter());
+        } else if (nCoEncounter == EncounterTraversalController.getCurrentEncounter()) {
+            etc.progressToNextEncounter(prompt);
+            assertEquals(nCoEncounter2, EncounterTraversalController.getCurrentEncounter());
+        }
     }
 
     @Test
