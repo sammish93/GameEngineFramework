@@ -156,8 +156,6 @@ public class Swing extends GameInterface implements Closeable<JFrame> {
                     } else {
                         String chosenRandomImage = chooseDefaultImage(
                                 EncounterTraversalController.getCurrentEncounter());
-                        URL resource = this.getClass().getClassLoader().getResource(chosenRandomImage);
-                        byte[] data;
                         try (InputStream in = getClass().getResourceAsStream(chosenRandomImage)) {
                             BufferedImage image = ImageIO.read(in);
                             Image imageScaled = image.getScaledInstance(baseFrame.getWidth(), baseFrame.getHeight()/3, Image.SCALE_DEFAULT);
