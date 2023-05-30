@@ -54,3 +54,6 @@ Do you plan to roll out more functionality and features in future versions of th
   2. Functionality for an ‘overworld’ style map containing node locations, each of which is a set of encounters from another game’s permutation.
   3. Persistent saving of a player character’s progression, statistics, etc.
   4. Functionality for animated artwork. Examples of use include for non-player character sprites, spell effects, and landscape scenes.
+
+
+Images used by the GUI are made by [Upklyak](https://www.freepik.com/author/upklyak) from [Freepik](https://www.freepik.com).
