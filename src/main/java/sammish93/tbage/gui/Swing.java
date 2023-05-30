@@ -20,7 +20,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URL;
 import java.util.Random;
 
 import static sammish93.tbage.GameEngine.scanner;
