@@ -3,8 +3,7 @@ Text-Based Adventure Game Engine
 
 A Java framework intended to facilitate the development of text-based adventure games. The game can be run via a terminal or a Swing GUI.
 
-Getting Started
----------------
+# Getting Started
 
 ### Prerequisites
 
@@ -12,9 +11,9 @@ JDK 17 or newer.
 
 ### Installing
 
-This repository currently has no .jar file compiled, nor is it currently published on Maven Central.
+This repository contains a .jar file, though it currently isn't published on Maven Central.
 
-If you wish to create a .jar file and have both git and maven installed then:
+If you wish to create an additional .jar file based off any changes you have made, and have both git and maven installed then:
 1. Nagivate to your desired directory
 2. Open up a command window and type - `git clone http://github.com/sammish93/GameEngineFramework.git`
 3. Then change to the cloned directory - `cd GameEngineFramework`
@@ -33,6 +32,16 @@ How to start your first game:
 1. Navigate to a main() method in your desired java project and import the project using `import GameEngine;`
 2. Create a GameEngine variable using `var game = GameEngine.create();`
 3. Run the game by using `game.run();`
+
+Note that you will receive a message in the terminal informing you that no encounters are present. This is because the framework doesn't provide any encounters, only the means for other developers to create them. Listed below is a link to code to an an example of a small game created using TBAGE.
+
+# Additional Information
+
+## Javadoc
+Javadoc documentation can be found [here](https://htmlpreview.github.io/?https://github.com/sammish93/GameEngineFramework/blob/main/javadoc/index.html).
+
+## Example Code
+An example of the code required (together with descriptive comments) to create a simple game featuring many of the framework's functionality can be found [here](/example/Main.java).
 
 ## Frequently Asked Questions
 
@@ -54,8 +63,7 @@ Do you plan to roll out more functionality and features in future versions of th
   2. Functionality for an ‘overworld’ style map containing node locations, each of which is a set of encounters from another game’s permutation.
   3. Persistent saving of a player character’s progression, statistics, etc.
   4. Functionality for animated artwork. Examples of use include for non-player character sprites, spell effects, and landscape scenes.
-
-## Javadoc
-Javadoc documentation can be found [here](https://htmlpreview.github.io/?https://github.com/sammish93/GameEngineFramework/blob/main/javadoc/index.html).
+  
+### Credits
 
 Images used by the GUI are made by [Upklyak](https://www.freepik.com/author/upklyak) from [Freepik](https://www.freepik.com).
