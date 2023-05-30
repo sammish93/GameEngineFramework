@@ -41,7 +41,7 @@ Note that you will receive a message in the terminal informing you that no encou
 Javadoc documentation can be found [here](https://htmlpreview.github.io/?https://github.com/sammish93/GameEngineFramework/blob/main/javadoc/index.html).
 
 ## Example Code
-An example of the code required (together with descriptive comments) to create a simple game featuring many of the framework's functionality can be found [here](/example/Main.java).
+An example of the code required (together with descriptive comments) to create a simple game featuring many of the framework's functionality can be found [here](/example).
 
 ## Frequently Asked Questions
 
